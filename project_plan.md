@@ -22,10 +22,11 @@ The user wants to create a website to manage Telegram files sent by users.
 *   **Penyimpanan:** Hanya metadata file (nama file, ID pengguna Telegram, *timestamp*, `telegram_file_id`, dll.) yang akan disimpan dalam database MySQL. File fisik tidak akan disimpan di server.
 
 **Main Features:**
-1.  **Telegram Bot Integration:** A bot that users can send files to, forwarding them to the CodeIgniter backend.
-2.  **Penerimaan & Penyimpanan Metadata File:** Backend CodeIgniter akan menerima metadata file dari bot, dan mencatatnya ke database MySQL. File fisik tidak akan diunduh atau disimpan di server.
-3.  **File Listing Web Interface:** A web page built with Bootstrap 5 will display a list of all received files, complete with details, fetched from the CodeIgniter API.
-4.  **Melihat Detail Metadata File:** Kemampuan untuk melihat detail metadata file yang diterima dari antarmuka web.
+1.  **Penerimaan & Penyimpanan Metadata File:** Backend akan menerima dan menyimpan metadata file (termasuk `thumbnail_file_id`) dari bot ke dalam database MySQL.
+2.  **Perintah Interaktif Bot:** Bot akan mendukung perintah seperti `/start`, `/help`, `/recent`, dan `/search` untuk interaksi pengguna yang lebih baik.
+3.  **Antarmuka Web Daftar File:** Halaman web yang menampilkan metadata file dengan ikon tipe file, pratinjau gambar (thumbnail), dan detail lainnya.
+4.  **Aksi Massal (Bulk Actions):** Antarmuka web akan menyediakan fungsionalitas untuk memilih banyak item dan melakukan tindakan massal (misalnya, soft delete).
+5.  **Soft Deletion:** Kemampuan untuk menghapus catatan metadata secara "lunak" (soft delete) dari antarmuka web.
 
 **General Approach:**
 Saya akan menyiapkan proyek CodeIgniter 3 yang akan berfungsi sebagai backend API dan juga melayani halaman frontend. Bot Telegram (skrip PHP) akan mengirimkan metadata file yang diterima ke endpoint API di CodeIgniter. Frontend yang menggunakan Bootstrap 5 akan memanggil API CodeIgniter untuk mendapatkan daftar metadata file.
@@ -39,4 +40,18 @@ Saya akan menyiapkan proyek CodeIgniter 3 yang akan berfungsi sebagai backend AP
     *   `application/config/database.php`: Set up MySQL database connection details.
     *   `application/config/autoload.php`: Define libraries, helpers, and models for automatic loading.
 4.  **Telegram Bot (PHP Script) Concept:** A separate PHP script will act as a Telegram webhook/long polling client, receiving updates (including files) and forwarding them to a CodeIgniter API endpoint.
-5.  **MySQL Database Setup Concept:** Create a MySQL database and a table (e.g., `telegram_files`) to store file metadata. This table will include columns like `id`, `telegram_user_id`, `telegram_file_id`, `file_name`, `original_file_name`, `mime_type`, `file_size`, and `upload_date`.
+5.  **MySQL Database Setup Concept:** Create a MySQL database with two tables: `telegram_files` to store file metadata and a `users` table to store user information. A foreign key relationship will link the tables. Indexes will be applied to frequently queried columns (like `telegram_user_id`, `mime_type`, etc.) to ensure good performance.
+
+### Development Best Practices (Approved)
+
+1.  **SQL Schema File:** A `schema.sql` file will be created containing `CREATE TABLE` queries for `files` and `users` tables to ensure consistent database setup.
+2.  **Environment Configuration:** Database credentials and other sensitive configurations will be managed using environment variables (e.g., via a `.env` file and `phpdotenv` library) to support different environments (development, testing, production).
+3.  **Data Type Optimization:** Data types will be reviewed and optimized (e.g., `BIGINT UNSIGNED` for IDs, realistic `VARCHAR` lengths) to improve database performance and storage efficiency.
+4.  **Soft Deletes:** The `files` table will include a `deleted_at` column for soft deletion, allowing for data recovery and historical tracking without permanent removal.
+5.  **Query Builder/ORM:** CodeIgniter's built-in Query Builder will be utilized for all database interactions to enhance security (preventing SQL injection), readability, and maintainability of the code.
+
+### System Reliability and Performance (Approved)
+
+1.  **Scheduled Tasks (Cron Jobs):** The system will use cron jobs to perform periodic tasks, including cleaning up old soft-deleted records and generating analytical reports.
+2.  **Advanced Error Handling:** For critical errors, the system will send notifications to an admin via the Telegram bot. A retry-queue mechanism will be implemented for transient webhook failures.
+3.  **Caching Strategy:** Both database query caching and full-page caching will be implemented using CodeIgniter's native capabilities to reduce database load and improve page load times.

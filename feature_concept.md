@@ -1,7 +1,23 @@
 # Feature Concept
 
-1.  **File Reception via Telegram Bot:** Users send files to a dedicated Telegram bot.
-2.  **Penyimpanan Metadata File:** Sistem menyimpan metadata file (seperti `telegram_file_id`, nama asli, tipe, ukuran, dll.) ke dalam database. File fisik tidak diunduh atau disimpan di server.
-3.  **Web-Based File Listing:** A private, password-protected (future enhancement) web page lists all received files in a table.
-4.  **File Details Display:** The table shows the original filename, file type, size, sender's Telegram ID, and the date it was received.
-5.  **Melihat Detail Metadata File:** Setiap entri dalam tabel memiliki opsi untuk melihat detail metadata file.
+## Core Features
+
+1.  **File Metadata Reception:** Users send files to a dedicated Telegram bot, and the system captures and stores the associated metadata (not the file itself).
+2.  **Metadata Storage:** The system saves file metadata (like `telegram_file_id`, `thumbnail_file_id`, original name, type, size, tags, etc.) into a structured MySQL database.
+3.  **Soft Deletion:** Metadata records can be "soft-deleted" by populating a `deleted_at` timestamp, allowing for potential recovery.
+
+## Bot Features
+
+1.  **Interactive Tagging:** The bot can prompt the user to add descriptive tags after a file is sent.
+2.  **`/start` Command:** Welcomes the user and introduces the bot.
+3.  **`/help` Command:** Explains all available features and commands.
+4.  **`/recent [N]` Command:** Fetches and resends the user's last N submitted files.
+5.  **`/search [keyword]` Command:** Searches for files by name or tag and returns the results.
+
+## Web Interface Features
+
+1.  **Metadata Listing:** A web page lists all captured file metadata in a clear, tabular format.
+2.  **File Type Icons:** The interface will use distinct icons (e.g., for documents, images, videos) to provide a quick visual reference for the file type.
+3.  **Image Previews:** For image files, the interface will display the Telegram-generated thumbnail, providing a visual preview without needing the full file.
+4.  **Bulk Actions:** Users can select multiple metadata entries via checkboxes to perform mass actions, such as soft-deleting or adding/removing tags.
+5.  **Detailed View:** An option to view all metadata associated with a file in a detailed view.
