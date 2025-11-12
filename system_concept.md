@@ -4,10 +4,9 @@ The system is a monolithic web application built with CodeIgniter 3.
 
 *   **Backend (CodeIgniter 3):**
     *   **Controllers:**
-        *   `Files.php`: Handles web requests. It will have methods like `index()` for the main table view, `gallery()` for the image gallery view, and `details($id)`. The `index()` method will be updated to handle complex filtering from the advanced search form.
-        *   `Api.php`: Provides API endpoints.
-            *   `/api/upload`: Receives file metadata from the Telegram bot.
-            *   `/api/update_file`: A new endpoint to handle inline editing of metadata (e.g., tags, name) and marking files as favorites. This will be called via AJAX from the web interface.
+        *   `Api.php`: Provides API endpoints for bot interactions and AJAX calls from the frontend.
+        *   `Admin.php`: A new controller, accessible only to admin users, to handle user management and display the analytics dashboard.
+        *   `Notifications.php`: A new controller for users to manage their custom notification rules.
     *   **Models:**
         *   `File_model.php`: Contains database logic for the `files` table. It will perform `JOIN` operations with the `users` table to retrieve file metadata along with user information. All database interactions will primarily use CodeIgniter's Query Builder for security and readability.
         *   `User_model.php`: A new model to handle all database logic for the `users` table, such as inserting a new user or updating their information (`insert_or_update_user`). This model will also utilize CodeIgniter's Query Builder.

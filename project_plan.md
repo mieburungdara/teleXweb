@@ -23,14 +23,11 @@ The user wants to create a website to manage Telegram files sent by users.
 
 **Main Features:**
 1.  **Penerimaan & Penyimpanan Metadata File:** Backend menerima dan menyimpan metadata file dari bot.
-2.  **Perintah Interaktif Bot:** Bot mendukung perintah seperti `/start`, `/help`, `/search`, dan `/fav`.
-3.  **Antarmuka Web yang Canggih:**
-    *   **Tampilan:** Tabel, Galeri, dan Halaman Detail.
-    *   **Pencarian:** Formulir pencarian lanjutan dengan berbagai filter.
-    *   **Pengeditan:** Pengeditan `tags` dan nama file secara *inline* (langsung di tabel).
-    *   **Favorit:** Sistem untuk menandai dan memfilter file favorit.
-4.  **Aksi Massal (Bulk Actions):** Kemampuan untuk memilih dan melakukan aksi pada banyak item sekaligus.
-5.  **Soft Deletion:** Kemampuan untuk menghapus catatan secara "lunak" (soft delete).
+2.  **Perintah Interaktif Bot:** Bot mendukung berbagai perintah untuk interaksi pengguna.
+3.  **Antarmuka Web yang Canggih:** Menyediakan berbagai mode tampilan, pencarian, pengeditan, dan sistem favorit untuk mengelola file.
+4.  **Manajemen & Analitik (Admin):** Dasbor admin untuk mengelola pengguna, menetapkan peran, dan melihat analitik sistem melalui grafik interaktif.
+5.  **Notifikasi Kustom:** Pengguna dapat membuat aturan untuk menerima notifikasi di Telegram berdasarkan tag file.
+
 
 **General Approach:**
 Saya akan menyiapkan proyek CodeIgniter 3 yang akan berfungsi sebagai backend API dan juga melayani halaman frontend. Bot Telegram (skrip PHP) akan mengirimkan metadata file yang diterima ke endpoint API di CodeIgniter. Frontend yang menggunakan Bootstrap 5 akan memanggil API CodeIgniter untuk mendapatkan daftar metadata file.

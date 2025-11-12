@@ -10,6 +10,8 @@ To make the application more user-friendly and the data more organized, a separa
 | `first_name` | `VARCHAR(255)` | The user's first name, as provided by Telegram.              | Nullable. Review realistic max length for `VARCHAR`. |
 | `last_name`  | `VARCHAR(255)` | The user's last name, as provided by Telegram.               | Nullable. Review realistic max length for `VARCHAR`. |
 | `username`   | `VARCHAR(255)` | The user's Telegram username (@username).                    | Nullable, Indexed for potential lookups. Review realistic max length for `VARCHAR`. |
+| `role`       | `VARCHAR(50)`  | The user's role in the system (e.g., 'admin', 'editor', 'viewer'). | NOT NULL, DEFAULT 'viewer'. Indexed. |
+| `is_blocked` | `BOOLEAN`      | Flag to block a user from interacting with the bot.          | NOT NULL, DEFAULT 0.                |
 | `created_at` | `DATETIME`   | Timestamp when the user first interacted with the bot.       | Defaults to `CURRENT_TIMESTAMP`.           |
 | `updated_at` | `DATETIME`   | Timestamp of the user's last interaction.                    | Updates on every new interaction.          |
 

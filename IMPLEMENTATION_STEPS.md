@@ -39,3 +39,11 @@ This document outlines the planned sequence of development for the teleXweb proj
 3.  **Implement Web Security:** Set up authentication for the web interface.
 4.  **Testing:** Write unit tests for models and perform manual testing of the end-to-end flow.
 5.  **Deployment:** Plan and execute deployment to the production server.
+
+### Phase 5: Admin & Advanced User Features
+
+1.  **Implement Roles & Permissions:** Update models and controllers to enforce the access control defined by user roles.
+2.  **Build Admin Dashboard:** Create the controllers and views for the user management and analytics dashboards. This will likely involve a charting library (e.g., Chart.js).
+3.  **Build Notifications System:** Create the controller and views for users to manage their notification rules.
+4.  **Update Core Logic:** Modify the file upload processing logic to check for and trigger custom notifications.
+

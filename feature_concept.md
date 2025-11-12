@@ -27,3 +27,14 @@
 8.  **Advanced Search Form:** A collapsible form allowing users to filter files by multiple criteria (type, date range, user, size, tags).
 9.  **Favorites System:** Users can mark/unmark files as favorites. A dedicated "Favorites" tab or filter will be available for quick access.
 
+## Admin Features (Web Interface)
+
+1.  **User Management Dashboard:** An admin-only page to list all registered users, view their roles, block/unblock them, and see basic usage stats per user.
+2.  **Role Management:** Admins can assign roles (`admin`, `editor`, `viewer`) to users, controlling their access level within the web UI.
+3.  **Advanced Analytics Dashboard:** A dashboard with interactive charts and graphs visualizing system-wide data, such as file uploads over time, distribution of file types, and most active users.
+
+## User-Specific Features
+
+1.  **Custom Notifications (Web UI):** Users can create and manage rules to receive a Telegram notification when a file with a specific tag is uploaded.
+
+
