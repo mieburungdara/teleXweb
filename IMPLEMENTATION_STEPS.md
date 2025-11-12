@@ -24,7 +24,9 @@ This document outlines the planned sequence of development for the teleXweb proj
 3.  **Develop Files View:** Create `application/views/file_list.php` to display the data in a table.
 4.  **Implement UI/UX Features:**
     *   Add logic to display file-type icons.
-    *   Implement thumbnail display.
+    *   Implement thumbnail display in the main table view.
+    *   Develop the Gallery View page (`gallery_view.php`) and the corresponding controller method.
+    *   Develop the File Detail page (`file_detail_view.php`) and its controller method.
     *   Add JavaScript for bulk actions (checkboxes, action buttons).
     *   Implement soft-delete functionality via a controller method.
 

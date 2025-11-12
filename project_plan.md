@@ -24,7 +24,10 @@ The user wants to create a website to manage Telegram files sent by users.
 **Main Features:**
 1.  **Penerimaan & Penyimpanan Metadata File:** Backend akan menerima dan menyimpan metadata file (termasuk `thumbnail_file_id`) dari bot ke dalam database MySQL.
 2.  **Perintah Interaktif Bot:** Bot akan mendukung perintah seperti `/start`, `/help`, `/recent`, dan `/search` untuk interaksi pengguna yang lebih baik.
-3.  **Antarmuka Web Daftar File:** Halaman web yang menampilkan metadata file dengan ikon tipe file, pratinjau gambar (thumbnail), dan detail lainnya.
+3.  **Antarmuka Web yang Kaya:** Halaman web akan menyediakan beberapa mode tampilan:
+    *   Tampilan tabel utama dengan ikon, pratinjau, dan detail.
+    *   Tampilan galeri khusus untuk file gambar.
+    *   Halaman detail komprehensif untuk setiap file.
 4.  **Aksi Massal (Bulk Actions):** Antarmuka web akan menyediakan fungsionalitas untuk memilih banyak item dan melakukan tindakan massal (misalnya, soft delete).
 5.  **Soft Deletion:** Kemampuan untuk menghapus catatan metadata secara "lunak" (soft delete) dari antarmuka web.
 

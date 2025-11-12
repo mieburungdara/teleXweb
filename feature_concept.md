@@ -21,3 +21,6 @@
 3.  **Image Previews:** For image files, the interface will display the Telegram-generated thumbnail, providing a visual preview without needing the full file.
 4.  **Bulk Actions:** Users can select multiple metadata entries via checkboxes to perform mass actions, such as soft-deleting or adding/removing tags.
 5.  **Detailed View:** An option to view all metadata associated with a file in a detailed view.
+6.  **Gallery View for Images:** A separate view mode that displays all image files in a grid format, using their thumbnails for a visual-first experience.
+7.  **Comprehensive Detail Page:** Clicking on a file entry will navigate to a dedicated page showing a larger thumbnail/icon and a clean presentation of all its metadata.
+

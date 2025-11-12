@@ -4,13 +4,16 @@ The system is a monolithic web application built with CodeIgniter 3.
 
 *   **Backend (CodeIgniter 3):**
     *   **Controllers:**
-        *   `Files.php`: Handles web requests to display the list of file metadata.
+        *   `Files.php`: Handles web requests. It will have methods like `index()` for the main table view, `gallery()` for the image gallery view, and `details($id)` for the comprehensive detail page.
         *   `Api.php`: Provides an endpoint (`/api/upload`) to receive file metadata from the Telegram bot script. This controller will be responsible for validating the request and inserting the metadata into the `files` table.
     *   **Models:**
         *   `File_model.php`: Contains database logic for the `files` table. It will perform `JOIN` operations with the `users` table to retrieve file metadata along with user information. All database interactions will primarily use CodeIgniter's Query Builder for security and readability.
         *   `User_model.php`: A new model to handle all database logic for the `users` table, such as inserting a new user or updating their information (`insert_or_update_user`). This model will also utilize CodeIgniter's Query Builder.
     *   **Views:**
-        *   `file_list.php`: An HTML file styled with Bootstrap 5 that displays the file table. It will fetch data from the `Files` controller.
+        *   `file_list.php`: An HTML file styled with Bootstrap 5 that displays the main file table.
+        *   `gallery_view.php`: A view to display images in a grid format.
+        *   `file_detail_view.php`: A dedicated page to show all details for a single file.
+        *   `templates/`: A directory for header, footer, and other layout partials.
 *   **Frontend (Bootstrap 5):**
     *   The frontend is not a separate SPA but is rendered by CodeIgniter's view engine.
     *   It will consist of a single page displaying the file list in a responsive table.
