@@ -15,6 +15,7 @@ A single table will be used to store metadata for each file received.
 | `file_size`          | `INT`        | The size of the file in bytes.                               |                                     |
 | `mime_type`          | `VARCHAR(100)` | The MIME type of the file.                                   | Indexed for filtering by type. Review realistic max length for `VARCHAR`. |
 | `tags`               | `VARCHAR(255)` | User-defined tags for categorization.                        | Nullable. e.g., "work,report,q4". Review realistic max length for `VARCHAR`. |
+| `is_favorited`       | `BOOLEAN`    | Flag to mark a file as a favorite.                           | NOT NULL, DEFAULT 0. Indexed for quick filtering. |
 | `created_at`         | `DATETIME`   | Timestamp when the record was created.                       | Indexed for date-range queries.     |
 | `deleted_at`         | `DATETIME`   | Timestamp when the record was soft-deleted.                  | Nullable. Used for soft deletes.    |
 

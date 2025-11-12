@@ -13,14 +13,17 @@
 3.  **`/help` Command:** Explains all available features and commands.
 4.  **`/recent [N]` Command:** Fetches and resends the user's last N submitted files.
 5.  **`/search [keyword]` Command:** Searches for files by name or tag and returns the results.
+6.  **`/fav` Command:** Allows a user to mark a file as a favorite by providing its ID.
 
 ## Web Interface Features
 
 1.  **Metadata Listing:** A web page lists all captured file metadata in a clear, tabular format.
-2.  **File Type Icons:** The interface will use distinct icons (e.g., for documents, images, videos) to provide a quick visual reference for the file type.
-3.  **Image Previews:** For image files, the interface will display the Telegram-generated thumbnail, providing a visual preview without needing the full file.
-4.  **Bulk Actions:** Users can select multiple metadata entries via checkboxes to perform mass actions, such as soft-deleting or adding/removing tags.
-5.  **Detailed View:** An option to view all metadata associated with a file in a detailed view.
-6.  **Gallery View for Images:** A separate view mode that displays all image files in a grid format, using their thumbnails for a visual-first experience.
-7.  **Comprehensive Detail Page:** Clicking on a file entry will navigate to a dedicated page showing a larger thumbnail/icon and a clean presentation of all its metadata.
+2.  **File Type Icons:** The interface will use distinct icons for different file types.
+3.  **Image Previews:** The interface will display Telegram-generated thumbnails for image files.
+4.  **Bulk Actions:** Users can select multiple entries to perform mass actions.
+5.  **Gallery View for Images:** A separate view mode that displays all image files in a grid format.
+6.  **Comprehensive Detail Page:** A dedicated page showing all metadata for a single file.
+7.  **Inline Metadata Editing:** Users can double-click on `tags` or `original_file_name` in the main table to edit them directly, with changes saved via AJAX.
+8.  **Advanced Search Form:** A collapsible form allowing users to filter files by multiple criteria (type, date range, user, size, tags).
+9.  **Favorites System:** Users can mark/unmark files as favorites. A dedicated "Favorites" tab or filter will be available for quick access.
 

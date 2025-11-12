@@ -28,11 +28,13 @@ CREATE TABLE `files` (
   `file_size` INT DEFAULT NULL COMMENT 'File size in bytes.',
   `mime_type` VARCHAR(100) DEFAULT NULL,
   `tags` VARCHAR(255) DEFAULT NULL COMMENT 'Comma-separated list of user-defined tags.',
+  `is_favorited` TINYINT(1) NOT NULL DEFAULT 0 COMMENT 'Flag to mark a file as a favorite (0 = no, 1 = yes).',
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted_at` DATETIME DEFAULT NULL COMMENT 'Timestamp for soft-deletes.',
   PRIMARY KEY (`id`),
   INDEX `idx_telegram_user_id` (`telegram_user_id`),
   INDEX `idx_mime_type` (`mime_type`),
   INDEX `idx_created_at` (`created_at`),
+  INDEX `idx_is_favorited` (`is_favorited`),
   CONSTRAINT `fk_files_telegram_user_id` FOREIGN KEY (`telegram_user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

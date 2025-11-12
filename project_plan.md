@@ -22,14 +22,15 @@ The user wants to create a website to manage Telegram files sent by users.
 *   **Penyimpanan:** Hanya metadata file (nama file, ID pengguna Telegram, *timestamp*, `telegram_file_id`, dll.) yang akan disimpan dalam database MySQL. File fisik tidak akan disimpan di server.
 
 **Main Features:**
-1.  **Penerimaan & Penyimpanan Metadata File:** Backend akan menerima dan menyimpan metadata file (termasuk `thumbnail_file_id`) dari bot ke dalam database MySQL.
-2.  **Perintah Interaktif Bot:** Bot akan mendukung perintah seperti `/start`, `/help`, `/recent`, dan `/search` untuk interaksi pengguna yang lebih baik.
-3.  **Antarmuka Web yang Kaya:** Halaman web akan menyediakan beberapa mode tampilan:
-    *   Tampilan tabel utama dengan ikon, pratinjau, dan detail.
-    *   Tampilan galeri khusus untuk file gambar.
-    *   Halaman detail komprehensif untuk setiap file.
-4.  **Aksi Massal (Bulk Actions):** Antarmuka web akan menyediakan fungsionalitas untuk memilih banyak item dan melakukan tindakan massal (misalnya, soft delete).
-5.  **Soft Deletion:** Kemampuan untuk menghapus catatan metadata secara "lunak" (soft delete) dari antarmuka web.
+1.  **Penerimaan & Penyimpanan Metadata File:** Backend menerima dan menyimpan metadata file dari bot.
+2.  **Perintah Interaktif Bot:** Bot mendukung perintah seperti `/start`, `/help`, `/search`, dan `/fav`.
+3.  **Antarmuka Web yang Canggih:**
+    *   **Tampilan:** Tabel, Galeri, dan Halaman Detail.
+    *   **Pencarian:** Formulir pencarian lanjutan dengan berbagai filter.
+    *   **Pengeditan:** Pengeditan `tags` dan nama file secara *inline* (langsung di tabel).
+    *   **Favorit:** Sistem untuk menandai dan memfilter file favorit.
+4.  **Aksi Massal (Bulk Actions):** Kemampuan untuk memilih dan melakukan aksi pada banyak item sekaligus.
+5.  **Soft Deletion:** Kemampuan untuk menghapus catatan secara "lunak" (soft delete).
 
 **General Approach:**
 Saya akan menyiapkan proyek CodeIgniter 3 yang akan berfungsi sebagai backend API dan juga melayani halaman frontend. Bot Telegram (skrip PHP) akan mengirimkan metadata file yang diterima ke endpoint API di CodeIgniter. Frontend yang menggunakan Bootstrap 5 akan memanggil API CodeIgniter untuk mendapatkan daftar metadata file.

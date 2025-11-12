@@ -23,12 +23,14 @@ This document outlines the planned sequence of development for the teleXweb proj
 2.  **Create Files Controller:** Develop `application/controllers/Files.php` to fetch file metadata using `File_model` (with JOINs to get user data).
 3.  **Develop Files View:** Create `application/views/file_list.php` to display the data in a table.
 4.  **Implement UI/UX Features:**
-    *   Add logic to display file-type icons.
-    *   Implement thumbnail display in the main table view.
-    *   Develop the Gallery View page (`gallery_view.php`) and the corresponding controller method.
-    *   Develop the File Detail page (`file_detail_view.php`) and its controller method.
+    *   Add logic to display file-type icons and thumbnails.
+    *   Develop the Gallery and File Detail pages.
+    *   Implement the Advanced Search form and the corresponding filtering logic in the `Files.php` controller.
+    *   Implement the Favorites system (toggling favorite status, filtering by favorites).
+    *   Develop the backend API endpoint (`/api/update_file`) for AJAX calls.
+    *   Implement the frontend JavaScript for Inline Editing and Favorites, which will consume the new API endpoint.
     *   Add JavaScript for bulk actions (checkboxes, action buttons).
-    *   Implement soft-delete functionality via a controller method.
+    *   Implement soft-delete functionality.
 
 ### Phase 4: Advanced Features & Deployment
 
