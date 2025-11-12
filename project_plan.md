@@ -27,6 +27,8 @@ The user wants to create a website to manage Telegram files sent by users.
 3.  **Antarmuka Web yang Canggih:** Menyediakan berbagai mode tampilan, pencarian, pengeditan, dan sistem favorit untuk mengelola file.
 4.  **Manajemen & Analitik (Admin):** Dasbor admin untuk mengelola pengguna, menetapkan peran, dan melihat analitik sistem melalui grafik interaktif.
 5.  **Notifikasi Kustom:** Pengguna dapat membuat aturan untuk menerima notifikasi di Telegram berdasarkan tag file.
+6.  **Personalisasi:** Dukungan untuk multi-bahasa (i18n) dan tema UI (terang/gelap) untuk menyesuaikan pengalaman pengguna.
+
 
 
 **General Approach:**

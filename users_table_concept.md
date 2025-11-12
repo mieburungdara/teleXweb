@@ -12,6 +12,9 @@ To make the application more user-friendly and the data more organized, a separa
 | `username`   | `VARCHAR(255)` | The user's Telegram username (@username).                    | Nullable, Indexed for potential lookups. Review realistic max length for `VARCHAR`. |
 | `role`       | `VARCHAR(50)`  | The user's role in the system (e.g., 'admin', 'editor', 'viewer'). | NOT NULL, DEFAULT 'viewer'. Indexed. |
 | `is_blocked` | `BOOLEAN`      | Flag to block a user from interacting with the bot.          | NOT NULL, DEFAULT 0.                |
+| `language`   | `VARCHAR(10)`  | The user's preferred language code (e.g., 'en', 'id').       | NOT NULL, DEFAULT 'en'.             |
+| `theme`      | `VARCHAR(10)`  | The user's preferred UI theme (e.g., 'light', 'dark').       | NOT NULL, DEFAULT 'light'.          |
+| `has_completed_onboarding` | `BOOLEAN` | Flag to check if the user has seen the tutorial.             | NOT NULL, DEFAULT 0.                |
 | `created_at` | `DATETIME`   | Timestamp when the user first interacted with the bot.       | Defaults to `CURRENT_TIMESTAMP`.           |
 | `updated_at` | `DATETIME`   | Timestamp of the user's last interaction.                    | Updates on every new interaction.          |
 

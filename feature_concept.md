@@ -37,4 +37,11 @@
 
 1.  **Custom Notifications (Web UI):** Users can create and manage rules to receive a Telegram notification when a file with a specific tag is uploaded.
 
+## Personalization & Onboarding
+
+1.  **Multi-Language Support (i18n):** Both the web interface and the Telegram bot will support multiple languages. Users can set their preference, and the system will serve content in the chosen language.
+2.  **UI Theming:** The web interface will offer at least a 'light' and a 'dark' theme. Users can select their preferred theme, which will be saved to their profile.
+3.  **Interactive Onboarding:** New users will be greeted with a simple tutorial, either via a series of bot messages or a guided tour on the web UI, to help them understand the core features quickly.
+
+
 
