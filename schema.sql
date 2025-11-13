@@ -18,6 +18,7 @@ CREATE TABLE `users` (
   `subscription_ends_at` DATETIME DEFAULT NULL COMMENT 'Date when the user''s subscription ends.',
   `user_level` INT UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Current level of the user.',
   `achievement_points` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Points accumulated by the user for achievements.',
+  `balance` DECIMAL(10,2) NOT NULL DEFAULT 0.00 COMMENT 'Current balance of the user.',
   `timezone` VARCHAR(64) NOT NULL DEFAULT 'UTC' COMMENT 'User-preferred timezone.',
   `last_activity_at` DATETIME DEFAULT NULL COMMENT 'Timestamp of the user''s last interaction with the bot/web.',
   `subscription_plan` ENUM('free','pro','enterprise') NOT NULL DEFAULT 'free' COMMENT 'The user''s current subscription plan.',
@@ -410,3 +411,24 @@ CREATE TABLE `xp_transactions` (
   INDEX `idx_entity` (`entity_type`, `entity_id`),
   CONSTRAINT `fk_xp_transactions_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Records every instance of a user gaining or losing XP.';
+
+--
+-- Table structure for table `balance_transactions`
+--
+CREATE TABLE `balance_transactions` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` BIGINT UNSIGNED NOT NULL COMMENT 'ID of the user whose balance was affected.',
+  `transaction_type` ENUM('top_up','deduction','purchase','refund') NOT NULL COMMENT 'Type of balance transaction.',
+  `amount` DECIMAL(10,2) NOT NULL COMMENT 'The amount of balance change.',
+  `description` TEXT NOT NULL COMMENT 'A brief description of the transaction.',
+  `admin_id` BIGINT UNSIGNED DEFAULT NULL COMMENT 'ID of the admin who initiated a manual transaction.',
+  `related_entity_type` VARCHAR(50) DEFAULT NULL COMMENT 'Type of entity related to the transaction.',
+  `related_entity_id` BIGINT UNSIGNED DEFAULT NULL COMMENT 'ID of the entity related to the transaction.',
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Timestamp when the transaction occurred.',
+  PRIMARY KEY (`id`),
+  INDEX `idx_user_id` (`user_id`),
+  INDEX `idx_admin_id` (`admin_id`),
+  INDEX `idx_transaction_type` (`transaction_type`),
+  CONSTRAINT `fk_balance_transactions_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_balance_transactions_admin_id` FOREIGN KEY (`admin_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Tracks all changes to user balances.';

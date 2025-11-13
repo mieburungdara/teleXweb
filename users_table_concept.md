@@ -21,6 +21,7 @@ To make the application more user-friendly and the data more organized, a separa
 | `payment_status`     | `VARCHAR(50)`  | Status of the user's payment (e.g., 'active', 'canceled', 'past_due'). | Nullable.                                  |
 | `user_level`       | `INT UNSIGNED` | The current level of the user.                               | NOT NULL, DEFAULT 1.                |
 | `achievement_points` | `INT UNSIGNED` | Points accumulated by the user for achievements.             | NOT NULL, DEFAULT 0.                |
+| `balance`            | `DECIMAL(10,2)` | Current balance of the user.                                 | NOT NULL, DEFAULT 0.00.             |
 | `timezone`   | `VARCHAR(64)`  | The user''s preferred timezone (e.g., ''Asia/Jakarta'').     | NOT NULL, DEFAULT ''UTC''.          |
 | `last_activity_at` | `DATETIME`   | Timestamp of the user''s last interaction with the bot/web.  | Nullable.                           |
 | `created_at` | `DATETIME`   | Timestamp when the user first interacted with the bot.       | Defaults to `CURRENT_TIMESTAMP`.           |

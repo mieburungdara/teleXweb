@@ -64,6 +64,11 @@ The user wants to create a website to manage Telegram files sent by users.
     *   **Manajemen Langganan:** Sediakan antarmuka pengguna untuk mengelola langganan, termasuk peningkatan, penurunan, dan riwayat penagihan.
     *   **Integrasi Gateway Pembayaran:** Integrasikan dengan penyedia pembayaran (misalnya, Stripe) untuk menangani penagihan berulang dan siklus hidup langganan.
     *   **Pembatasan Fitur:** Terapkan logika untuk membatasi akses ke fitur premium berdasarkan paket langganan pengguna.
+17. **Manajemen Saldo Pengguna:**
+    *   **Saldo Pengguna:** Setiap pengguna akan memiliki saldo yang dapat diisi ulang secara manual oleh admin.
+    *   **Proses Top-up Manual:** Pengguna menghubungi admin untuk meminta top-up saldo.
+    *   **Verifikasi & Pembaruan Admin:** Admin memverifikasi pembayaran secara manual dan memperbarui saldo pengguna melalui antarmuka admin.
+    *   **Log Transaksi Saldo:** Semua perubahan saldo akan dicatat dalam tabel `balance_transactions` untuk tujuan audit.
 
 
 

@@ -48,6 +48,7 @@ An `xp_transactions` table will log all XP gains/losses.
 A `notification_throttles` table will track notification sending activity for rate limiting.
 A `notification_templates` table will store customizable notification messages.
 A `subscriptions` table will manage user subscription details and payment history.
+A `balance_transactions` table will log all changes to user balances.
 
 *   The `files.telegram_user_id` column will act as a **foreign key**.
 *   It will reference the `id` column in the `users` table (`users.id`).
@@ -77,6 +78,8 @@ A `subscriptions` table will manage user subscription details and payment histor
 *   `notification_rules.throttle_id` will reference `notification_throttles.id`.
 *   `notification_throttles.user_id` will reference `users.id`.
 *   `subscriptions.user_id` will reference `users.id`.
-*   This relationship allows for joining the tables to fetch user details, folder information, file metadata, associated tags (via folders), user reviews for folders, dynamically generate smart collections, track system actions, manage failed webhook attempts, track access for trending content, record user likes on folders, curate public collections, enable threaded comments on shared folders, implement a full gamification system, manage advanced notification features, and handle user subscriptions.
-*   Refer to `users_table_concept.md`, `folders_table_concept.md`, `files_table_concept.md`, `notification_rules_table_concept.md`, `tags_table_concept.md`, `folder_tags_table_concept.md`, `folder_reviews_table_concept.md`, `smart_collection_rules_table_concept.md`, `audit_logs_table_concept.md`, `failed_webhooks_table_concept.md`, `access_logs_table_concept.md`, `folder_likes_table_concept.md`, `public_collections_table_concept.md`, `public_collection_folders_table_concept.md`, `folder_comments_table_concept.md`, `achievements_table_concept.md`, `user_achievements_table_concept.md`, `xp_transactions_table_concept.md`, `notification_throttles_table_concept.md`, `notification_templates_table_concept.md`, and `monetization_concept.md` for the full structures of these tables.
+*   `balance_transactions.user_id` will reference `users.id`.
+*   `balance_transactions.admin_id` will reference `users.id`.
+*   This relationship allows for joining the tables to fetch user details, folder information, file metadata, associated tags (via folders), user reviews for folders, dynamically generate smart collections, track system actions, manage failed webhook attempts, track access for trending content, record user likes on folders, curate public collections, enable threaded comments on shared folders, implement a full gamification system, manage advanced notification features, handle user subscriptions, and audit balance changes.
+*   Refer to `users_table_concept.md`, `folders_table_concept.md`, `files_table_concept.md`, `notification_rules_table_concept.md`, `tags_table_concept.md`, `folder_tags_table_concept.md`, `folder_reviews_table_concept.md`, `smart_collection_rules_table_concept.md`, `audit_logs_table_concept.md`, `failed_webhooks_table_concept.md`, `access_logs_table_concept.md`, `folder_likes_table_concept.md`, `public_collections_table_concept.md`, `public_collection_folders_table_concept.md`, `folder_comments_table_concept.md`, `achievements_table_concept.md`, `user_achievements_table_concept.md`, `xp_transactions_table_concept.md`, `notification_throttles_table_concept.md`, `notification_templates_table_concept.md`, `monetization_concept.md`, and `balance_transactions_table_concept.md` for the full structures of these tables.
 

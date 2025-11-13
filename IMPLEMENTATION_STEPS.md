@@ -149,6 +149,19 @@ This document outlines the planned sequence of development for the teleXweb proj
         *   Add functionality to `Admin.php` controller to view, manage, and modify user subscriptions.
     *   **Trial Periods:** Implement logic for free trial periods.
     *   **Communication:** Ensure clear messaging about tier benefits and upgrade paths.
+15. **Implement User Balance Management:**
+    *   **Database Setup:**
+        *   Update `users` table: Add `balance` column.
+        *   Create `Balance_Transaction_model.php` to manage the `balance_transactions` table.
+    *   **User-facing UI:**
+        *   Develop `application/views/user/user_balance_view.php` to display current balance and instructions on how to top-up (contact admin).
+        *   Update `Users.php` controller to include a method to display the user's balance.
+    *   **Admin-facing UI:**
+        *   Develop `application/views/admin/manage_user_balance.php` to allow admins to view user balances, manually add/deduct funds, and view transaction history.
+        *   Update `Admin.php` controller to include methods for managing user balances (e.g., `manage_user_balance`, `update_user_balance`).
+    *   **Balance Update Logic:**
+        *   Implement methods in `User_model.php` to safely update a user's balance.
+        *   Ensure every balance change is logged in `balance_transactions` via `Balance_Transaction_model`.
 
 ### Phase 6: Polish & User Experience
 
