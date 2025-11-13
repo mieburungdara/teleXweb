@@ -92,12 +92,14 @@
 7.  **Tag Consolidation & Duplicate Detection:** Admin interface to detect similar/duplicate tags and suggest consolidation, allowing for merging multiple tags into a single canonical tag.
 8.  **Public Collections:** Admin users can curate and manage public collections of interesting folders, making them discoverable by all users.
 
-## User Balance Management
+## Folder Monetization / Selling Folders
 
-1.  **User Balance:** Each user will have a balance (DECIMAL) in their profile.
-2.  **Manual Top-up Process:** Users contact an administrator to request a balance top-up.
-3.  **Admin Verification & Update:** Administrators manually verify payments and update user balances via an admin interface.
-4.  **Balance Transaction Log:** All balance changes will be recorded in a `balance_transactions` table for auditing purposes.
+1.  **Folder Pricing:** Users (sellers) can set a price for their folders.
+2.  **Folder Listing:** Users can mark their folders as "for sale".
+3.  **Folder Purchase:** Other users (buyers) can purchase these folders using their balance.
+4.  **Content Access:** Upon successful purchase, the buyer gains access to the folder's content (metadata).
+5.  **Revenue Transfer:** The purchase amount is deducted from the buyer's balance and added to the seller's balance.
+6.  **Purchase History:** A `folder_purchases` table will record all purchase transactions.
 
 ## Personalization & Onboarding
 

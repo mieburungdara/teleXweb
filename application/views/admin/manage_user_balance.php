@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage User Balance</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
 </head>
 <body>
     <div class="container mt-5">
@@ -18,14 +20,13 @@
             <div class="card-body">
                 <form action="<?php echo site_url('admin/manage_user_balance'); ?>" method="post">
                     <div class="mb-3">
-                        <label for="user_id" class="form-label">Select User</label>
-                        <select class="form-select" id="user_id" name="user_id" required onchange="window.location.href='<?php echo site_url('admin/manage_user_balance/'); ?>' + this.value;">
-                            <option value="">-- Select a user --</option>
-                            <?php foreach ($users as $u): ?>
-                                <option value="<?php echo $u->id; ?>" <?php echo (isset($user) && $user->id == $u->id) ? 'selected' : ''; ?>>
-                                    <?php echo htmlspecialchars($u->codename . ' (ID: ' . $u->id . ')'); ?>
+                        <label for="user_id_select2" class="form-label">Select User</label>
+                        <select class="form-select" id="user_id_select2" name="user_id" required>
+                            <?php if (isset($user)): ?>
+                                <option value="<?php echo $user->id; ?>" selected>
+                                    <?php echo htmlspecialchars($user->codename . ' (ID: ' . $user->id . ')' . ($user->username ? ' (@' . $user->username . ')' : '')); ?>
                                 </option>
-                            <?php endforeach; ?>
+                            <?php endif; ?>
                         </select>
                     </div>
 
@@ -86,6 +87,9 @@
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
+                        <nav aria-label="Page navigation">
+                            <?php echo $pagination_links; ?>
+                        </nav>
                     <?php else: ?>
                         <p>No transactions found for this user.</p>
                     <?php endif; ?>
@@ -94,5 +98,37 @@
         <?php endif; ?>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#user_id_select2').select2({
+                theme: 'bootstrap-5',
+                placeholder: 'Search for a user...',
+                minimumInputLength: 2,
+                ajax: {
+                    url: '<?php echo site_url('admin/search_users_ajax'); ?>',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            term: params.term // search term
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+            $('#user_id_select2').on('select2:select', function (e) {
+                var data = e.params.data;
+                window.location.href = '<?php echo site_url('admin/manage_user_balance/'); ?>' + data.id;
+            });
+        });
+    </script>
 </body>
 </html>

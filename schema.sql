@@ -74,6 +74,8 @@ CREATE TABLE `folders` (
   `tags` VARCHAR(255) DEFAULT NULL COMMENT 'Comma-separated list of user-defined tags for categorization.',
   `folder_size` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Aggregated size of all files (metadata) within the folder in bytes.',
   `is_favorited` TINYINT(1) NOT NULL DEFAULT 0 COMMENT 'Flag to mark a folder as a favorite/pinned (0 = no, 1 = yes).',
+  `price` DECIMAL(10,2) NOT NULL DEFAULT 0.00 COMMENT 'Price of the folder if it''s for sale.',
+  `is_for_sale` TINYINT(1) NOT NULL DEFAULT 0 COMMENT 'Flag indicating if the folder is listed for sale (0 = no, 1 = yes).',
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Timestamp when the folder was created.',
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp when the folder was last updated.',
   `deleted_at` DATETIME DEFAULT NULL COMMENT 'Timestamp for soft-deletion of the folder.',
@@ -432,3 +434,26 @@ CREATE TABLE `balance_transactions` (
   CONSTRAINT `fk_balance_transactions_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_balance_transactions_admin_id` FOREIGN KEY (`admin_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Tracks all changes to user balances.';
+
+--
+-- Table structure for table `folder_purchases`
+--
+CREATE TABLE `folder_purchases` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `folder_id` INT UNSIGNED NOT NULL COMMENT 'ID of the folder that was purchased.',
+  `buyer_user_id` BIGINT UNSIGNED NOT NULL COMMENT 'ID of the user who bought the folder.',
+  `seller_user_id` BIGINT UNSIGNED NOT NULL COMMENT 'ID of the user who sold the folder.',
+  `price_at_purchase` DECIMAL(10,2) NOT NULL COMMENT 'The price of the folder at the time of purchase.',
+  `purchase_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Timestamp when the purchase occurred.',
+  `balance_transaction_id` BIGINT UNSIGNED DEFAULT NULL COMMENT 'ID of the corresponding balance transaction.',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_folder_buyer` (`folder_id`, `buyer_user_id`),
+  INDEX `idx_folder_id` (`folder_id`),
+  INDEX `idx_buyer_user_id` (`buyer_user_id`),
+  INDEX `idx_seller_user_id` (`seller_user_id`),
+  INDEX `idx_balance_transaction_id` (`balance_transaction_id`),
+  CONSTRAINT `fk_folder_purchases_folder_id` FOREIGN KEY (`folder_id`) REFERENCES `folders` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_folder_purchases_buyer_user_id` FOREIGN KEY (`buyer_user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_folder_purchases_seller_user_id` FOREIGN KEY (`seller_user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_folder_purchases_balance_transaction_id` FOREIGN KEY (`balance_transaction_id`) REFERENCES `balance_transactions` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Tracks purchases of folders by users.';

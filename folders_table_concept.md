@@ -15,6 +15,8 @@ To allow users to organize their file metadata, a new `folders` table will be in
 | `tags`       | `VARCHAR(255)` | Comma-separated list of user-defined tags for categorization. | Nullable. Indexed. Consistent naming rules apply. |
 | `folder_size`| `BIGINT UNSIGNED` | Aggregated size of all files (metadata) within the folder in bytes. | NOT NULL, DEFAULT 0. Updated on file changes. |
 | `is_favorited` | `BOOLEAN`      | Flag to mark a folder as a favorite/pinned for quick access. | NOT NULL, DEFAULT 0. Indexed.       |
+| `price`        | `DECIMAL(10,2)` | Price of the folder if it's for sale.                        | NOT NULL, DEFAULT 0.00.             |
+| `is_for_sale`  | `TINYINT(1)`   | Flag indicating if the folder is listed for sale (0 = no, 1 = yes). | NOT NULL, DEFAULT 0.                |
 | `created_at` | `DATETIME`     | Timestamp when the folder was created.                       | Defaults to `CURRENT_TIMESTAMP`.           |
 | `updated_at` | `DATETIME`     | Timestamp when the folder was last updated.                  | Defaults to `CURRENT_TIMESTAMP` ON UPDATE CURRENT_TIMESTAMP. |
 | `deleted_at` | `DATETIME`     | Timestamp for soft-deletion of the folder.                   | Nullable.                                  |

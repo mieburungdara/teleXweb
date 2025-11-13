@@ -8,6 +8,8 @@ class User_model extends CI_Model {
         parent::__construct();
         $this->load->database();
         $this->load->model('Balance_Transaction_model'); // Load Balance_Transaction_model
+        // Assuming Telegram_bot_model exists for sending notifications
+        $this->load->model('Telegram_bot_model'); // Load Telegram_bot_model
     }
 
     /**
@@ -79,6 +81,17 @@ class User_model extends CI_Model {
 
         $this->db->trans_complete(); // Complete transaction
 
+        if ($this->db->trans_status()) {
+            // Send Telegram notification to user
+            $user = $this->get_user($user_id);
+            if ($user && isset($this->Telegram_bot_model)) {
+                $message = "💰 Your balance has been topped up by $" . number_format($amount, 2) . ".\n";
+                $message .= "New balance: $" . number_format($user->balance, 2) . ".\n";
+                $message .= "Description: " . $description;
+                $this->Telegram_bot_model->send_message($user_id, $message);
+            }
+        }
+
         return $this->db->trans_status();
     }
 
@@ -123,16 +136,36 @@ class User_model extends CI_Model {
 
         $this->db->trans_complete(); // Complete transaction
 
+        if ($this->db->trans_status()) {
+            // Send Telegram notification to user
+            $user = $this->get_user($user_id);
+            if ($user && isset($this->Telegram_bot_model)) {
+                $message = "💸 Your balance has been deducted by $" . number_format($amount, 2) . ".\n";
+                $message .= "New balance: $" . number_format($user->balance, 2) . ".\n";
+                $message .= "Description: " . $description;
+                $this->Telegram_bot_model->send_message($user_id, $message);
+            }
+        }
+
         return $this->db->trans_status();
     }
 
     /**
      * Get all users.
      *
+     * @param string|null $search_term Optional search term to filter users by ID, codename, or username.
      * @return array
      */
-    public function get_all_users()
+    public function get_all_users($search_term = null)
     {
+        $this->db->select('id, codename, username, balance'); // Select relevant fields
+        if ($search_term) {
+            $this->db->group_start();
+            $this->db->or_like('id', $search_term);
+            $this->db->or_like('codename', $search_term);
+            $this->db->or_like('username', $search_term);
+            $this->db->group_end();
+        }
         $query = $this->db->get('users');
         return $query->result();
     }

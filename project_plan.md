@@ -69,6 +69,14 @@ The user wants to create a website to manage Telegram files sent by users.
     *   **Proses Top-up Manual:** Pengguna menghubungi admin untuk meminta top-up saldo.
     *   **Verifikasi & Pembaruan Admin:** Admin memverifikasi pembayaran secara manual dan memperbarui saldo pengguna melalui antarmuka admin.
     *   **Log Transaksi Saldo:** Semua perubahan saldo akan dicatat dalam tabel `balance_transactions` untuk tujuan audit.
+18. **Monetisasi Folder:**
+    *   **Penetapan Harga Folder:** Pengguna dapat menetapkan harga untuk folder mereka.
+    *   **Daftar Folder:** Pengguna dapat menandai folder mereka sebagai "dijual".
+    *   **Pembelian Folder:** Pengguna lain dapat membeli folder ini menggunakan saldo mereka.
+    *   **Akses Konten:** Setelah pembelian berhasil, pembeli mendapatkan akses ke konten folder (metadata).
+    *   **Transfer Pendapatan:** Jumlah pembelian dipotong dari saldo pembeli dan ditambahkan ke saldo penjual.
+    *   **Riwayat Pembelian:** Tabel `folder_purchases` akan mencatat semua transaksi pembelian.
+    *   **Pengiriman Konten melalui *Deep-link* Bot:** Pembeli akan menerima *deep-link* Telegram unik yang, ketika diklik, akan memicu bot untuk mengirimkan konten folder yang dibeli langsung ke pengguna.
 
 
 

@@ -161,8 +161,35 @@ This document outlines the planned sequence of development for the teleXweb proj
         *   Update `Admin.php` controller to include methods for managing user balances (e.g., `manage_user_balance`, `update_user_balance`).
     *   **Balance Update Logic:**
         *   Implement methods in `User_model.php` to safely update a user's balance.
-        *   Ensure every balance change is logged in `balance_transactions` via `Balance_Transaction_model`.
-
+                    *   Ensure every balance change is logged in `balance_transactions` via `Balance_Transaction_model`.
+        17. **Implement Folder Monetization / Selling Folders:**
+            *   **Database Setup:**
+                *   Update `folders` table: Add `price` (DECIMAL) and `is_for_sale` (TINYINT) columns.
+                *   Create `Folder_Purchase_model.php` to manage the `folder_purchases` table.
+            *   **Folder Management UI (Seller):**
+                *   Modify `Folders.php` controller to allow users to list their folders for sale and set prices.
+                *   Develop UI in folder management views to set price and toggle 'for sale' status.
+            *   **Folder Browsing UI (Buyer):**
+                *   Modify `Folders.php` controller to display folders for sale.
+                *   Develop UI in folder browsing views to show price and a "Buy" button.
+            *   **Purchase Logic:**
+                *   Implement purchase method in `Folders.php` controller.
+                *   This method will:
+                    *   Check buyer's balance.
+                    *   Deduct price from buyer's balance using `User_model->deduct_balance()`.
+                    *   Add price to seller's balance using `User_model->add_balance()`.
+                    *   Record the purchase in `folder_purchases` via `Folder_Purchase_model`.
+                    *   Log balance transactions for both buyer and seller.
+            *   **User-Facing Views:**
+                *   Develop `application/views/user/my_sold_folders.php` to list folders sold by the user.
+                *   Develop `application/views/user/my_purchased_folders.php` to list folders purchased by the user.
+                *   Update `Users.php` controller to include methods for these views.
+            *   **Access Control:** Ensure purchased folders are accessible to the buyer and no longer require payment.
+            *   **Deep-link for Content Delivery:**
+                *   Modify `Folders.php` or `Users.php` to generate Telegram deep-links for purchased folders (e.g., `https://t.me/YourBotName?start=folder_access_<folder_id>_<buyer_user_id>`).
+                *   Display these deep-links in `user/my_purchased_folders.php`.
+                *   Update `Api.php` with a `/api/bot_webhook` endpoint to handle incoming Telegram bot updates.
+                *   Modify `Telegram_bot_model.php` to parse deep-link payloads, verify purchases, and use `copyMessages` to forward files from the storage channel to the user.
 ### Phase 6: Polish & User Experience
 
 1.  **Implement i18n:** Create language files and integrate CodeIgniter's Language Class throughout the web UI and bot responses. Set up a translation management tool if decided.
