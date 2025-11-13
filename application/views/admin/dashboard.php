@@ -13,6 +13,7 @@
         <div class="list-group">
             <a href="<?php echo site_url('admin/subscriptions'); ?>" class="list-group-item list-group-item-action">Manage Subscriptions</a>
             <a href="<?php echo site_url('admin/subscription_analytics'); ?>" class="list-group-item list-group-item-action">Subscription Analytics</a>
+            <a href="<?php echo site_url('admin/manage_user_balance'); ?>" class="list-group-item list-group-item-action">Manage User Balances</a>
             <!-- Add more admin links here -->
         </div>
     </div>

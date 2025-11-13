@@ -24,6 +24,17 @@ class Users extends CI_Controller {
         $this->load->view('user/profile', $data);
     }
 
+    public function balance()
+    {
+        $data['user'] = $this->User_model->get_user($this->user_id);
+        if (!$data['user']) {
+            show_error('User not found.');
+        }
+        // Assuming admin_username is configured somewhere, e.g., in config
+        $data['admin_telegram_username'] = '@teleXweb_admin'; 
+        $this->load->view('user/user_balance_view', $data);
+    }
+
     public function subscription()
     {
         $data['user'] = $this->User_model->get_user($this->user_id);

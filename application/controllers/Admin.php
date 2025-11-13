@@ -92,5 +92,44 @@ class Admin extends CI_Controller {
         $this->load->view('admin/edit_user_subscription', $data);
     }
 
-    // Other admin-related methods would go here
-}
+    public function manage_user_balance($user_id = null)
+    {
+        $this->load->model('Balance_Transaction_model');
+
+        if ($this->input->post()) {
+            $user_id = $this->input->post('user_id');
+            $amount = (float)$this->input->post('amount');
+            $transaction_type = $this->input->post('transaction_type');
+            $description = $this->input->post('description');
+            $admin_id = $this->user_id; // Assuming admin_id is available from session
+
+            if ($transaction_type == 'top_up') {
+                $this->User_model->add_balance($user_id, $amount, $description, $admin_id, 'manual_top_up');
+            } elseif ($transaction_type == 'deduction') {
+                $this->User_model->deduct_balance($user_id, $amount, $description, $admin_id, 'manual_deduction');
+            }
+            redirect('admin/manage_user_balance/' . $user_id);
+        }
+
+        $data['user'] = null;
+        $data['transactions'] = [];
+        if ($user_id) {
+            $data['user'] = $this->User_model->get_user($user_id);
+            if ($data['user']) {
+                $data['transactions'] = $this->Balance_Transaction_model->get_user_transactions($user_id);
+            }
+        }
+        $data['users'] = $this->User_model->get_all_users(); // Assuming a method to get all users
+        $this->load->view('admin/manage_user_balance', $data);
+    }
+
+    public function user_balance_history($user_id)
+    {
+        $this->load->model('Balance_Transaction_model');
+        $data['user'] = $this->User_model->get_user($user_id);
+        if (!$data['user']) {
+            show_404();
+        }
+        $data['transactions'] = $this->Balance_Transaction_model->get_user_transactions($user_id);
+        $this->load->view('admin/user_balance_history', $data);
+    }
