@@ -26,6 +26,7 @@
 7.  **Inline Metadata Editing:** Users can double-click on `tags` or `original_file_name` in the main table to edit them directly, with changes saved via AJAX.
 8.  **Advanced Search Form:** A collapsible form allowing users to filter files by multiple criteria (type, date range, user, size, tags).
 9.  **Favorites System:** Users can mark/unmark files as favorites. A dedicated "Favorites" tab or filter will be available for quick access.
+10. **User Manual/FAQ:** A dedicated section or page within the web interface providing guidance on how to use the bot and web application, including an FAQ.
 
 ## Admin Features (Web Interface)
 

@@ -49,8 +49,9 @@ This document outlines the planned sequence of development for the teleXweb proj
 
 ### Phase 6: Polish & User Experience
 
-1.  **Implement i18n:** Create language files and integrate CodeIgniter's Language Class throughout the web UI and bot responses.
+1.  **Implement i18n:** Create language files and integrate CodeIgniter's Language Class throughout the web UI and bot responses. Set up a translation management tool if decided.
 2.  **Implement Theming:** Develop the CSS and JavaScript for the light/dark theme switcher.
 3.  **Build Onboarding Flow:** Create the tutorial for new users (either via bot messages or a web UI tour).
+4.  **Develop User Documentation:** Create a user manual or FAQ section within the web interface.
 
 

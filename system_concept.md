@@ -37,7 +37,7 @@ To ensure the application is reliable and efficient, the following concepts will
 
 ## Personalization
 
-*   **Internationalization (i18n):** CodeIgniter's built-in Language Class will be used. Language files will be created in `application/language/` for each supported language (e.g., `english`, `indonesian`). The system will load the appropriate language file based on the user's preference stored in the database.
+*   **Internationalization (i18n):** CodeIgniter's built-in Language Class will be used. Language files will be created in `application/language/` for each supported language (e.g., `english`, `indonesian`). The system will load the appropriate language file based on the user's preference stored in the database. For managing translations, a dedicated translation management tool (e.g., POEditor, Lokalise) will be considered to streamline the translation process and collaboration.
 *   **Theming:** A CSS-based approach will be used. A class (e.g., `theme-dark`) will be applied to the `<body>` tag based on user preference. A separate CSS file (`theme.css`) will contain color definitions using CSS variables for easy switching between light and dark modes. A JavaScript switcher will handle toggling the class and saving the preference.
 
 
