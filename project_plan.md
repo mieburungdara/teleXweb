@@ -22,13 +22,40 @@ The user wants to create a website to manage Telegram files sent by users.
 *   **Penyimpanan:** Hanya metadata file (nama file, ID pengguna Telegram, *timestamp*, `telegram_file_id`, dll.) yang akan disimpan dalam database MySQL. File fisik tidak akan disimpan di server.
 
 **Main Features:**
-1.  **Penerimaan & Penyimpanan Metadata File:** Backend menerima dan menyimpan metadata file dari bot.
-2.  **Perintah Interaktif Bot:** Bot mendukung berbagai perintah untuk interaksi pengguna.
-3.  **Antarmuka Web yang Canggih:** Menyediakan berbagai mode tampilan, pencarian, pengeditan, dan sistem favorit untuk mengelola file.
-4.  **Manajemen & Analitik (Admin):** Dasbor admin untuk mengelola pengguna, menetapkan peran, dan melihat analitik sistem melalui grafik interaktif.
-5.  **Notifikasi Kustom:** Pengguna dapat membuat aturan untuk menerima notifikasi di Telegram berdasarkan tag file.
-6.  **Personalisasi:** Dukungan untuk multi-bahasa (i18n) dengan strategi manajemen terjemahan yang terencana, dan tema UI (terang/gelap) untuk menyesuaikan pengalaman pengguna.
-7.  **Dokumentasi Pengguna:** Menyediakan panduan dan FAQ yang komprehensif untuk membantu pengguna memahami dan menggunakan aplikasi.
+**Main Features:**
+1.  **Penerimaan & Penyimpanan Metadata File:** Backend menerima metadata file dari bot. Bot akan menyalin file ke channel storage Telegram menggunakan `copyMessages` dan menyimpan `storage_channel_id`, `storage_message_id`, serta `media_group_id` (jika bagian dari album) di database.
+2.  **Distribusi File via Channel Storage:** Memanfaatkan `storage_channel_id` dan `storage_message_id` untuk memungkinkan bot lain atau pengguna yang berwenang mengakses dan mendistribusikan file langsung dari channel storage Telegram.
+3.  **Pelacakan Status Pemrosesan File:** Melacak siklus hidup metadata file (misalnya, 'pending', 'processed', 'indexed', 'failed') dengan indikator keandalan pengiriman *webhook*.
+4.  **Perintah Interaktif Bot:** Bot mendukung berbagai perintah untuk interaksi pengguna (misalnya, `/start`, `/help`, `/search`, `/fav`).
+5.  **Antarmuka Web yang Canggih:** Menyediakan berbagai mode tampilan (tabel, galeri dengan pengelompokan album, detail), pencarian lanjutan (berdasarkan tag folder), pengeditan *inline* (nama file), dan sistem favorit untuk mengelola file, dengan dukungan untuk sistem *tagging* terpusat.
+6.  **Manajemen Folder Komprehensif:** Pengguna dapat membuat, mengelola, dan mengelompokkan file metadata mereka ke dalam folder, termasuk:
+    *   **Folder Bersarang:** Mendukung hierarki subfolder untuk organisasi yang lebih mendalam.
+    *   **Pemindahan File/Folder:** Memindahkan file dan folder ke lokasi tujuan yang dipilih.
+    *   **Tagging Folder:** Menambahkan tag pada folder menggunakan sistem *tagging* terpusat.
+    *   **Ukuran Folder:** Ukuran folder dilacak dan ditampilkan.
+    *   **Quick Actions (Pin/Favorite):** Menandai folder sebagai favorit atau 'disematkan' untuk akses cepat.
+    *   **Rating & Review Folder:** Memberikan *rating* (1-5 bintang) dan *review* teks pada folder.
+    *   **Berbagi Folder:** Membuat kode unik untuk folder, memungkinkan berbagi sebagai tautan dengan *Telegram Deep Links*.
+    *   **Folder Stars/Hearts:** Pengguna dapat "menyukai" atau "memfavoritkan" folder publik yang dibagikan oleh pengguna lain.
+7.  **Smart Collections:** Pengguna dapat membuat koleksi file yang dibuat secara otomatis berdasarkan kriteria yang ditentukan (misalnya, tanggal, tag folder, tipe file).
+8.  **Tampilan & Navigasi UI Lanjutan:**
+    *   **File Timeline:** Tampilan linimasa visual riwayat unggahan file.
+    *   **Quick Preview Modal:** Melihat detail metadata file dalam modal tanpa meninggalkan halaman.
+    *   **Breadcrumb Navigation:** Menampilkan hierarki folder saat menjelajahi.
+    *   **Folder Stats Widget:** Widget sidebar yang menampilkan statistik agregat folder.
+    *   **Trending This Week:** Bagian khusus yang menampilkan file dan folder yang paling banyak diakses selama seminggu terakhir.
+9.  **Manajemen & Analitik (Admin):** Dasbor admin untuk mengelola pengguna (termasuk menggunakan `codename` untuk privasi), menetapkan peran, melihat analitik sistem, memantau kesehatan sistem (System Health Dashboard), meninjau riwayat tindakan admin (Audit Trail), mengelola upaya *webhook* yang gagal (Webhook Retry Dashboard), mendeteksi serta mengkonsolidasikan tag duplikat, dan mengkurasi koleksi publik (Public Collections).
+10. **Notifikasi Kustom:** Pengguna dapat membuat aturan untuk menerima notifikasi di Telegram berdasarkan tag file. Ini termasuk **Pembatasan Notifikasi** untuk mencegah *spam* dan **Template Notifikasi** untuk pesan yang dapat disesuaikan.
+11. **Profil Pengguna:** Profil publik yang menampilkan koleksi yang dibagikan pengguna dan rata-rata *rating* folder.
+12. **Komentar pada Folder yang Dibagikan:** Memungkinkan diskusi konten folder dengan kolaborator melalui komentar berulir.
+13. **Personalisasi:** Dukungan untuk multi-bahasa (i18n) dengan strategi manajemen terjemahan yang terencana (menggunakan `language_code`), preferensi zona waktu, dan pelacakan aktivitas terakhir pengguna.
+14. **Gamifikasi & Keanggotaan:** Implementasi sistem gamifikasi yang komprehensif, termasuk:
+    *   **Badges/Achievements:** Pengguna dapat memperoleh berbagai *badge* atau pencapaian.
+    *   **XP System:** Pengguna mendapatkan poin pengalaman (XP) untuk menyelesaikan tugas.
+    *   **User Levels:** XP berkontribusi pada level pengguna.
+    *   **Leaderboard:** Papan peringkat (opt-in) yang menampilkan pengguna teratas berdasarkan pencapaian/kontribusi.
+    *   **Milestone Celebrations:** Notifikasi dan isyarat visual untuk merayakan pencapaian penting pengguna.
+15. **Dokumentasi Pengguna:** Menyediakan panduan dan FAQ yang komprehensif.
 
 
 
@@ -44,11 +71,11 @@ Saya akan menyiapkan proyek CodeIgniter 3 yang akan berfungsi sebagai backend AP
     *   `application/config/database.php`: Set up MySQL database connection details.
     *   `application/config/autoload.php`: Define libraries, helpers, and models for automatic loading.
 4.  **Telegram Bot (PHP Script) Concept:** A separate PHP script will act as a Telegram webhook/long polling client, receiving updates (including files) and forwarding them to a CodeIgniter API endpoint.
-5.  **MySQL Database Setup Concept:** Create a MySQL database with two tables: `telegram_files` to store file metadata and a `users` table to store user information. A foreign key relationship will link the tables. Indexes will be applied to frequently queried columns (like `telegram_user_id`, `mime_type`, etc.) to ensure good performance.
+5.  **MySQL Database Setup Concept:** Create a MySQL database with two tables: `telegram_files` to store file metadata and a `users` table to store user information, including a `status` ENUM for managing user states (active, blocked, deleted). A foreign key relationship will link the tables. Indexes will be applied to frequently queried columns (like `telegram_user_id`, `mime_type`, etc.) to ensure good performance.
 
 ### Development Best Practices (Approved)
 
-1.  **SQL Schema File:** A `schema.sql` file will be created containing `CREATE TABLE` queries for `files` and `users` tables to ensure consistent database setup.
+1.  **SQL Schema File:** A `schema.sql` file will be created containing `CREATE TABLE` queries for `files` and `users` tables to ensure consistent database setup. This file will include descriptive comments for all tables and columns.
 2.  **Environment Configuration:** Database credentials and other sensitive configurations will be managed using environment variables (e.g., via a `.env` file and `phpdotenv` library) to support different environments (development, testing, production).
 3.  **Data Type Optimization:** Data types will be reviewed and optimized (e.g., `BIGINT UNSIGNED` for IDs, realistic `VARCHAR` lengths) to improve database performance and storage efficiency.
 4.  **Soft Deletes:** The `files` table will include a `deleted_at` column for soft deletion, allowing for data recovery and historical tracking without permanent removal.
