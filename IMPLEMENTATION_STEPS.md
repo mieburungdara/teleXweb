@@ -76,13 +76,18 @@ This document outlines the planned sequence of development for the teleXweb proj
     *   Implement methods to update `last_sent_at` and `send_count`, and reset `send_count` based on `reset_at`.
     *   Create `Notification_Template_model.php` to manage the `notification_templates` table.
     *   Implement methods to retrieve templates and perform variable substitution.
-    *   Modify the `Api.php` controller's `/api/upload` endpoint to:
-        *   Fetch relevant `notification_rules` for the user.
-        *   For each rule, check `Notification_Throttle_model` to see if a notification can be sent.
-        *   If allowed, retrieve the `template_content` from `Notification_Template_model` using `template_id`.
-        *   Perform variable substitution in the template using file/folder/tag data.
-        *   Send the customized notification via the Telegram bot.
-        *   Update the `notification_throttles` table after sending.
+    *   **Integrate Notification Trigger Mechanisms:**
+        *   For `file_tag_match` triggers: Modify the `Api.php` controller's `/api/upload` endpoint to:
+            *   Fetch relevant `notification_rules` for the user with `trigger_type = 'file_tag_match'`.
+            *   For each rule, check `Notification_Throttle_model` to see if a notification can be sent.
+            *   If allowed, retrieve the `template_content` from `Notification_Template_model` using `template_id`.
+            *   Perform variable substitution in the template using file/folder/tag data.
+            *   Send the customized notification via the Telegram bot.
+            *   Update the `notification_throttles` table after sending.
+        *   For `new_comment` triggers: Integrate notification checks into `Folder_Comment_model` or the `Folders.php` controller when a new comment is added.
+        *   For `achievement_unlocked` triggers: Integrate notification checks into `User_Achievement_model` or `Gamification.php` controller when an achievement is awarded.
+        *   For `system_announcement` triggers: Implement a mechanism (e.g., an admin interface or CLI command) to trigger system-wide announcements, which will then check for matching notification rules.
+        *   Ensure all new trigger mechanisms apply throttling and use templates.
     *   Create views and methods in `Notifications.php` controller for users to:
         *   Create, view, edit, and delete notification rules.
         *   Select from available notification templates.

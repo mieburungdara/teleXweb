@@ -45,7 +45,7 @@ The user wants to create a website to manage Telegram files sent by users.
     *   **Folder Stats Widget:** Widget sidebar yang menampilkan statistik agregat folder.
     *   **Trending This Week:** Bagian khusus yang menampilkan file dan folder yang paling banyak diakses selama seminggu terakhir.
 9.  **Manajemen & Analitik (Admin):** Dasbor admin untuk mengelola pengguna (termasuk menggunakan `codename` untuk privasi), menetapkan peran, melihat analitik sistem, memantau kesehatan sistem (System Health Dashboard), meninjau riwayat tindakan admin (Audit Trail), mengelola upaya *webhook* yang gagal (Webhook Retry Dashboard), mendeteksi serta mengkonsolidasikan tag duplikat, dan mengkurasi koleksi publik (Public Collections).
-10. **Notifikasi Kustom:** Pengguna dapat membuat aturan untuk menerima notifikasi di Telegram berdasarkan tag file. Ini termasuk **Pembatasan Notifikasi** untuk mencegah *spam* dan **Template Notifikasi** untuk pesan yang dapat disesuaikan.
+10. **Notifikasi Kustom:** Pengguna dapat membuat aturan untuk menerima notifikasi di Telegram berdasarkan berbagai pemicu (misalnya, pencocokan tag file, komentar baru, pembukaan pencapaian, pengumuman sistem). Ini termasuk **Pembatasan Notifikasi** untuk mencegah *spam* dan **Template Notifikasi** untuk pesan yang dapat disesuaikan.
 11. **Profil Pengguna:** Profil publik yang menampilkan koleksi yang dibagikan pengguna dan rata-rata *rating* folder.
 12. **Komentar pada Folder yang Dibagikan:** Memungkinkan diskusi konten folder dengan kolaborator melalui komentar berulir.
 13. **Personalisasi:** Dukungan untuk multi-bahasa (i18n) dengan strategi manajemen terjemahan yang terencana (menggunakan `language_code`), preferensi zona waktu, dan pelacakan aktivitas terakhir pengguna.

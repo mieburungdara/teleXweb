@@ -94,9 +94,7 @@
 
 ## User-Specific Features
 
-1.  **Custom Notifications (Web UI):** Users can create and manage rules to receive a Telegram notification when a file with a specific tag is uploaded.
-2.  **Notification Throttling:** Implement rate limiting to prevent notification spam, ensuring users receive timely but not overwhelming alerts.
-3.  **Notification Templates:** Allow customization of notification messages using templates with variable substitution (e.g., `{{file_name}}`, `{{folder_name}}`).
+1.  **Custom Notifications (Web UI):** Users can create and manage rules to receive a Telegram notification based on various triggers, such as a file with a specific tag being uploaded, new comments on their shared folders, achievement unlocks, or system announcements. This includes Notification Throttling and Notification Templates.
 
 ## Personalization & Onboarding
 
