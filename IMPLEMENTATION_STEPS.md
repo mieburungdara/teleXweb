@@ -76,7 +76,11 @@ This document outlines the planned sequence of development for the teleXweb proj
     *   Implement methods to update `last_sent_at` and `send_count`, and reset `send_count` based on `reset_at`.
     *   Create `Notification_Template_model.php` to manage the `notification_templates` table.
     *   Implement methods to retrieve templates and perform variable substitution.
-    *   **Integrate Notification Trigger Mechanisms:**
+    *   **Implement UI for New Trigger Types:**
+        *   Update `Notifications.php` controller to handle dynamic form rendering based on `trigger_type`.
+        *   Implement JavaScript (jQuery) to dynamically show/hide or change form fields when the `trigger_type` dropdown changes.
+        *   Ensure backend validation and storage of `trigger_config_json` based on the selected `trigger_type`.
+    *   **Create Dedicated Notification Handlers:**
         *   For `file_tag_match` triggers: Modify the `Api.php` controller's `/api/upload` endpoint to:
             *   Fetch relevant `notification_rules` for the user with `trigger_type = 'file_tag_match'`.
             *   For each rule, check `Notification_Throttle_model` to see if a notification can be sent.
@@ -88,6 +92,10 @@ This document outlines the planned sequence of development for the teleXweb proj
         *   For `achievement_unlocked` triggers: Integrate notification checks into `User_Achievement_model` or `Gamification.php` controller when an achievement is awarded.
         *   For `system_announcement` triggers: Implement a mechanism (e.g., an admin interface or CLI command) to trigger system-wide announcements, which will then check for matching notification rules.
         *   Ensure all new trigger mechanisms apply throttling and use templates.
+    *   **Admin Interface for System Announcements:**
+        *   Add a new method to `Admin.php` (e.g., `send_announcement()`) or a new controller `Announcements.php`.
+        *   Design a form in the admin panel for composing system announcements, allowing admins to enter messages and select target users.
+        *   Implement backend logic for sending announcements, including validation, creating temporary `notification_rule` (or using predefined), iterating through target users, and using notification handler logic (from above) to send.
     *   Create views and methods in `Notifications.php` controller for users to:
         *   Create, view, edit, and delete notification rules.
         *   Select from available notification templates.
