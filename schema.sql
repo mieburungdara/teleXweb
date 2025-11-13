@@ -19,14 +19,46 @@ CREATE TABLE `users` (
   `user_level` INT UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Current level of the user.',
   `achievement_points` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Points accumulated by the user for achievements.',
   `timezone` VARCHAR(64) NOT NULL DEFAULT 'UTC' COMMENT 'User-preferred timezone.',
-  `last_activity_at` DATETIME DEFAULT NULL COMMENT 'Timestamp of the user''s last interaction.',
-  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Timestamp when the user record was created.',
-  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp of the last update to the user record.',
+  `last_activity_at` DATETIME DEFAULT NULL COMMENT 'Timestamp of the user''s last interaction with the bot/web.',
+  `subscription_plan` ENUM('free','pro','enterprise') NOT NULL DEFAULT 'free' COMMENT 'The user''s current subscription plan.',
+  `subscription_start_date` DATETIME DEFAULT NULL COMMENT 'Date when the current subscription plan started.',
+  `subscription_end_date` DATETIME DEFAULT NULL COMMENT 'Date when the current subscription plan ends.',
+  `payment_status` VARCHAR(50) DEFAULT NULL COMMENT 'Status of the user''s payment (e.g., active, canceled, past_due).',
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Timestamp when the user first interacted with the bot.',
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp of the user''s last interaction.',
   PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_codename` (`codename`),
   INDEX `idx_username` (`username`),
-  INDEX `idx_codename` (`codename`),
-  INDEX `idx_role` (`role`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Stores information about Telegram users interacting with the bot.';
+  INDEX `idx_role` (`role`),
+  INDEX `idx_status` (`status`),
+  INDEX `idx_user_level` (`user_level`),
+  INDEX `idx_achievement_points` (`achievement_points`),
+  INDEX `idx_subscription_plan` (`subscription_plan`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Stores information about Telegram users.';
+
+--
+-- Table structure for table `subscriptions`
+--
+CREATE TABLE `subscriptions` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` BIGINT UNSIGNED NOT NULL COMMENT 'ID of the user who owns this subscription.',
+  `plan_name` VARCHAR(50) NOT NULL COMMENT 'Name of the subscribed plan (e.g., pro, enterprise).',
+  `stripe_customer_id` VARCHAR(255) DEFAULT NULL COMMENT 'Customer ID from the payment gateway (e.g., Stripe).',
+  `stripe_subscription_id` VARCHAR(255) DEFAULT NULL COMMENT 'Subscription ID from the payment gateway.',
+  `amount` DECIMAL(10,2) NOT NULL COMMENT 'Amount paid for the subscription.',
+  `currency` VARCHAR(3) NOT NULL COMMENT 'Currency of the payment (e.g., USD, IDR).',
+  `interval` VARCHAR(20) DEFAULT NULL COMMENT 'Billing interval (e.g., month, year).',
+  `status` VARCHAR(50) NOT NULL COMMENT 'Current status of the subscription (e.g., active, canceled, trialing, past_due).',
+  `trial_ends_at` DATETIME DEFAULT NULL COMMENT 'Timestamp when the trial period ends.',
+  `current_period_start` DATETIME DEFAULT NULL COMMENT 'Start of the current billing period.',
+  `current_period_end` DATETIME DEFAULT NULL COMMENT 'End of the current billing period.',
+  `canceled_at` DATETIME DEFAULT NULL COMMENT 'Timestamp when the subscription was canceled.',
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Timestamp when the subscription record was created.',
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp when the record was last updated.',
+  PRIMARY KEY (`id`),
+  INDEX `idx_user_id` (`user_id`),
+  CONSTRAINT `fk_subscriptions_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Manages user subscription details and payment history.';
 
 --
 -- Table structure for table `folders`

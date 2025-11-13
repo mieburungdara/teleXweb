@@ -92,9 +92,15 @@
 7.  **Tag Consolidation & Duplicate Detection:** Admin interface to detect similar/duplicate tags and suggest consolidation, allowing for merging multiple tags into a single canonical tag.
 8.  **Public Collections:** Admin users can curate and manage public collections of interesting folders, making them discoverable by all users.
 
-## User-Specific Features
+## Monetization Features
 
-1.  **Custom Notifications (Web UI):** Users can create and manage rules to receive a Telegram notification based on various triggers, such as a file with a specific tag being uploaded, new comments on their shared folders, achievement unlocks, or system announcements. This includes Notification Throttling and Notification Templates.
+1.  **Tiered Subscription Model:** Implement a freemium model with a free tier and multiple premium tiers (e.g., TeleX Pro, TeleX Enterprise) offering different levels of features, limits, and support.
+    *   **Free Tier:** Limited metadata storage, folders, smart collections, basic notification rules, limited gamification, view-only public collections.
+    *   **TeleX Pro Tier:** Increased limits or unlimited storage/folders/smart collections, advanced notification triggers and throttling, full gamification features, ability to create public collections, priority support.
+    *   **TeleX Enterprise Tier:** All Pro features, team management, enhanced audit trails, custom branding, custom integrations, dedicated support.
+2.  **Subscription Management UI:** Provide a user interface for users to manage their subscriptions, including upgrading, downgrading, and viewing billing history.
+3.  **Payment Gateway Integration:** Integrate with a payment provider (e.g., Stripe) to handle recurring billing and subscription lifecycle.
+4.  **Feature Gating:** Implement logic to restrict access to premium features based on the user's subscription plan.
 
 ## Personalization & Onboarding
 

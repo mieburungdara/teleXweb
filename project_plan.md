@@ -59,6 +59,11 @@ The user wants to create a website to manage Telegram files sent by users.
     *   **Leaderboard:** Papan peringkat (opt-in) yang menampilkan pengguna teratas berdasarkan pencapaian/kontribusi.
     *   **Milestone Celebrations:** Notifikasi dan isyarat visual untuk merayakan pencapaian penting pengguna.
 15. **Dokumentasi Pengguna:** Menyediakan panduan dan FAQ yang komprehensif.
+16. **Monetisasi (Model Langganan Berjenjang):**
+    *   **Model Freemium:** Tawarkan tingkat gratis dengan fungsionalitas dasar dan tingkat premium (misalnya, TeleX Pro, TeleX Enterprise) dengan fitur, batasan, dan dukungan yang berbeda.
+    *   **Manajemen Langganan:** Sediakan antarmuka pengguna untuk mengelola langganan, termasuk peningkatan, penurunan, dan riwayat penagihan.
+    *   **Integrasi Gateway Pembayaran:** Integrasikan dengan penyedia pembayaran (misalnya, Stripe) untuk menangani penagihan berulang dan siklus hidup langganan.
+    *   **Pembatasan Fitur:** Terapkan logika untuk membatasi akses ke fitur premium berdasarkan paket langganan pengguna.
 
 
 

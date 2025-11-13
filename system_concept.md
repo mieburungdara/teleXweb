@@ -41,6 +41,7 @@ The system is a monolithic web application built with CodeIgniter 3.
         *   `XP_Transaction_model.php`: A new model to manage the `xp_transactions` table (e.g., `add_xp`, `get_user_xp_history`).
         *   `Notification_Throttle_model.php`: A new model to manage the `notification_throttles` table (e.g., `check_and_update_throttle`).
         *   `Notification_Template_model.php`: A new model to manage the `notification_templates` table (e.g., `get_template`, `render_template`).
+        *   `Subscription_model.php`: A new model to manage the `subscriptions` table (e.g., `create_subscription`, `update_subscription_status`, `get_user_subscription`).
         *   `File_model.php`: Contains database logic for the `files` table. It will perform `JOIN` operations with the `users`, `folders`, and `folder_tags` tables to retrieve comprehensive file metadata, including tags inherited from its parent folder. It will also trigger `Folder_model->update_folder_size()` when files are added, removed, or moved between folders. It will include methods to update `process_status` and `webhook_reliability_status`. All database interactions will primarily use CodeIgniter's Query Builder. Will trigger XP/achievement checks on relevant actions.
     *   **Views:**
         *   `file_list.php`: An HTML file styled with Bootstrap 5 that displays the main file table, now with folder navigation.
@@ -50,10 +51,24 @@ The system is a monolithic web application built with CodeIgniter 3.
         *   `quick_preview_modal.php`: A partial view for the quick preview modal.
         *   `folder_stats_widget.php`: A partial view for the folder statistics sidebar widget.
         *   `templates/`: A directory for header, footer, and other layout partials.
-*   **Frontend (Bootstrap 5):**
-    *   The frontend is not a separate SPA but is rendered by CodeIgniter's view engine.
-    *   It will consist of a single page displaying the file list in a responsive table.
-    *   JavaScript (potentially with jQuery, as it's common with CI3) will be used for any dynamic interactions if needed, but the primary goal is a server-rendered page.
+        *   `subscription_management_view.php`: A new view for users to manage their subscriptions.
+    *   **Frontend (Bootstrap 5):**
+        *   The frontend is not a separate SPA but is rendered by CodeIgniter's view engine.
+        *   It will consist of a single page displaying the file list in a responsive table.
+        *   JavaScript (potentially with jQuery, as it's common with CI3) will be used for any dynamic interactions if needed, but the primary goal is a server-rendered page.
+    *   **Controllers:**
+        *   `Files.php`: Handles web requests. It will have methods like `index()` for the main table view, `gallery()` for the image gallery view, and `details($id)`. The `index()` method will be updated to handle complex filtering from the advanced search form and folder browsing, and to group files belonging to the same `media_group_id` for album display. It will also include a method to handle incoming deep links for shared folders. Access to files will be logged via `Access_Log_model`.
+        *   `Folders.php`: A new controller to handle folder management operations (create, rename, delete, move files and folders) and also manage folder ratings and reviews (submit, edit, delete). Access to folders will be logged via `Access_Log_model`. It will also handle liking/unliking public folders via `Folder_Like_model`.
+        *   `Admin.php`: A new controller, accessible only to admin users, to handle user management, display the analytics dashboard, provide the System Health Dashboard, display the Audit Trail, manage the Webhook Retry Dashboard, and curate Public Collections. It will also include methods for managing user subscriptions.
+        *   `Notifications.php`: A new controller for users to manage their custom notification rules, including selecting templates and configuring throttling.
+        *   `SmartCollections.php`: A new controller to manage user-defined smart collection rules and display their contents.
+        *   `Users.php`: A new controller to handle public user profiles, displaying shared collections and aggregated stats. It will also include methods for users to manage their own subscriptions.
+        *   `Gamification.php`: A new controller to display achievements, leaderboard, and milestone notifications.
+        *   `Api.php`: Provides API endpoints for bot interactions and AJAX calls from the frontend.
+            *   `/api/upload`: Receives file metadata from the Telegram bot. It will use the `file_unique_id` to check for and prevent duplicate file content metadata entries. If processing fails, it will log the failed webhook to the `failed_webhooks` table. It will also set the initial `process_status` and `webhook_reliability_status` for the file. Crucially, it will perform a `copyMessages` operation to a pre-configured Telegram storage channel and store the resulting `storage_channel_id` and `storage_message_id` in the database. It will also extract and store the `media_group_id` if the file is part of an album. This action will also trigger XP/achievement checks. After processing, it will check for matching notification rules with `trigger_type = 'file_tag_match'`, apply throttling via `Notification_Throttle_model`, and send notifications using `Notification_Template_model`.
+            *   **Other Notification Triggers:** The system will also have mechanisms (e.g., in `Folder_Comment_model`, `User_Achievement_model`, or dedicated system event handlers) to check for and trigger notifications for other `trigger_type`s (e.g., 'new_comment', 'achievement_unlocked', 'system_announcement'), applying throttling and using templates as appropriate.
+            *   `/api/create_checkout_session`: A new endpoint to initiate a payment gateway checkout session.
+            *   `/api/webhook_payment_gateway`: A new endpoint to handle webhooks from the payment gateway for subscription status updates.
 
 ## System Robustness and Performance
 

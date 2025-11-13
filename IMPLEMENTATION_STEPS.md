@@ -127,11 +127,28 @@ This document outlines the planned sequence of development for the teleXweb proj
     *   Update `Folders.php` controller to handle comment submission and retrieval.
     *   Create new API endpoints (`/api/add_folder_comment`, `/api/get_folder_comments`).
     *   Develop frontend UI for displaying and adding threaded comments on shared folder views.
-12. **Implement Gamification System:**
+13. **Implement Gamification System:**
     *   Create `Achievement_model.php`, `User_Achievement_model.php`, and `XP_Transaction_model.php`.
     *   Update `User_model.php` to manage `user_level` and `achievement_points`.
     *   Integrate XP and achievement checks into relevant actions across `Files.php`, `Folders.php`, `Api.php`, `Folder_Like_model.php`, `Public_Collection_model.php`, `Public_Collection_Folder_model.php`, `Folder_Comment_model.php`, and `File_model.php`.
     *   Develop `Gamification.php` controller and views for displaying achievements, leaderboard, and milestone notifications.
+14. **Implement Monetization (Tiered Subscription Model):**
+    *   **Database Setup:**
+        *   Update `users` table: Add `subscription_plan`, `subscription_start_date`, `subscription_end_date`, `payment_status` columns.
+        *   Create `Subscription_model.php` to manage the `subscriptions` table.
+    *   **Payment Gateway Integration:**
+        *   Integrate with a chosen payment provider (e.g., Stripe) for checkout and webhook handling.
+        *   Create API endpoints: `/api/create_checkout_session` to initiate payment, `/api/webhook_payment_gateway` to handle payment gateway webhooks for subscription status updates.
+    *   **Feature Gating Logic:**
+        *   Implement checks in controllers, models, and views to restrict access to premium features based on `user->subscription_plan`.
+        *   Adjust limits for metadata storage, folders, smart collections, and notification rules based on the subscription plan.
+    *   **Subscription Management UI:**
+        *   Develop `application/views/subscription_management_view.php`.
+        *   Create methods in `Users.php` controller for users to view and manage their subscriptions (upgrade, downgrade, cancel).
+    *   **Admin Subscription Management:**
+        *   Add functionality to `Admin.php` controller to view, manage, and modify user subscriptions.
+    *   **Trial Periods:** Implement logic for free trial periods.
+    *   **Communication:** Ensure clear messaging about tier benefits and upgrade paths.
 
 ### Phase 6: Polish & User Experience
 

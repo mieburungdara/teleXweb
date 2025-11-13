@@ -15,8 +15,10 @@ To make the application more user-friendly and the data more organized, a separa
 | `status`     | `ENUM('active','blocked','deleted')` | The current status of the user.                              | NOT NULL, DEFAULT 'active'. Indexed. |
 | `language_code`   | `VARCHAR(10)`  | The user's preferred language code (e.g., 'en', 'id').       | NOT NULL, DEFAULT 'en'.             |
 | `has_completed_onboarding` | `BOOLEAN` | Flag to check if the user has seen the tutorial.             | NOT NULL, DEFAULT 0.                |
-| `membership_level` | `VARCHAR(50)`  | The user''s membership level (e.g., ''free'', ''premium''). | NOT NULL, DEFAULT ''free''.         |
-| `subscription_ends_at` | `DATETIME`   | Date when the user''s subscription ends.                     | Nullable.                           |
+| `subscription_plan` | `ENUM('free','pro','enterprise')` | The user's current subscription plan.                        | NOT NULL, DEFAULT 'free'.                  |
+| `subscription_start_date` | `DATETIME`    | Date when the current subscription plan started.             | Nullable.                                  |
+| `subscription_end_date` | `DATETIME`    | Date when the current subscription plan ends.                | Nullable. For recurring subscriptions, this might be the next billing date. |
+| `payment_status`     | `VARCHAR(50)`  | Status of the user's payment (e.g., 'active', 'canceled', 'past_due'). | Nullable.                                  |
 | `user_level`       | `INT UNSIGNED` | The current level of the user.                               | NOT NULL, DEFAULT 1.                |
 | `achievement_points` | `INT UNSIGNED` | Points accumulated by the user for achievements.             | NOT NULL, DEFAULT 0.                |
 | `timezone`   | `VARCHAR(64)`  | The user''s preferred timezone (e.g., ''Asia/Jakarta'').     | NOT NULL, DEFAULT ''UTC''.          |
