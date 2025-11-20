@@ -9,19 +9,17 @@ class Admin extends CI_Controller {
         // Load necessary models, helpers, libraries
         $this->load->model('User_model');
         $this->load->model('Subscription_model');
-        $this->load->model('Audit_log_model'); // Load Audit_log_model
-        $this->load->model('Balance_Transaction_model'); // Load Balance_Transaction_model
+        $this->load->model('Audit_log_model');
+        $this->load->model('Balance_Transaction_model');
         $this->load->helper('url');
-        $this->load->library('pagination'); // Load pagination library
-        // Assuming admin authentication and authorization is handled elsewhere
-        // For demonstration, let's assume the user is an admin
-        // In a real application, this would be retrieved from the authenticated session
-        $this->admin_id = $this->session->userdata('admin_id') ?? 1; // Placeholder: get from session or default to 1
+        $this->load->library('pagination');
+        $this->load->library('session'); // Loaded for flashdata
+
+        $this->admin_id = $this->session->userdata('admin_id') ?? 1; // Placeholder for dynamic admin ID
     }
 
     public function index()
     {
-        // Admin dashboard view
         $this->load->view('admin/dashboard');
     }
 
@@ -51,7 +49,8 @@ class Admin extends CI_Controller {
     {
         $user = $this->User_model->get_user($user_id);
         if (!$user) {
-            show_404();
+            $this->session->set_flashdata('error_message', 'User not found.');
+            redirect('admin/subscriptions'); // Redirect to a safe place
         }
 
         if ($this->input->post()) {
@@ -60,7 +59,7 @@ class Admin extends CI_Controller {
             $subscription_start_date = $this->input->post('subscription_start_date');
             $subscription_end_date = $this->input->post('subscription_end_date');
 
-            $this->User_model->update_user_subscription_details(
+            $success_update_user = $this->User_model->update_user_subscription_details(
                 $user_id,
                 $subscription_plan,
                 $payment_status,
@@ -68,10 +67,10 @@ class Admin extends CI_Controller {
                 $subscription_end_date
             );
 
-            // Also update the active subscription in the subscriptions table if necessary
+            $success_update_sub = true;
             $active_sub = $this->Subscription_model->get_user_active_subscription($user_id);
             if ($active_sub) {
-                $this->Subscription_model->update_subscription($active_sub->id, array(
+                $success_update_sub = $this->Subscription_model->update_subscription($active_sub->id, array(
                     'plan_name' => $subscription_plan,
                     'status' => $payment_status,
                     'current_period_start' => $subscription_start_date,
@@ -79,7 +78,7 @@ class Admin extends CI_Controller {
                 ));
             } else {
                 // If no active subscription, create one (simplified for demo)
-                $this->Subscription_model->create_subscription(array(
+                $success_update_sub = $this->Subscription_model->create_subscription(array(
                     'user_id' => $user_id,
                     'plan_name' => $subscription_plan,
                     'status' => $payment_status,
@@ -90,6 +89,11 @@ class Admin extends CI_Controller {
                 ));
             }
 
+            if ($success_update_user && $success_update_sub) {
+                $this->session->set_flashdata('success_message', 'User subscription updated successfully!');
+            } else {
+                $this->session->set_flashdata('error_message', 'Failed to update user subscription.');
+            }
             redirect('admin/subscriptions');
         }
 
@@ -108,8 +112,13 @@ class Admin extends CI_Controller {
             $description = $this->input->post('description');
             $admin_id = $this->admin_id; // Get admin ID from constructor/session
 
-            $user_before_update = $this->User_model->get_user($user_id);
-            $old_balance = $user_before_update ? $user_before_update->balance : 0;
+            $user_target = $this->User_model->get_user($user_id);
+            if (!$user_target) {
+                $this->session->set_flashdata('error_message', 'Target user not found.');
+                redirect('admin/manage_user_balance');
+            }
+
+            $old_balance = $user_target->balance;
 
             $success = false;
             if ($transaction_type == 'top_up') {
@@ -135,6 +144,9 @@ class Admin extends CI_Controller {
                     'ip_address' => $this->input->ip_address(),
                     'description' => $admin_identifier . ' ' . $transaction_type . ' balance for user ' . $user_id . ': ' . $description
                 ));
+                $this->session->set_flashdata('success_message', 'User balance updated successfully!');
+            } else {
+                $this->session->set_flashdata('error_message', 'Failed to update user balance. Please check user funds for deductions.');
             }
             redirect('admin/manage_user_balance/' . $user_id . ($search_term ? '?search=' . urlencode($search_term) : ''));
         }
@@ -246,3 +258,5 @@ class Admin extends CI_Controller {
              ->set_content_type('application/json')
              ->set_output(json_encode($results));
     }
+}
+
