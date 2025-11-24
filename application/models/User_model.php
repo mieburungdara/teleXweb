@@ -85,8 +85,8 @@ class User_model extends CI_Model {
             // Send Telegram notification to user
             $user = $this->get_user($user_id);
             if ($user && isset($this->Telegram_bot_model)) {
-                $message = "💰 Your balance has been topped up by $" . number_format($amount, 2) . ".\n";
-                $message .= "New balance: $" . number_format($user->balance, 2) . ".\n";
+                $message = "💰 Your balance has been topped up by " . number_format($amount) . " Credits.\n";
+                $message .= "New balance: " . number_format($user->balance) . " Credits.\n";
                 $message .= "Description: " . $description;
                 $this->Telegram_bot_model->send_message($user_id, $message);
             }
@@ -140,8 +140,8 @@ class User_model extends CI_Model {
             // Send Telegram notification to user
             $user = $this->get_user($user_id);
             if ($user && isset($this->Telegram_bot_model)) {
-                $message = "💸 Your balance has been deducted by $" . number_format($amount, 2) . ".\n";
-                $message .= "New balance: $" . number_format($user->balance, 2) . ".\n";
+                $message = "💸 Your balance has been deducted by " . number_format($amount) . " Credits.\n";
+                $message .= "New balance: " . number_format($user->balance) . " Credits.\n";
                 $message .= "Description: " . $description;
                 $this->Telegram_bot_model->send_message($user_id, $message);
             }

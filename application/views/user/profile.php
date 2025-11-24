@@ -17,12 +17,13 @@
             <div class="card-body">
                 <p><strong>User ID:</strong> <?php echo htmlspecialchars($user->id); ?></p>
                 <p><strong>Codename:</strong> <?php echo htmlspecialchars($user->codename); ?></p>
-                <p><strong>Subscription Plan:</strong> <?php echo htmlspecialchars(ucfirst($user->subscription_plan)); ?></p>
-                <p><strong>Balance:</strong> $<?php echo htmlspecialchars(number_format($user->balance, 2)); ?></p>
+
+                <p><strong>Balance:</strong> <?php echo htmlspecialchars(number_format($user->balance)); ?> Credits</p>
                 <!-- Add more profile details here -->
-                <a href="<?php echo site_url('users/subscription'); ?>" class="btn btn-primary">Manage Subscription</a>
+
                 <a href="<?php echo site_url('users/balance'); ?>" class="btn btn-info">Manage Balance</a>
                 <a href="<?php echo site_url('marketplace'); ?>" class="btn btn-success">Marketplace</a>
+                <a href="<?php echo site_url('users/topup_credits'); ?>" class="btn btn-warning">Top Up Credits</a>
             </div>
         </div>
     </div>

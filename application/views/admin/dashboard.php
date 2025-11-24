@@ -11,9 +11,9 @@
         <h1>Admin Dashboard</h1>
         <p>Welcome to the admin panel.</p>
         <div class="list-group">
-            <a href="<?php echo site_url('admin/subscriptions'); ?>" class="list-group-item list-group-item-action">Manage Subscriptions</a>
-            <a href="<?php echo site_url('admin/subscription_analytics'); ?>" class="list-group-item list-group-item-action">Subscription Analytics</a>
+
             <a href="<?php echo site_url('admin/manage_user_balance'); ?>" class="list-group-item list-group-item-action">Manage User Balances</a>
+            <a href="<?php echo site_url('admin/manage_credit_topups'); ?>" class="list-group-item list-group-item-action">Manage Credits Top-ups</a>
             <!-- Add more admin links here -->
         </div>
     </div>

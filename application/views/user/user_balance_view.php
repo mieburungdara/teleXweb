@@ -16,7 +16,7 @@
                 Current Balance
             </div>
             <div class="card-body">
-                <h5 class="card-title">Balance: $<?php echo htmlspecialchars(number_format($user->balance, 2)); ?></h5>
+                <h5 class="card-title">Balance: <?php echo htmlspecialchars(number_format($user->balance)); ?> Credits</h5>
             </div>
         </div>
 
@@ -25,11 +25,8 @@
                 Top-up Your Balance
             </div>
             <div class="card-body">
-                <p class="card-text">To top-up your balance, please contact an administrator with your payment details.</p>
-                <p class="card-text"><strong>Admin Contact:</strong> <?php echo htmlspecialchars($admin_telegram_username); ?></p>
-                <p class="card-text"><strong>Your User ID:</strong> <?php echo htmlspecialchars($user->id); ?></p>
-                <p class="card-text">Please provide your User ID and proof of payment to the admin for verification. Once verified, your balance will be updated manually.</p>
-                <p class="card-text text-muted">Expected response time: 24-48 hours.</p>
+                <p class="card-text">To top-up your Credits, please visit our dedicated top-up page where you can choose a package and follow the manual payment instructions.</p>
+                <a href="<?php echo site_url('users/topup_credits'); ?>" class="btn btn-warning">Go to Top-up Page</a>
             </div>
         </div>
 
@@ -56,7 +53,7 @@
                                 <tr>
                                     <td><?php echo htmlspecialchars($tx->id); ?></td>
                                     <td><?php echo htmlspecialchars(ucfirst($tx->transaction_type)); ?></td>
-                                    <td><?php echo htmlspecialchars(number_format($tx->amount, 2)); ?></td>
+                                    <td><?php echo htmlspecialchars(number_format($tx->amount)); ?> Credits</td>
                                     <td><?php echo htmlspecialchars($tx->description); ?></td>
                                     <td><?php echo htmlspecialchars($tx->created_at); ?></td>
                                 </tr>

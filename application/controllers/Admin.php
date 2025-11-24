@@ -29,6 +29,40 @@ class Admin extends CI_Controller {
 
 
 
+    public function manage_credit_topups()
+    {
+        // Load necessary models
+        $this->load->model('User_model');
+        $this->load->model('Balance_Transaction_model');
+
+        // Handle form submission for adding credits
+        if ($this->input->post()) {
+            $user_id = $this->input->post('user_id');
+            $credits_to_add = (int)$this->input->post('credits_to_add');
+            $description = $this->input->post('description'); // e.g., "Manual Top-up via Bank Transfer"
+
+            if ($user_id && $credits_to_add > 0) {
+                // Assuming 1 Credit = 0.01 USD for balance tracking (if balance is USD-based)
+                // If balance is already in Credits, then just add credits_to_add
+                // For simplicity, let's assume balance directly reflects credits
+                $success = $this->User_model->add_balance($user_id, $credits_to_add, $description, $this->admin_id, 'manual_topup');
+
+                if ($success) {
+                    $this->session->set_flashdata('success_message', 'Credits added successfully!');
+                } else {
+                    $this->session->set_flashdata('error_message', 'Failed to add credits.');
+                }
+            } else {
+                $this->session->set_flashdata('error_message', 'Invalid user ID or credit amount.');
+            }
+            redirect('admin/manage_credit_topups');
+        }
+
+        // Display the form
+        $data['users'] = $this->User_model->get_all_users(); // Get a list of users for selection
+        $this->load->view('admin/manage_credit_topups', $data);
+    }
+
     public function manage_user_balance($user_id = null, $offset = 0)
     {
         $search_term = $this->input->get('search', TRUE); // Get search term from GET request

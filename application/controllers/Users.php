@@ -79,6 +79,12 @@ class Users extends CI_Controller {
 
 
 
+    public function topup_credits()
+    {
+        $data['user_id'] = $this->user_id; // Assuming $this->user_id is set in the constructor
+        $this->load->view('user/topup_credits', $data);
+    }
+
     public function my_purchased_folders()
     {
         $data['user'] = $this->User_model->get_user($this->user_id);
