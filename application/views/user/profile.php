@@ -22,6 +22,7 @@
                 <!-- Add more profile details here -->
                 <a href="<?php echo site_url('users/subscription'); ?>" class="btn btn-primary">Manage Subscription</a>
                 <a href="<?php echo site_url('users/balance'); ?>" class="btn btn-info">Manage Balance</a>
+                <a href="<?php echo site_url('marketplace'); ?>" class="btn btn-success">Marketplace</a>
             </div>
         </div>
     </div>

@@ -8,7 +8,7 @@ class Admin extends CI_Controller {
         parent::__construct();
         // Load necessary models, helpers, libraries
         $this->load->model('User_model');
-        $this->load->model('Subscription_model');
+
         $this->load->model('Audit_log_model');
         $this->load->model('Balance_Transaction_model');
         $this->load->helper('url');
@@ -23,83 +23,11 @@ class Admin extends CI_Controller {
         $this->load->view('admin/dashboard');
     }
 
-    public function subscription_analytics()
-    {
-        // Define a period for analytics, e.g., last 30 days
-        $end_date = date('Y-m-d');
-        $start_date = date('Y-m-d', strtotime('-30 days'));
 
-        $data['total_active_subscribers'] = $this->Subscription_model->get_total_active_subscribers();
-        $data['new_subscribers_last_30_days'] = $this->Subscription_model->get_new_subscribers_in_period($start_date, $end_date);
-        $data['churn_rate_last_30_days'] = $this->Subscription_model->calculate_churn_rate($start_date, $end_date);
-        $data['revenue_last_30_days'] = $this->Subscription_model->get_revenue_in_period($start_date, $end_date);
-        $data['status_distribution'] = $this->Subscription_model->get_status_distribution();
-        $data['subscribers_by_plan'] = $this->Subscription_model->get_subscribers_by_plan();
 
-        $this->load->view('admin/subscription_analytics', $data);
-    }
 
-    public function subscriptions()
-    {
-        $data['subscriptions'] = $this->Subscription_model->get_all_subscriptions();
-        $this->load->view('admin/subscription_management', $data);
-    }
 
-    public function edit_user_subscription($user_id)
-    {
-        $user = $this->User_model->get_user($user_id);
-        if (!$user) {
-            $this->session->set_flashdata('error_message', 'User not found.');
-            redirect('admin/subscriptions'); // Redirect to a safe place
-        }
 
-        if ($this->input->post()) {
-            $subscription_plan = $this->input->post('subscription_plan');
-            $payment_status = $this->input->post('payment_status');
-            $subscription_start_date = $this->input->post('subscription_start_date');
-            $subscription_end_date = $this->input->post('subscription_end_date');
-
-            $success_update_user = $this->User_model->update_user_subscription_details(
-                $user_id,
-                $subscription_plan,
-                $payment_status,
-                $subscription_start_date,
-                $subscription_end_date
-            );
-
-            $success_update_sub = true;
-            $active_sub = $this->Subscription_model->get_user_active_subscription($user_id);
-            if ($active_sub) {
-                $success_update_sub = $this->Subscription_model->update_subscription($active_sub->id, array(
-                    'plan_name' => $subscription_plan,
-                    'status' => $payment_status,
-                    'current_period_start' => $subscription_start_date,
-                    'current_period_end' => $subscription_end_date
-                ));
-            } else {
-                // If no active subscription, create one (simplified for demo)
-                $success_update_sub = $this->Subscription_model->create_subscription(array(
-                    'user_id' => $user_id,
-                    'plan_name' => $subscription_plan,
-                    'status' => $payment_status,
-                    'amount' => 0, // Admin manual change, amount might be 0 or custom
-                    'currency' => 'USD',
-                    'current_period_start' => $subscription_start_date,
-                    'current_period_end' => $subscription_end_date
-                ));
-            }
-
-            if ($success_update_user && $success_update_sub) {
-                $this->session->set_flashdata('success_message', 'User subscription updated successfully!');
-            } else {
-                $this->session->set_flashdata('error_message', 'Failed to update user subscription.');
-            }
-            redirect('admin/subscriptions');
-        }
-
-        $data['user'] = $user;
-        $this->load->view('admin/edit_user_subscription', $data);
-    }
 
     public function manage_user_balance($user_id = null, $offset = 0)
     {
