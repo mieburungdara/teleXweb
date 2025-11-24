@@ -8,6 +8,7 @@ class Users extends CI_Controller {
         parent::__construct();
         // Load necessary models, helpers, libraries
         $this->load->model('User_model');
+        $this->load->model('User_achievement_model');
 
         $this->load->model('Balance_Transaction_model'); // Load Balance_Transaction_model
         $this->load->model('Folder_Purchase_model'); // Load Folder_Purchase_model
@@ -24,6 +25,8 @@ class Users extends CI_Controller {
     {
         // Default user profile view
         $data['user'] = $this->User_model->get_user($this->user_id);
+        $data['achievements'] = $this->User_achievement_model->get_user_achievements($this->user_id);
+        
         $this->load->view('user/profile', $data);
     }
 

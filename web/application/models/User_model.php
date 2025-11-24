@@ -77,7 +77,7 @@ class User_model extends CI_Model {
             'related_entity_type' => $related_entity_type,
             'related_entity_id' => $related_entity_id
         );
-        $this->Balance_Transaction_model->log_transaction($transaction_data);
+        $transaction_id = $this->Balance_Transaction_model->log_transaction($transaction_data);
 
         $this->db->trans_complete(); // Complete transaction
 
@@ -90,9 +90,10 @@ class User_model extends CI_Model {
                 $message .= "Description: " . $description;
                 $this->Telegram_bot_model->send_message($user_id, $message);
             }
+            return $transaction_id; // Return the ID of the balance transaction
         }
 
-        return $this->db->trans_status();
+        return false; // Return false on transaction failure
     }
 
     /**
@@ -128,7 +129,7 @@ class User_model extends CI_Model {
                 'related_entity_type' => $related_entity_type,
                 'related_entity_id' => $related_entity_id
             );
-            $this->Balance_Transaction_model->log_transaction($transaction_data);
+            $transaction_id = $this->Balance_Transaction_model->log_transaction($transaction_data);
         } else {
             $this->db->trans_rollback(); // Rollback if insufficient balance
             return false;
@@ -145,9 +146,10 @@ class User_model extends CI_Model {
                 $message .= "Description: " . $description;
                 $this->Telegram_bot_model->send_message($user_id, $message);
             }
+            return $transaction_id; // Return the ID of the balance transaction
         }
 
-        return $this->db->trans_status();
+        return false; // Return false on transaction failure
     }
 
     /**

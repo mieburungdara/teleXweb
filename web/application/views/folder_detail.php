@@ -52,6 +52,34 @@
                         <?php endif; ?>
                     </div>
                 <?php endif; ?>
+
+                <?php if (isset($current_user_id) && $current_user_id && $current_user_id != $folder->user_id): ?>
+                    <h5 class="mt-4">Support Creator</h5>
+                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#tipModal">
+                        Give Tip
+                    </button>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+    <!-- Tip Modal -->
+    <div class="modal fade" id="tipModal" tabindex="-1" aria-labelledby="tipModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="tipModalLabel">Give Tip to <?php echo htmlspecialchars($creator_username); ?></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="tipForm" action="<?php echo site_url('folders/tip/' . $folder->id); ?>" method="post">
+                        <div class="mb-3">
+                            <label for="tipAmount" class="form-label">Amount (credits)</label>
+                            <input type="number" step="0.01" min="1" class="form-control" id="tipAmount" name="tip_amount" required>
+                            <div class="form-text">Your current balance: <?php echo htmlspecialchars(number_format($current_user_balance, 2)); ?> credits</div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send Tip</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

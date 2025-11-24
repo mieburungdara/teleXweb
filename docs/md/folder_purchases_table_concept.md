@@ -15,6 +15,7 @@ This table tracks all purchases of folders.
 | `price_at_purchase` | `DECIMAL(10,2)`   | The price of the folder at the time of purchase.             | NOT NULL.                                  |
 | `purchase_date`     | `DATETIME`        | Timestamp when the purchase occurred.                        | Defaults to `CURRENT_TIMESTAMP`.           |
 | `balance_transaction_id` | `BIGINT UNSIGNED` | ID of the corresponding balance transaction (deduction from buyer, addition to seller). | Nullable. Foreign key to `balance_transactions.id`. Indexed. |
+| `purchase_type`          | `VARCHAR(50)`     | The type of purchase (e.g., 'direct_buy', 'bounty_reward'). | NOT NULL. Defaults to 'direct_buy'. Indexed. |
 
 ### Relationships
 

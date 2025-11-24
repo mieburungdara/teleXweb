@@ -75,4 +75,25 @@ class Balance_Transaction_model extends CI_Model {
         $this->db->where('user_id', $user_id);
         return $this->db->count_all_results('balance_transactions');
     }
+
+    /**
+     * Calculates the total income for a user.
+     * Income is defined as positive transactions from sales, tips, or rewards.
+     *
+     * @param int $user_id
+     * @return float
+     */
+    public function get_total_income_for_user($user_id)
+    {
+        $income_types = ['folder_sale', 'tip_received', 'request_reward'];
+
+        $this->db->select_sum('amount');
+        $this->db->where('user_id', $user_id);
+        $this->db->where('amount >', 0);
+        $this->db->where_in('related_entity_type', $income_types);
+        
+        $result = $this->db->get('balance_transactions')->row();
+        
+        return (float)($result->amount ?? 0.0);
+    }
 }
