@@ -47,6 +47,13 @@
                 <p>Role: <span><?php echo $this->session->userdata('role_name'); ?> (ID: <?php echo $this->session->userdata('role_id'); ?>)</span></p>
             </div>
             <p>Ini adalah halaman yang dilindungi, hanya dapat diakses setelah autentikasi berhasil.</p>
+
+            <?php if (is_admin()): ?>
+                <hr>
+                <h2>Admin Actions</h2>
+                <p><a href="<?php echo site_url('admin'); ?>">Manage Bots</a></p>
+                <p><a href="<?php echo site_url('admin/users'); ?>">Manage Users</a></p>
+            <?php endif; ?>
         <?php else: ?>
             <p class="error-message">Anda tidak login.</p>
         <?php endif; ?>

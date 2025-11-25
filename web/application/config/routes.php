@@ -63,5 +63,11 @@ $route['admin/form/(:num)'] = 'Admin/form/$1';
 $route['admin/save'] = 'Admin/save';
 $route['admin/delete/(:num)'] = 'Admin/delete/$1';
 
+// Admin Routes for User Management
+$route['admin/users'] = 'Admin/users';
+$route['admin/edit_user_role/(:num)'] = 'Admin/edit_user_role/$1';
+$route['admin/update_user_role'] = 'Admin/update_user_role';
+
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

@@ -13,6 +13,8 @@ class Admin extends CI_Controller {
             return;
         }
         $this->load->model('Bot_model');
+        $this->load->model('User_model'); // Load User_model
+        $this->load->model('Role_model'); // Load Role_model
         $this->load->library('form_validation');
         $this->load->helper('url');
     }
@@ -114,5 +116,56 @@ class Admin extends CI_Controller {
             $this->session->set_flashdata('error_message', 'Failed to delete bot.');
         }
         redirect('admin');
+    }
+
+    /**
+     * Display a list of all users.
+     */
+    public function users()
+    {
+        $data['users'] = $this->User_model->get_all_users();
+        $this->load->view('admin/user_list', $data);
+    }
+
+    /**
+     * Display form to edit a user's role.
+     * @param int $id User ID to edit.
+     */
+    public function edit_user_role($id)
+    {
+        $data['user'] = $this->User_model->get_user_by_id($id);
+        if (!$data['user']) {
+            $this->session->set_flashdata('error_message', 'User not found.');
+            redirect('admin/users');
+            return;
+        }
+        $data['roles'] = $this->Role_model->get_all_roles();
+        $this->load->view('admin/user_role_form', $data);
+    }
+
+    /**
+     * Handle form submission for updating a user's role.
+     */
+    public function update_user_role()
+    {
+        $user_id = $this->input->post('user_id');
+        $role_id = $this->input->post('role_id');
+
+        $this->form_validation->set_rules('user_id', 'User ID', 'required|numeric');
+        $this->form_validation->set_rules('role_id', 'Role', 'required|numeric');
+
+        if ($this->form_validation->run() === FALSE) {
+            $this->session->set_flashdata('errors', validation_errors());
+            redirect('admin/edit_user_role/' . $user_id);
+            return;
+        }
+
+        $success = $this->User_model->update_user_role($user_id, $role_id);
+        if ($success) {
+            $this->session->set_flashdata('success_message', 'User role updated successfully.');
+        } else {
+            $this->session->set_flashdata('error_message', 'Failed to update user role.');
+        }
+        redirect('admin/users');
     }
 }

@@ -72,4 +72,31 @@ class User_model extends CI_Model {
         $query = $this->db->get();
         return $query->row_array();
     }
+
+    /**
+     * Get all user records with their role names.
+     *
+     * @return array An array of all user data.
+     */
+    public function get_all_users()
+    {
+        $this->db->select('users.*, roles.name as role_name');
+        $this->db->from('users');
+        $this->db->join('roles', 'roles.id = users.role_id');
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    /**
+     * Update an existing user's role.
+     *
+     * @param int $user_id The user's primary key ID.
+     * @param int $new_role_id The new role ID.
+     * @return bool TRUE on success, FALSE on failure.
+     */
+    public function update_user_role($user_id, $new_role_id)
+    {
+        $this->db->where('id', $user_id);
+        return $this->db->update('users', ['role_id' => $new_role_id, 'updated_at' => date('Y-m-d H:i:s')]);
+    }
 }
