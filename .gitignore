@@ -1,3 +1,5 @@
 web/vendor
 web/composer.lock
 *.bak
+/web/.env
+web/application/logs/monolog.log
