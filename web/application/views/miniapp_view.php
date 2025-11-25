@@ -36,10 +36,19 @@
         <p>Verifying with backend...</p>
     </div>
 
+    <button id="close-button" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Close Mini App</button>
+
     <script>
+        // Get bot_id passed from the controller
+        const botId = <?php echo json_encode($bot_id); ?>;
+
         // Initialize the Telegram Web App
         Telegram.WebApp.ready();
-        Telegram.WebApp.expand();
+        Telegram.WebApp.expand(); // Expand the Mini App to full height
+
+        // Set body background and text color based on Telegram theme
+        document.body.style.backgroundColor = Telegram.WebApp.themeParams.bg_color || '#ffffff';
+        document.body.style.color = Telegram.WebApp.themeParams.text_color || '#000000';
 
         const initData = Telegram.WebApp.initData;
         const initDataUnsafe = Telegram.WebApp.initDataUnsafe;
@@ -59,30 +68,45 @@
             userDataDiv.innerHTML = '<h2>User Information (from frontend)</h2><p>Could not retrieve user information.</p>';
         }
 
-        // --- Send data to backend for verification ---
+        // --- Handle Close Button ---
+        const closeButton = document.getElementById('close-button');
+        closeButton.addEventListener('click', () => {
+            Telegram.WebApp.close();
+        });
+
+        // --- Send data to backend for verification and redirection ---
         const authStatusDiv = document.getElementById('auth-status');
         if (initData) {
+            authStatusDiv.innerHTML = '<h2>Backend Verification</h2><p>Authenticating and redirecting...</p>';
             fetch('<?php echo site_url('miniapp/auth'); ?>', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                body: 'init_data=' + initData
+                body: 'init_data=' + initData + '&bot_id=' + botId
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    authStatusDiv.style.color = 'green';
-                    authStatusDiv.innerHTML = '<h2>Backend Verification</h2><p>✅ User data verified successfully by the backend.</p>';
+            .then(response => {
+                // The browser will handle the redirect if the backend sends a 3xx status
+                // If there's no redirect, it means something unexpected happened or a non-redirect response was sent.
+                if (response.redirected) {
+                    window.location.href = response.url; // Manually ensure redirect in case fetch doesn't
                 } else {
+                    // This case might happen if the backend sends a non-redirect error (e.g., 200 with an error page content)
+                    // Or if the initial auth failed for some reason before redirect
+                    return response.text(); // Read as text to see content
+                }
+            })
+            .then(text => {
+                if (text) { // If there was some non-redirect content
                     authStatusDiv.style.color = 'red';
-                    authStatusDiv.innerHTML = `<h2>Backend Verification</h2><p>❌ ${data.message}</p>`;
+                    authStatusDiv.innerHTML = `<h2>Backend Verification</h2><p>❌ Authentication failed, no redirect: ${text.substring(0, 200)}...</p>`;
+                    console.error('Authentication fetch did not redirect, received:', text);
                 }
             })
             .catch(error => {
                 authStatusDiv.style.color = 'red';
-                authStatusDiv.innerHTML = '<h2>Backend Verification</h2><p>❌ An error occurred during verification.</p>';
-                console.error('Error:', error);
+                authStatusDiv.innerHTML = '<h2>Backend Verification</h2><p>❌ A network error occurred during authentication.</p>';
+                console.error('Network error during authentication:', error);
             });
         } else {
             authStatusDiv.style.color = 'red';

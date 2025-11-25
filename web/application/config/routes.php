@@ -51,5 +51,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 $route['default_controller'] = 'welcome';
 $route['miniapp'] = 'MiniApp/index';
+$route['miniapp/login/(:num)'] = 'MiniApp/index/$1';
+$route['miniapp/admin'] = 'MiniApp/admin_panel';
+$route['miniapp/dashboard'] = 'MiniApp/dashboard';
+$route['miniapp/unauthorized'] = 'MiniApp/unauthorized';
+
+// Admin Routes for Bot Management
+$route['admin'] = 'Admin/index';
+$route['admin/form'] = 'Admin/form';
+$route['admin/form/(:num)'] = 'Admin/form/$1';
+$route['admin/save'] = 'Admin/save';
+$route['admin/delete/(:num)'] = 'Admin/delete/$1';
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

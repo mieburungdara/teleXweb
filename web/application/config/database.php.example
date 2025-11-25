@@ -6,11 +6,11 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => '45.143.81.225',
-	'username' => 'u1574101_reza',
-	'password' => 'Samarindakaltim',
-	'database' => 'u1574101_telexweb',
-	'port' => '3306',
+	'hostname' => 'DB_HOST_PLACEHOLDER',
+	'username' => 'DB_USERNAME_PLACEHOLDER',
+	'password' => 'DB_PASSWORD_PLACEHOLDER',
+	'database' => 'DB_DATABASE_PLACEHOLDER',
+	'port' => 'DB_PORT_PLACEHOLDER',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,

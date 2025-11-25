@@ -314,8 +314,4 @@ switch (ENVIRONMENT)
  */
 require_once 'vendor/autoload.php';
 
-// Load environment variables from .env file
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv->load();
-
 require_once BASEPATH.'core/CodeIgniter.php';

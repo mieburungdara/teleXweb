@@ -338,7 +338,7 @@ $config['cache_query_string'] = FALSE;
 | https://codeigniter.com/userguide3/libraries/encryption.html
 |
 */
-$config['encryption_key'] = '';
+$config['encryption_key'] = '8Xo44akjJnfTVnZ6cUjbE0QwYIWhOYs0UWXrrKtxwy0=';
 
 /*
 |--------------------------------------------------------------------------
@@ -543,13 +543,5 @@ $config['rewrite_short_tags'] = FALSE;
 */
 $config['proxy_ips'] = '';
 
-/*
-|--------------------------------------------------------------------------
-| Telegram Bot Token
-|--------------------------------------------------------------------------
-|
-| This is your Telegram Bot token.
-|
-*/
-$config['telegram_bot_token'] = getenv('TELEGRAM_BOT_TOKEN');
+
 
