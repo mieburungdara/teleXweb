@@ -11,14 +11,23 @@ class Files extends CI_Controller {
             redirect('miniapp/unauthorized');
             return;
         }
-        $this->load->model(['File_model', 'Bot_model', 'Telegram_bot_model']);
+        $this->load->model(['File_model', 'Bot_model', 'Telegram_bot_model', 'Folder_model']);
         $this->load->helper('url');
     }
 
     public function index()
     {
         $user_id = $this->session->userdata('user_id');
-        $files = $this->File_model->get_user_files($user_id);
+
+        // Extract filters from GET request
+        $filters = [
+            'keyword' => $this->input->get('keyword', TRUE),
+            'mime_type' => $this->input->get('mime_type', TRUE),
+            'folder_id' => $this->input->get('folder_id', TRUE),
+            'is_favorited' => $this->input->get('is_favorited', TRUE),
+        ];
+
+        $files = $this->File_model->get_files_with_filters($user_id, $filters);
 
         // Generate thumbnail URLs
         foreach ($files as &$file) {
@@ -35,6 +44,9 @@ class Files extends CI_Controller {
         
         $data['files'] = $files;
         $data['title'] = 'My Files';
+        $data['filters'] = $filters; // Pass filters back to view for form population
+        $data['all_mime_types'] = $this->File_model->get_all_mime_types($user_id);
+        $data['user_folders'] = $this->Folder_model->get_user_folders($user_id, null); // Top-level folders
 
         $this->load->view('templates/header', $data);
         $this->load->view('file_list', $data);

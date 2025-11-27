@@ -39,7 +39,7 @@ Berikut adalah daftar fitur yang direncanakan untuk proyek teleXweb, disusun ber
 *   [x] Implement UI/UX Features:
     *   [x] Display file-type icons and thumbnails.
     *   [x] Gallery and File Detail pages (`gallery_view.php`, `file_detail_view.php`).
-    *   [ ] Advanced Search form (`Files.php`).
+    *   [x] Advanced Search form (`Files.php`).
     *   [ ] Favorites System (toggling, filtering).
     *   [ ] Inline Metadata Editing (`/api/update_file` endpoint, frontend JS).
     *   [ ] Quick Preview Modal (`/api/file_preview_data`).

@@ -145,4 +145,65 @@ class File_model extends CI_Model {
         $query = $this->db->get('files');
         return $query->result_array();
     }
+
+    /**
+     * Get files based on various filters.
+     *
+     * @param int $user_id
+     * @param array $filters
+     * @return array
+     */
+    public function get_files_with_filters($user_id, $filters = [])
+    {
+        $this->db->select('files.*, folders.folder_name, users.username');
+        $this->db->from('files');
+        $this->db->join('users', 'files.user_id = users.id');
+        $this->db->join('folders', 'files.folder_id = folders.id', 'left');
+        $this->db->join('folder_tags', 'folders.id = folder_tags.folder_id', 'left');
+        $this->db->join('tags', 'folder_tags.tag_id = tags.id', 'left');
+        
+        $this->db->where('files.user_id', $user_id);
+        $this->db->where('files.deleted_at IS NULL');
+
+        if (!empty($filters['keyword'])) {
+            $this->db->group_start();
+            $this->db->like('files.original_file_name', $filters['keyword']);
+            $this->db->or_like('tags.tag_name', $filters['keyword']);
+            $this->db->group_end();
+        }
+
+        if (!empty($filters['mime_type'])) {
+            $this->db->where('files.mime_type', $filters['mime_type']);
+        }
+
+        if (!empty($filters['folder_id'])) {
+            $this->db->where('files.folder_id', $filters['folder_id']);
+        }
+        
+        if (isset($filters['is_favorited']) && $filters['is_favorited'] !== '') {
+            $this->db->where('files.is_favorited', (bool)$filters['is_favorited']);
+        }
+
+        $this->db->group_by('files.id');
+        $this->db->order_by('files.created_at', 'DESC');
+
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    /**
+     * Get all unique MIME types from user's files.
+     *
+     * @param int $user_id
+     * @return array
+     */
+    public function get_all_mime_types($user_id)
+    {
+        $this->db->select('DISTINCT mime_type');
+        $this->db->where('user_id', $user_id);
+        $this->db->where('deleted_at IS NULL');
+        $this->db->order_by('mime_type', 'ASC');
+        $query = $this->db->get('files');
+        return $query->result_array();
+    }
 }

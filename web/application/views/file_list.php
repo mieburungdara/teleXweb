@@ -3,6 +3,8 @@
         <h1>My Files</h1>
     </div>
     <div class="card-body">
+        <?php $this->load->view('files/search_form', ['filters' => $filters, 'all_mime_types' => $all_mime_types, 'user_folders' => $user_folders]); ?>
+
         <?php if (empty($files)): ?>
             <p>You have not saved any file metadata yet. Send files to your Telegram bot to get started.</p>
         <?php else: ?>
