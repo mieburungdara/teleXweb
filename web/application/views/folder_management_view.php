@@ -67,16 +67,52 @@
                         <label for="description" class="form-label">Description</label>
                         <textarea class="form-control" id="description" name="description" rows="3"><?php echo set_value('description', $folder['description'] ?? ''); ?></textarea>
                     </div>
-                    <div class="mb-3">
-                        <label for="tags" class="form-label">Tags (comma-separated)</label>
-                        <input type="text" class="form-control" id="tags" name="tags" value="<?php echo set_value('tags', $folder['tags'] ?? ''); ?>" placeholder="e.g., work, personal, important">
+                                        <div class="mb-3">
+                                            <label for="tags" class="form-label">Tags (comma-separated)</label>
+                                            <input type="text" class="form-control" id="tags" name="tags" value="<?php echo set_value('tags', $folder['tags'] ?? ''); ?>" placeholder="e.g., work, personal, important" list="tag-suggestions">
+                                            <datalist id="tag-suggestions"></datalist>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Save Folder</button>
+                                        <?php if (isset($folder)): ?>
+                                            <a href="<?php echo site_url('folders'); ?>" class="btn btn-secondary">Cancel</a>
+                                        <?php endif; ?>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Save Folder</button>
-                    <?php if (isset($folder)): ?>
-                        <a href="<?php echo site_url('folders'); ?>" class="btn btn-secondary">Cancel</a>
-                    <?php endif; ?>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+                    
+                    <script>
+                    document.addEventListener('DOMContentLoaded', () => {
+                        const tagsInput = document.getElementById('tags');
+                        const tagSuggestions = document.getElementById('tag-suggestions');
+                    
+                        if (tagsInput) {
+                            tagsInput.addEventListener('keyup', function(e) {
+                                const query = this.value;
+                                const lastComma = query.lastIndexOf(',');
+                                const currentTag = lastComma === -1 ? query : query.substring(lastComma + 1).trim();
+                    
+                                if (currentTag.length < 2) {
+                                    tagSuggestions.innerHTML = '';
+                                    return;
+                                }
+                    
+                                fetch(`<?php echo site_url('api/tag_suggestions'); ?>?term=${currentTag}`)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        tagSuggestions.innerHTML = '';
+                                        data.forEach(tag => {
+                                            const option = document.createElement('option');
+                                            option.value = tag;
+                                            tagSuggestions.appendChild(option);
+                                        });
+                                    })
+                                    .catch(error => {
+                                        console.error('Error fetching tag suggestions:', error);
+                                    });
+                            });
+                        }
+                    });
+                    </script>
+                    

@@ -41,4 +41,21 @@ class Tag_model extends CI_Model {
             return $this->db->insert_id();
         }
     }
+
+    /**
+     * Get tag suggestions for a user based on a search term.
+     *
+     * @param int $user_id
+     * @param string $term
+     * @return array
+     */
+    public function get_tag_suggestions($user_id, $term)
+    {
+        $this->db->select('tag_name');
+        $this->db->where('created_by_user_id', $user_id);
+        $this->db->like('tag_name', $term, 'after');
+        $this->db->limit(10);
+        $query = $this->db->get('tags');
+        return $query->result_array();
+    }
 }

@@ -8,7 +8,7 @@ class Upload extends CI_Controller {
     public function __construct()
     {
         parent::__construct();
-        $this->load->model(['File_model', 'User_model', 'Bot_model', 'Telegram_bot_model']);
+        $this->load->model(['File_model', 'User_model', 'Bot_model', 'Telegram_bot_model', 'Tag_model']);
         $this->output->set_content_type('application/json');
     }
 
@@ -305,5 +305,25 @@ class Upload extends CI_Controller {
             'status' => 'success',
             'message' => "Action '{$action}' completed. Success: {$success_count}, Failed: {$error_count}."
         ]);
+    }
+    
+    public function tag_suggestions()
+    {
+        $this->load->library('session');
+        if (!$this->session->userdata('logged_in')) {
+            $this->output->set_status_header(403);
+            echo json_encode(['status' => 'error', 'message' => 'Unauthorized']);
+            return;
+        }
+
+        $term = $this->input->get('term');
+        if (!$term) {
+            echo json_encode([]);
+            return;
+        }
+
+        $user_id = $this->session->userdata('user_id');
+        $suggestions = $this->Tag_model->get_tag_suggestions($user_id, $term);
+        echo json_encode(array_column($suggestions, 'tag_name'));
     }
 }
