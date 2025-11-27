@@ -10,3 +10,7 @@
 [2025-11-27 20:58:27] CodeIgniterApp.DEBUG: Finished migrating to 20251127205752 [] []
 [2025-11-27 20:58:27] CodeIgniterApp.INFO: Final output sent to browser [] []
 [2025-11-27 20:58:27] CodeIgniterApp.DEBUG: Total execution time: 0.0444 [] []
+[2025-11-27 21:42:32] CodeIgniterApp.DEBUG: Migrating up from version 20251127205752 to version 20251127214128 [] []
+[2025-11-27 21:42:32] CodeIgniterApp.DEBUG: Finished migrating to 20251127214128 [] []
+[2025-11-27 21:42:32] CodeIgniterApp.INFO: Final output sent to browser [] []
+[2025-11-27 21:42:32] CodeIgniterApp.DEBUG: Total execution time: 0.0442 [] []

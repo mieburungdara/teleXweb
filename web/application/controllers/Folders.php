@@ -6,7 +6,7 @@ class Folders extends CI_Controller {
     public function __construct()
     {
         parent::__construct();
-        $this->load->model(['Folder_model', 'Folder_Review_model', 'File_model', 'Folder_Like_model']);
+        $this->load->model(['Folder_model', 'Folder_Review_model', 'File_model', 'Folder_Like_model', 'Access_Log_model']);
         $this->load->library('form_validation');
         $this->load->helper('url');
         $this->load->library('session');
@@ -52,6 +52,9 @@ class Folders extends CI_Controller {
             redirect('folders');
             return;
         }
+        // Log access
+        $this->Access_Log_model->log_access('folder', $id, $user_id);
+
         $data['folder']['tags'] = implode(', ', $this->Folder_model->get_folder_tags($id));
         $data['reviews'] = $this->Folder_Review_model->get_reviews_for_folder($id);
         $data['stats'] = $this->Folder_model->get_folder_stats($id); // Fetch stats
@@ -75,6 +78,10 @@ class Folders extends CI_Controller {
             return;
         }
         $folder_id = $data['folder']['id'];
+        
+        // Log access
+        $this->Access_Log_model->log_access('folder', $folder_id, $this->session->userdata('user_id'));
+
         $data['folder']['tags'] = implode(', ', $this->Folder_model->get_folder_tags($folder_id));
         $data['reviews'] = $this->Folder_Review_model->get_reviews_for_folder($folder_id);
         $data['like_count'] = $this->Folder_Like_model->get_like_count($folder_id);

@@ -45,7 +45,7 @@ Berikut adalah daftar fitur yang direncanakan untuk proyek teleXweb, disusun ber
     *   [x] Quick Preview Modal (`/api/file_preview_data`).
     *   [x] Breadcrumb Navigation.
     *   [x] Folder Stats Widget.
-    *   [ ] "Trending This Week" feature (`Access_Log_model.php`).
+    *   [x] "Trending This Week" feature (`Access_Log_model.php`).
     *   [ ] JavaScript for bulk actions.
     *   [ ] Soft-delete functionality for files.
 *   [ ] Implement Smart Collections (`Smart_Collection_Rule_model.php`, `SmartCollections.php` controller, views).

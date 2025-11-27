@@ -11,7 +11,7 @@ class Files extends CI_Controller {
             redirect('miniapp/unauthorized');
             return;
         }
-        $this->load->model(['File_model', 'Bot_model', 'Telegram_bot_model', 'Folder_model']);
+        $this->load->model(['File_model', 'Bot_model', 'Telegram_bot_model', 'Folder_model', 'Access_Log_model']);
         $this->load->helper('url');
     }
 
@@ -42,6 +42,29 @@ class Files extends CI_Controller {
             }
         }
         
+        // Get Trending Items
+        $trending_files_raw = $this->Access_Log_model->get_trending_items('file');
+        $trending_folders_raw = $this->Access_Log_model->get_trending_items('folder');
+        
+        $data['trending_files'] = [];
+        foreach($trending_files_raw as $item) {
+            $file_details = $this->File_model->get_file_by_id($item['entity_id'], $user_id); // Assuming user has access
+            if ($file_details) {
+                $item['original_file_name'] = $file_details['original_file_name'];
+                $item['mime_type'] = $file_details['mime_type'];
+                $data['trending_files'][] = $item;
+            }
+        }
+
+        $data['trending_folders'] = [];
+        foreach($trending_folders_raw as $item) {
+            $folder_details = $this->Folder_model->get_folder_by_id($item['entity_id'], $user_id); // Assuming user has access
+            if ($folder_details) {
+                $item['folder_name'] = $folder_details['folder_name'];
+                $data['trending_folders'][] = $item;
+            }
+        }
+
         $data['files'] = $files;
         $data['title'] = 'My Files';
         $data['filters'] = $filters; // Pass filters back to view for form population
@@ -90,6 +113,9 @@ class Files extends CI_Controller {
             redirect('files');
             return;
         }
+
+        // Log access
+        $this->Access_Log_model->log_access('file', $id, $user_id);
 
         // Generate thumbnail URL
         $file['thumbnail_url'] = null;
