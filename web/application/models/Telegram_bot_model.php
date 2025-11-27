@@ -82,4 +82,25 @@ class Telegram_bot_model extends CI_Model {
             return false;
         }
     }
+
+    /**
+     * Get the public URL for a file from its file_id.
+     *
+     * @param string $file_id
+     * @return string|null
+     */
+    public function get_file_url($file_id)
+    {
+        if (!$this->telegram) {
+            log_message('error', 'Telegram_bot_model: Not initialized. Call init() first.');
+            return null;
+        }
+        try {
+            $file = $this->telegram->getFile(['file_id' => $file_id]);
+            return 'https://api.telegram.org/file/bot' . $this->bot_token . '/' . $file->getFilePath();
+        } catch (\Telegram\Bot\Exceptions\TelegramSDKException $e) {
+            log_message('error', 'Telegram getFile failed: ' . $e->getMessage());
+            return null;
+        }
+    }
 }

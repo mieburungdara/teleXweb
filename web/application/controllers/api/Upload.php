@@ -97,6 +97,7 @@ class Upload extends CI_Controller {
             // Prepare file data for insertion with the new storage message ID
             $file_data = [
                 'user_id' => $post_data['telegram_user_id'],
+                'bot_id' => $post_data['bot_id'], // Add bot_id here
                 'file_unique_id' => $post_data['file_unique_id'],
                 'media_group_id' => $post_data['media_group_id'] ?? null,
                 'storage_channel_id' => $bot_record['storage_channel_id'],

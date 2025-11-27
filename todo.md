@@ -36,9 +36,9 @@ Berikut adalah daftar fitur yang direncanakan untuk proyek teleXweb, disusun ber
     *   [x] Implement nested folder hierarchy (subfolders, breadcrumbs).
     *   [x] Implement folder quick actions (pin/favorite).
     *   [x] Implement "Folder Stars/Hearts" for public folders (`Folder_Like_model.php`).
-*   [ ] Implement UI/UX Features:
-    *   [ ] Display file-type icons and thumbnails.
-    *   [ ] Gallery and File Detail pages (`gallery_view.php`, `file_detail_view.php`).
+*   [x] Implement UI/UX Features:
+    *   [x] Display file-type icons and thumbnails.
+    *   [x] Gallery and File Detail pages (`gallery_view.php`, `file_detail_view.php`).
     *   [ ] Advanced Search form (`Files.php`).
     *   [ ] Favorites System (toggling, filtering).
     *   [ ] Inline Metadata Editing (`/api/update_file` endpoint, frontend JS).

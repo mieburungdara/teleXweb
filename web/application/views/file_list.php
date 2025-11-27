@@ -10,6 +10,7 @@
                 <table class="table table-striped table-hover">
                     <thead>
                         <tr>
+                            <th></th>
                             <th>#</th>
                             <th>Original Filename</th>
                             <th>Folder</th>
@@ -22,6 +23,12 @@
                     <tbody>
                         <?php foreach ($files as $file): ?>
                             <tr>
+                                <td>
+                                <?php if (!empty($file['thumbnail_url'])): ?>
+                                    <img src="<?php echo $file['thumbnail_url']; ?>" alt="thumbnail" style="width: 30px; height: 30px; object-fit: cover; margin-right: 5px;">
+                                <?php endif; ?>
+                                <?php echo get_file_icon($file['mime_type']); ?>
+                            </td>
                                 <td><?php echo $file['id']; ?></td>
                                 <td><?php echo htmlspecialchars($file['original_file_name'] ?? 'N/A'); ?></td>
                                 <td><?php echo htmlspecialchars($file['folder_name'] ?? 'Unfiled'); ?></td>

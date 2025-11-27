@@ -110,4 +110,39 @@ class File_model extends CI_Model {
         $query = $this->db->get();
         return $query->result_array();
     }
+
+    /**
+     * Get a single file by its ID and user ID.
+     *
+     * @param int $id
+     * @param int $user_id
+     * @return array|null
+     */
+    public function get_file_by_id($id, $user_id)
+    {
+        $this->db->select('files.*, folders.folder_name, users.username');
+        $this->db->from('files');
+        $this->db->join('users', 'files.user_id = users.id');
+        $this->db->join('folders', 'files.folder_id = folders.id', 'left');
+        $this->db->where('files.id', $id);
+        $this->db->where('files.user_id', $user_id);
+        $query = $this->db->get();
+        return $query->row_array();
+    }
+
+    /**
+     * Get all image files for a user.
+     *
+     * @param int $user_id
+     * @return array
+     */
+    public function get_user_image_files($user_id)
+    {
+        $this->db->where('user_id', $user_id);
+        $this->db->where('deleted_at IS NULL');
+        $this->db->like('mime_type', 'image/', 'after');
+        $this->db->order_by('created_at', 'DESC');
+        $query = $this->db->get('files');
+        return $query->result_array();
+    }
 }

@@ -70,6 +70,8 @@ $route['admin/update_user_role'] = 'Admin/update_user_role';
 
 // Main file view
 $route['files'] = 'Files/index';
+$route['files/gallery'] = 'Files/gallery';
+$route['files/details/(:num)'] = 'Files/details/$1';
 
 // API Routes
 $route['api/upload'] = 'api/Upload/index';
