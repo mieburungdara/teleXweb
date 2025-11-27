@@ -47,6 +47,7 @@ class Files extends CI_Controller {
         $data['filters'] = $filters; // Pass filters back to view for form population
         $data['all_mime_types'] = $this->File_model->get_all_mime_types($user_id);
         $data['user_folders'] = $this->Folder_model->get_user_folders($user_id, null); // Top-level folders
+        $data['breadcrumbs'] = !empty($filters['folder_id']) ? $this->Folder_model->get_folder_hierarchy($filters['folder_id']) : [];
 
         $this->load->view('templates/header', $data);
         $this->load->view('file_list', $data);
@@ -103,6 +104,7 @@ class Files extends CI_Controller {
 
         $data['file'] = $file;
         $data['title'] = 'File Details';
+        $data['breadcrumbs'] = !empty($file['folder_id']) ? $this->Folder_model->get_folder_hierarchy($file['folder_id']) : [];
 
         $this->load->view('templates/header', $data);
         $this->load->view('file_detail_view', $data);

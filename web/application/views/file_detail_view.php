@@ -3,6 +3,19 @@
         <h1>File Details</h1>
     </div>
     <div class="card-body">
+        <?php if (!empty($breadcrumbs)): ?>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="<?php echo site_url('files'); ?>">Home</a></li>
+                    <?php foreach ($breadcrumbs as $crumb): ?>
+                        <li class="breadcrumb-item"><a href="<?php echo site_url('files/index?folder_id=' . $crumb['id']); ?>"><?php echo htmlspecialchars($crumb['folder_name']); ?></a></li>
+                    <?php endforeach; ?>
+                    <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($file['original_file_name'] ?? 'N/A'); ?></li>
+                </ol>
+            </nav>
+            <hr>
+        <?php endif; ?>
+
         <div class="row">
             <div class="col-md-4">
                 <?php if ($file['thumbnail_url']): ?>

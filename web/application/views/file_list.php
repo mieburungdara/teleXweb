@@ -3,6 +3,17 @@
         <h1>My Files</h1>
     </div>
     <div class="card-body">
+        <?php if (!empty($breadcrumbs)): ?>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="<?php echo site_url('files'); ?>">Home</a></li>
+                    <?php foreach ($breadcrumbs as $crumb): ?>
+                        <li class="breadcrumb-item"><a href="<?php echo site_url('files/index?folder_id=' . $crumb['id']); ?>"><?php echo htmlspecialchars($crumb['folder_name']); ?></a></li>
+                    <?php endforeach; ?>
+                </ol>
+            </nav>
+        <?php endif; ?>
+
         <?php $this->load->view('files/search_form', ['filters' => $filters, 'all_mime_types' => $all_mime_types, 'user_folders' => $user_folders]); ?>
 
         <div class="mb-3">
