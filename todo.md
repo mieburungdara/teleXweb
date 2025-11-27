@@ -54,10 +54,10 @@ Berikut adalah daftar fitur yang direncanakan untuk proyek teleXweb, disusun ber
 
 ## Phase 4: Advanced Features & Deployment
 *   [x] Implement Cron Jobs (`cli/Tasks.php` for cleanup and reporting).
-*   [ ] Implement Caching (database and page caching).
-*   [ ] Implement Web Security (beyond basic admin check, e.g., CSRF - re-enable).
-*   [ ] Testing (Write unit tests for models).
-*   [ ] Deployment (Plan and execute).
+*   [x] Implement Caching (database and page caching).
+*   [x] Implement Web Security (beyond basic admin check, e.g., CSRF - re-enable).
+*   [x] Testing (Write unit tests for models).
+*   [x] Deployment (Plan and execute).
 
 ## Phase 5: Admin & Advanced User Features
 *   [ ] Implement Roles & Permissions (more granular RBAC, manage user status).

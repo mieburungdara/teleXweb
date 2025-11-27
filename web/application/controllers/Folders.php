@@ -71,6 +71,9 @@ class Folders extends CI_Controller {
      */
     public function view_shared($code)
     {
+        // Cache this page for 60 minutes
+        $this->output->cache(60);
+
         $data['folder'] = $this->Folder_model->get_folder_by_code($code);
         if (!$data['folder']) {
             $this->session->set_flashdata('error_message', 'Shared folder not found or has been deleted.');

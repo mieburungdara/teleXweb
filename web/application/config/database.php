@@ -6,17 +6,17 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => '45.143.81.225',
-	'username' => 'u1574101_reza',
-	'password' => 'Samarindakaltim',
-	'database' => 'u1574101_telexweb',
-	'port' => '3306',
+	'hostname' => 'localhost',
+	'username' => 'root',
+	'password' => '',
+	'database' => 'telexweb',
+	'port' => 3306,
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
 	'db_debug' => (ENVIRONMENT !== 'production'),
-	'cache_on' => FALSE,
-	'cachedir' => '',
+	'cache_on' => TRUE, // Enable DB Caching
+	'cachedir' => APPPATH . 'cache/db/', // DB Caching directory
 	'char_set' => 'utf8',
 	'dbcollat' => 'utf8_general_ci',
 	'swap_pre' => '',

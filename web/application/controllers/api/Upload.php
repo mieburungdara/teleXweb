@@ -223,12 +223,14 @@ class Upload extends CI_Controller {
 
         $success = $this->File_model->update_file_field($file_id, $user_id, $data);
 
-        if ($success) {
-            echo json_encode(['status' => 'success', 'message' => 'File updated successfully.']);
-        } else {
-            $this->output->set_status_header(500);
-            echo json_encode(['status' => 'error', 'message' => 'Failed to update file.']);
-        }
+        $response = [
+            'status' => $success ? 'success' : 'error',
+            'message' => $success ? 'File updated successfully.' : 'Failed to update file.',
+            'csrf_hash' => $this->security->get_csrf_hash()
+        ];
+        
+        $this->output->set_status_header($success ? 200 : 500);
+        echo json_encode($response);
     }
 
     public function file_preview_data($id)
@@ -303,7 +305,8 @@ class Upload extends CI_Controller {
 
         echo json_encode([
             'status' => 'success',
-            'message' => "Action '{$action}' completed. Success: {$success_count}, Failed: {$error_count}."
+            'message' => "Action '{$action}' completed. Success: {$success_count}, Failed: {$error_count}.",
+            'csrf_hash' => $this->security->get_csrf_hash()
         ]);
     }
     

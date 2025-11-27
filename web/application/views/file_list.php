@@ -93,7 +93,58 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inline editing script
     const editables = document.querySelectorAll('.editable');
     editables.forEach(cell => {
-        // ... (existing inline edit script)
+        cell.addEventListener('click', function(e) {
+            if (this.isContentEditable) return;
+            this.setAttribute('contenteditable', true);
+            this.focus();
+            const originalContent = this.textContent;
+
+            const handleBlur = () => {
+                this.removeAttribute('contenteditable');
+                const newContent = this.textContent;
+
+                if (newContent !== originalContent) {
+                    const formData = new FormData();
+                    formData.append('file_id', this.dataset.id);
+                    formData.append('field', this.dataset.field);
+                    formData.append('value', newContent);
+                    formData.append(window.csrfData.tokenName, window.csrfData.tokenHash);
+
+                    fetch('<?php echo site_url('api/update_file'); ?>', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status !== 'success') {
+                            this.textContent = originalContent;
+                            alert('Error: ' + data.message);
+                        }
+                        // Refresh CSRF token
+                        window.csrfData.tokenHash = data.csrf_hash;
+                    })
+                    .catch(error => {
+                        this.textContent = originalContent;
+                        alert('An error occurred while saving.');
+                    });
+                }
+                this.removeEventListener('blur', handleBlur);
+                this.removeEventListener('keydown', handleKeydown);
+            };
+
+            const handleKeydown = (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    this.blur();
+                } else if (e.key === 'Escape') {
+                    this.textContent = originalContent;
+                    this.blur();
+                }
+            };
+            
+            this.addEventListener('blur', handleBlur);
+            this.addEventListener('keydown', handleKeydown);
+        });
     });
 
     // Bulk actions script
@@ -103,9 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (selectAllCheckbox) {
         selectAllCheckbox.addEventListener('change', function() {
-            fileCheckboxes.forEach(checkbox => {
-                checkbox.checked = this.checked;
-            });
+            fileCheckboxes.forEach(checkbox => checkbox.checked = this.checked);
         });
     }
 
@@ -113,8 +162,8 @@ document.addEventListener('DOMContentLoaded', () => {
         bulkDeleteBtn.addEventListener('click', function(e) {
             e.preventDefault();
             const selectedIds = Array.from(fileCheckboxes)
-                                    .filter(checkbox => checkbox.checked)
-                                    .map(checkbox => checkbox.value);
+                .filter(checkbox => checkbox.checked)
+                .map(checkbox => checkbox.value);
 
             if (selectedIds.length === 0) {
                 alert('Please select at least one file.');
@@ -125,6 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const formData = new FormData();
                 formData.append('action', 'delete');
                 selectedIds.forEach(id => formData.append('file_ids[]', id));
+                formData.append(window.csrfData.tokenName, window.csrfData.tokenHash);
 
                 fetch('<?php echo site_url('api/bulk_action'); ?>', {
                     method: 'POST',
@@ -136,10 +186,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (data.status === 'success') {
                         location.reload();
                     }
+                    window.csrfData.tokenHash = data.csrf_hash;
                 })
                 .catch(error => {
                     alert('An error occurred during the bulk action.');
-                    console.error('Error:', error);
                 });
             }
         });
