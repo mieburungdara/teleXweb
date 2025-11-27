@@ -11,7 +11,7 @@ class Files extends CI_Controller {
             redirect('miniapp/unauthorized');
             return;
         }
-        $this->load->model(['File_model', 'Bot_model', 'Telegram_bot_model', 'Folder_model', 'Access_Log_model']);
+        $this->load->model(['File_model', 'Bot_model', 'Telegram_bot_model', 'Folder_model', 'Access_Log_model', 'Audit_Log_model']);
         $this->load->helper('url');
     }
 
@@ -135,6 +135,39 @@ class Files extends CI_Controller {
         $this->load->view('templates/header', $data);
         $this->load->view('file_detail_view', $data);
         $this->load->view('templates/footer');
+    }
+
+    public function toggle_favorite($id)
+    {
+        if (!$this->session->userdata('logged_in')) {
+            redirect('miniapp/unauthorized');
+            return;
+        }
+        $user_id = $this->session->userdata('user_id');
+        $file = $this->File_model->get_file_by_id($id, $user_id);
+        if (!$file) {
+            $this->session->set_flashdata('error_message', 'File not found.');
+            redirect('files');
+            return;
+        }
+
+        $old_is_favorited = $file['is_favorited'];
+        $new_is_favorited = !$old_is_favorited;
+
+        $success = $this->File_model->toggle_favorite($id, $user_id);
+        if ($success) {
+            $this->Audit_Log_model->log_action(
+                'toggle_file_favorite',
+                'file',
+                $id,
+                ['is_favorited' => $old_is_favorited],
+                ['is_favorited' => $new_is_favorited]
+            );
+            $this->session->set_flashdata('success_message', 'File favorite status toggled.');
+        } else {
+            $this->session->set_flashdata('error_message', 'Failed to toggle file favorite status.');
+        }
+        redirect('files');
     }
 
     public function timeline()

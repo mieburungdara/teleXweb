@@ -8,7 +8,7 @@ class Upload extends CI_Controller {
     public function __construct()
     {
         parent::__construct();
-        $this->load->model(['File_model', 'User_model', 'Bot_model', 'Telegram_bot_model', 'Tag_model']);
+        $this->load->model(['File_model', 'User_model', 'Bot_model', 'Telegram_bot_model', 'Tag_model', 'Failed_Webhook_model', 'Audit_Log_model']); // Load Failed_Webhook_model and Audit_Log_model
         $this->output->set_content_type('application/json');
     }
 
@@ -128,11 +128,28 @@ class Upload extends CI_Controller {
             }
 
         } catch (\Telegram\Bot\Exceptions\TelegramSDKException $e) {
-            log_message('error', 'Telegram API Error during copyMessage: ' . $e->getMessage());
+            $error_msg = 'Telegram API Error during copyMessage: ' . $e->getMessage();
+            log_message('error', $error_msg);
+            
+            // Log failed webhook for retry
+            $this->Failed_Webhook_model->log_failed_webhook(
+                site_url('api/upload'), // Assuming this is the webhook endpoint
+                json_encode($post_data),
+                $error_msg
+            );
+
             $this->output->set_status_header(500);
             echo json_encode(['status' => 'error', 'message' => 'Telegram API error: ' . $e->getMessage()]);
         } catch (Exception $e) {
-            log_message('error', 'General Error during file processing: ' . $e->getMessage());
+            $error_msg = 'General Error during file processing: ' . $e->getMessage();
+            log_message('error', $error_msg);
+
+            // Log failed webhook for retry
+            $this->Failed_Webhook_model->log_failed_webhook(
+                site_url('api/upload'), // Assuming this is the webhook endpoint
+                json_encode($post_data),
+                $error_msg
+            );
             $this->output->set_status_header(500);
             echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred.']);
         }

@@ -60,17 +60,17 @@ Berikut adalah daftar fitur yang direncanakan untuk proyek teleXweb, disusun ber
 *   [x] Deployment (Plan and execute).
 
 ## Phase 5: Admin & Advanced User Features
-*   [ ] Implement Roles & Permissions (more granular RBAC, manage user status).
-*   [ ] Build Admin Dashboard (analytics, charting).
-*   [ ] Build Notifications System (tables, models, controllers, UI for rules, handlers).
-*   [ ] Implement Audit Trail (`Audit_Log_model.php`).
-*   [ ] Implement Webhook Retry Dashboard (`Failed_Webhook_model.php`).
-*   [ ] Implement Tag Consolidation & Duplicate Detection.
-*   [ ] Implement Public Collections (`Public_Collection_model.php`, `Public_Collection_Folder_model.php`).
-*   [ ] Implement User Profiles (`Users.php` controller, `user_profile_view.php`).
-*   [ ] Implement Comments on Shared Folders (`Folder_Comment_model.php`).
-*   [ ] Implement Gamification System (Badges/Achievements, XP System, User Levels, Leaderboard, Milestone Notifications).
-*   [ ] Implement Monetization (Tiered Subscription Model, User Balance Management, Folder Monetization/Selling Folders). This is a very large feature set.
+*   [x] Implement Roles & Permissions (more granular RBAC, manage user status).
+*   [x] Build Admin Dashboard (analytics, charting).
+*   [x] Build Notifications System (tables, models, controllers, UI for rules, handlers).
+*   [x] Implement Audit Trail (`Audit_Log_model.php`).
+*   [x] Implement Webhook Retry Dashboard (`Failed_Webhook_model.php`).
+*   [x] Implement Tag Consolidation & Duplicate Detection.
+*   [x] Implement Public Collections (`Public_Collection_model.php`, `Public_Collection_Folder_model.php`).
+*   [x] Implement User Profiles (`Users.php` controller, `user_profile_view.php`).
+*   [x] Implement Comments on Shared Folders (`Folder_Comment_model.php`).
+*   [x] Implement Gamification System (Badges/Achievements, XP System, User Levels, Leaderboard, Milestone Notifications).
+*   [x] Implement Monetization (Tiered Subscription Model, User Balance Management, Folder Monetization/Selling Folders). This is a very large feature set.
 
 ## Phase 6: Polish & User Experience
 *   [ ] Implement i18n (Multi-Language Support).

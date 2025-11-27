@@ -86,4 +86,14 @@ class Bot_model extends CI_Model {
         $query = $this->db->get('bots');
         return $query->result_array();
     }
+
+    /**
+     * Count all bot records.
+     *
+     * @return int
+     */
+    public function count_all_bots()
+    {
+        return $this->db->count_all('bots');
+    }
 }

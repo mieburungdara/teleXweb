@@ -6,17 +6,60 @@ class Admin extends CI_Controller {
     public function __construct()
     {
         parent::__construct();
-        // Ensure user is logged in and is an admin
-        if (!is_admin()) {
-            $this->session->set_flashdata('error_message', 'Access Denied: Admin privileges required.');
+        // All admin panel actions require login
+        if (!$this->session->userdata('logged_in')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: Please log in.');
             redirect('miniapp/unauthorized');
             return;
         }
-        $this->load->model('Bot_model');
-        $this->load->model('User_model'); // Load User_model
-        $this->load->model('Role_model'); // Load Role_model
+        $this->load->model(['Bot_model', 'User_model', 'Role_model', 'File_model', 'Folder_model', 'Access_Log_model', 'Audit_Log_model']); // Load all necessary models
         $this->load->library('form_validation');
-        $this->load->helper('url');
+        $this->load->helper(['url', 'auth_helper']); // Ensure auth_helper is loaded
+    }
+
+    /**
+     * Display the Admin Dashboard with key statistics.
+     */
+    public function dashboard()
+    {
+        if (!has_permission('view_admin_dashboard')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: Insufficient permissions.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+
+        $data['total_users'] = $this->User_model->count_all_users();
+        $data['total_bots'] = $this->Bot_model->count_all_bots();
+        $data['total_files'] = $this->File_model->count_all_files();
+        $data['total_folders'] = $this->Folder_model->count_all_folders();
+
+        // Get Trending Items for the dashboard
+        $trending_files_raw = $this->Access_Log_model->get_trending_items('file');
+        $trending_folders_raw = $this->Access_Log_model->get_trending_items('folder');
+        
+        $data['trending_files'] = [];
+        foreach($trending_files_raw as $item) {
+            $file_details = $this->File_model->get_file_by_id($item['entity_id'], $this->session->userdata('user_id')); // Assuming user has access for display
+            if ($file_details) {
+                $item['original_file_name'] = $file_details['original_file_name'];
+                $item['mime_type'] = $file_details['mime_type'];
+                $data['trending_files'][] = $item;
+            }
+        }
+
+        $data['trending_folders'] = [];
+        foreach($trending_folders_raw as $item) {
+            $folder_details = $this->Folder_model->get_folder_by_id($item['entity_id'], $this->session->userdata('user_id')); // Assuming user has access for display
+            if ($folder_details) {
+                $item['folder_name'] = $folder_details['folder_name'];
+                $data['trending_folders'][] = $item;
+            }
+        }
+
+        $data['title'] = 'Admin Dashboard';
+        $this->load->view('templates/header', $data);
+        $this->load->view('admin/dashboard_view', $data);
+        $this->load->view('templates/footer');
     }
 
     /**
@@ -24,8 +67,16 @@ class Admin extends CI_Controller {
      */
     public function index()
     {
+        if (!has_permission('manage_bots')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: Insufficient permissions.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
         $data['bots'] = $this->Bot_model->get_all_bots();
+        $data['title'] = 'Manage Bots';
+        $this->load->view('templates/header', $data);
         $this->load->view('admin/bot_list', $data);
+        $this->load->view('templates/footer');
     }
 
     /**
@@ -34,6 +85,11 @@ class Admin extends CI_Controller {
      */
     public function form($id = null)
     {
+        if (!has_permission('manage_bots')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: Insufficient permissions.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
         $data['bot'] = null;
         if ($id) {
             $data['bot'] = $this->Bot_model->get_bot_by_id($id);
@@ -43,7 +99,10 @@ class Admin extends CI_Controller {
                 return;
             }
         }
+        $data['title'] = $id ? 'Edit Bot' : 'Add New Bot';
+        $this->load->view('templates/header', $data);
         $this->load->view('admin/bot_form', $data);
+        $this->load->view('templates/footer');
     }
 
     /**
@@ -51,14 +110,21 @@ class Admin extends CI_Controller {
      */
     public function save()
     {
+        if (!has_permission('manage_bots')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: Insufficient permissions.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
         $id = $this->input->post('id');
         $bot_id_telegram = $this->input->post('bot_id_telegram');
         $name = $this->input->post('name');
         $token = $this->input->post('token');
+        $storage_channel_id = $this->input->post('storage_channel_id');
 
         $this->form_validation->set_rules('bot_id_telegram', 'Telegram Bot ID', 'required|numeric');
         $this->form_validation->set_rules('name', 'Bot Name', 'required|max_length[255]');
         $this->form_validation->set_rules('token', 'Bot Token', 'required|max_length[255]');
+        $this->form_validation->set_rules('storage_channel_id', 'Storage Channel ID', 'required');
 
         if ($this->form_validation->run() === FALSE) {
             // Validation failed, reload form with errors
@@ -75,20 +141,36 @@ class Admin extends CI_Controller {
             'bot_id_telegram' => $bot_id_telegram,
             'name' => $name,
             'token' => $token,
+            'storage_channel_id' => $storage_channel_id
         ];
 
         if ($id) {
             // Update existing bot
+            $old_bot_data = $this->Bot_model->get_bot_by_id($id);
             $success = $this->Bot_model->update_bot($id, $bot_data);
             if ($success) {
+                $this->Audit_Log_model->log_action(
+                    'bot_updated',
+                    'bot',
+                    $id,
+                    $old_bot_data,
+                    $bot_data
+                );
                 $this->session->set_flashdata('success_message', 'Bot updated successfully.');
             } else {
                 $this->session->set_flashdata('error_message', 'Failed to update bot.');
             }
         } else {
             // Add new bot
-            $success = $this->Bot_model->create_bot($bot_data);
-            if ($success) {
+            $new_bot_id = $this->Bot_model->create_bot($bot_data);
+            if ($new_bot_id) {
+                $this->Audit_Log_model->log_action(
+                    'bot_created',
+                    'bot',
+                    $new_bot_id,
+                    [],
+                    $bot_data
+                );
                 $this->session->set_flashdata('success_message', 'Bot added successfully.');
             } else {
                 $this->session->set_flashdata('error_message', 'Failed to add bot.');
@@ -103,14 +185,27 @@ class Admin extends CI_Controller {
      */
     public function delete($id)
     {
+        if (!has_permission('manage_bots')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: Insufficient permissions.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
         if (!$id) {
             $this->session->set_flashdata('error_message', 'Bot ID is required for deletion.');
             redirect('admin');
             return;
         }
 
+        $old_bot_data = $this->Bot_model->get_bot_by_id($id);
         $success = $this->Bot_model->delete_bot($id);
         if ($success) {
+            $this->Audit_Log_model->log_action(
+                'bot_deleted',
+                'bot',
+                $id,
+                $old_bot_data,
+                []
+            );
             $this->session->set_flashdata('success_message', 'Bot deleted successfully.');
         } else {
             $this->session->set_flashdata('error_message', 'Failed to delete bot.');
@@ -123,8 +218,16 @@ class Admin extends CI_Controller {
      */
     public function users()
     {
+        if (!has_permission('manage_users')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: Insufficient permissions.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
         $data['users'] = $this->User_model->get_all_users();
+        $data['title'] = 'Manage Users';
+        $this->load->view('templates/header', $data);
         $this->load->view('admin/user_list', $data);
+        $this->load->view('templates/footer');
     }
 
     /**
@@ -133,6 +236,11 @@ class Admin extends CI_Controller {
      */
     public function edit_user_role($id)
     {
+        if (!has_permission('manage_users')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: Insufficient permissions.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
         $data['user'] = $this->User_model->get_user_by_id($id);
         if (!$data['user']) {
             $this->session->set_flashdata('error_message', 'User not found.');
@@ -140,7 +248,10 @@ class Admin extends CI_Controller {
             return;
         }
         $data['roles'] = $this->Role_model->get_all_roles();
+        $data['title'] = 'Edit User Role';
+        $this->load->view('templates/header', $data);
         $this->load->view('admin/user_role_form', $data);
+        $this->load->view('templates/footer');
     }
 
     /**
@@ -148,6 +259,11 @@ class Admin extends CI_Controller {
      */
     public function update_user_role()
     {
+        if (!has_permission('manage_users')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: Insufficient permissions.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
         $user_id = $this->input->post('user_id');
         $role_id = $this->input->post('role_id');
 
@@ -160,12 +276,110 @@ class Admin extends CI_Controller {
             return;
         }
 
+        $old_user_data = $this->User_model->get_user_by_id($user_id);
         $success = $this->User_model->update_user_role($user_id, $role_id);
         if ($success) {
+            $this->Audit_Log_model->log_action(
+                'user_role_updated',
+                'user',
+                $user_id,
+                ['role_id' => $old_user_data['role_id']],
+                ['role_id' => $role_id]
+            );
             $this->session->set_flashdata('success_message', 'User role updated successfully.');
         } else {
             $this->session->set_flashdata('error_message', 'Failed to update user role.');
         }
         redirect('admin/users');
+    }
+
+    /**
+     * Display a list of all roles for permission management.
+     */
+    public function roles()
+    {
+        if (!has_permission('manage_roles')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: Insufficient permissions.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+        $data['roles'] = $this->Role_model->get_all_roles();
+        $data['title'] = 'Manage Roles';
+        $this->load->view('templates/header', $data);
+        $this->load->view('admin/role_list', $data);
+        $this->load->view('templates/footer');
+    }
+
+    /**
+     * Display form to edit a role's permissions.
+     * @param int $id Role ID to edit.
+     */
+    public function edit_role_permissions($id)
+    {
+        if (!has_permission('manage_roles')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: Insufficient permissions.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+        $data['role'] = $this->Role_model->get_role_by_id($id);
+        if (!$data['role']) {
+            $this->session->set_flashdata('error_message', 'Role not found.');
+            redirect('admin/roles');
+            return;
+        }
+        $data['role_permissions'] = $this->Role_model->get_role_permissions($id);
+        $data['all_permissions'] = [
+            'view_admin_dashboard', // New permission
+            'manage_bots',
+            'manage_users',
+            'manage_roles',
+            'manage_public_collections', // New permission
+            // Add other permissions as needed
+        ];
+        $data['title'] = 'Edit Role Permissions';
+        $this->load->view('templates/header', $data);
+        $this->load->view('admin/role_permissions_form', $data);
+        $this->load->view('templates/footer');
+    }
+
+    /**
+     * Handle form submission for updating a role's permissions.
+     */
+    public function update_role_permissions()
+    {
+        if (!has_permission('manage_roles')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: Insufficient permissions.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+        $role_id = $this->input->post('role_id');
+        $permissions = $this->input->post('permissions'); // Array of selected permissions
+
+        if (!$role_id) {
+            $this->session->set_flashdata('error_message', 'Role ID is required.');
+            redirect('admin/roles');
+            return;
+        }
+
+        // Ensure $permissions is an array, even if empty
+        $permissions = is_array($permissions) ? $permissions : [];
+
+        $old_role_data = $this->Role_model->get_role_by_id($role_id);
+        $old_permissions = json_decode($old_role_data['permissions'], true) ?: [];
+
+        $success = $this->Role_model->update_role_permissions($role_id, $permissions);
+        if ($success) {
+            $this->Audit_Log_model->log_action(
+                'role_permissions_updated',
+                'role',
+                $role_id,
+                ['permissions' => $old_permissions],
+                ['permissions' => $permissions]
+            );
+            $this->session->set_flashdata('success_message', 'Role permissions updated successfully.');
+        } else {
+            $this->session->set_flashdata('error_message', 'Failed to update role permissions.');
+        }
+        redirect('admin/roles');
     }
 }

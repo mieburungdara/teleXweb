@@ -22,20 +22,38 @@
 
         <div class="card mt-4">
             <div class="card-header">
-                <h3>Reviews</h3>
+                <h3>Comments</h3>
             </div>
             <div class="card-body">
-                <?php if (empty($reviews)): ?>
-                    <p>No reviews yet.</p>
+                <?php if ($this->session->flashdata('error_message')): ?>
+                    <div class="alert alert-danger"><?php echo $this->session->flashdata('error_message'); ?></div>
+                <?php endif; ?>
+
+                <?php if (empty($comments)): ?>
+                    <p>No comments yet. Be the first to leave a comment!</p>
                 <?php else: ?>
-                    <?php foreach ($reviews as $review): ?>
+                    <?php foreach ($comments as $comment): ?>
                         <div class="mb-3 border-bottom pb-2">
-                            <strong><?php echo htmlspecialchars($review['username'] ?? 'Anonymous'); ?></strong>
-                            <small class="text-muted">(Rating: <?php echo $review['rating']; ?>/5)</small>
-                            <p class="mt-1"><?php echo nl2br(htmlspecialchars($review['review_text'])); ?></p>
-                            <small class="text-muted"><?php echo date('F j, Y', strtotime($review['created_at'])); ?></small>
+                            <strong><?php echo htmlspecialchars($comment['username'] ?? 'Anonymous'); ?></strong>
+                            <p class="mt-1"><?php echo nl2br(htmlspecialchars($comment['comment_text'])); ?></p>
+                            <small class="text-muted"><?php echo date('Y-m-d H:i', strtotime($comment['created_at'])); ?></small>
                         </div>
                     <?php endforeach; ?>
+                <?php endif; ?>
+
+                <?php if ($this->session->userdata('logged_in')): ?>
+                    <div class="mt-4">
+                        <h4>Post a Comment</h4>
+                        <?php echo form_open('folders/submit_comment'); ?>
+                            <input type="hidden" name="folder_id" value="<?php echo $collection['id'] ?? $folder['id']; ?>">
+                            <div class="mb-3">
+                                <textarea name="comment_text" class="form-control" rows="3" placeholder="Write your comment here..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit Comment</button>
+                        </form>
+                    </div>
+                <?php else: ?>
+                    <p class="mt-4">Please log in to leave a comment.</p>
                 <?php endif; ?>
             </div>
         </div>

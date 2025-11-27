@@ -7,6 +7,7 @@ class File_model extends CI_Model {
     {
         parent::__construct();
         $this->load->database();
+        $this->load->model('Audit_Log_model'); // Load Audit Log Model
     }
 
     /**
@@ -20,7 +21,15 @@ class File_model extends CI_Model {
         $file_data['created_at'] = date('Y-m-d H:i:s');
         
         if ($this->db->insert('files', $file_data)) {
-            return $this->db->insert_id();
+            $file_id = $this->db->insert_id();
+            $this->Audit_Log_model->log_action(
+                'file_created',
+                'file',
+                $file_id,
+                [],
+                $file_data
+            );
+            return $file_id;
         }
         return FALSE;
     }
@@ -47,6 +56,7 @@ class File_model extends CI_Model {
     public function get_recent_files($user_id, $limit = 5)
     {
         $this->db->where('user_id', $user_id);
+        $this->db->where('deleted_at IS NULL');
         $this->db->order_by('created_at', 'DESC');
         $this->db->limit($limit);
         $query = $this->db->get('files');
@@ -68,6 +78,7 @@ class File_model extends CI_Model {
         $this->db->join('folder_tags', 'folders.id = folder_tags.folder_id', 'left');
         $this->db->join('tags', 'folder_tags.tag_id = tags.id', 'left');
         $this->db->where('files.user_id', $user_id);
+        $this->db->where('files.deleted_at IS NULL');
         $this->db->group_start();
         $this->db->like('files.original_file_name', $keyword);
         $this->db->or_like('tags.tag_name', $keyword);
@@ -231,10 +242,26 @@ class File_model extends CI_Model {
      */
     public function soft_delete_file($file_id, $user_id)
     {
+        $old_file_data = $this->get_file_by_id($file_id, $user_id);
+        if (!$old_file_data) {
+            return FALSE;
+        }
+
         $data = ['deleted_at' => date('Y-m-d H:i:s')];
         $this->db->where('id', $file_id);
         $this->db->where('user_id', $user_id);
-        return $this->db->update('files', $data);
+        $success = $this->db->update('files', $data);
+
+        if ($success) {
+            $this->Audit_Log_model->log_action(
+                'file_soft_deleted',
+                'file',
+                $file_id,
+                ['deleted_at' => $old_file_data['deleted_at']],
+                ['deleted_at' => $data['deleted_at']]
+            );
+        }
+        return $success;
     }
 
     /**
@@ -251,4 +278,29 @@ class File_model extends CI_Model {
         $query = $this->db->get('files');
         return $query->result_array();
     }
-}
+
+    /**
+     * Count all non-deleted file records.
+     *
+     * @return int
+     */
+        public function count_all_files()
+        {
+            $this->db->where('deleted_at IS NULL');
+            return $this->db->count_all_results('files');
+        }
+    
+        /**
+         * Count all non-deleted files for a specific user.
+         *
+         * @param int $user_id
+         * @return int
+         */
+        public function count_all_files_for_user($user_id)
+        {
+            $this->db->where('user_id', $user_id);
+            $this->db->where('deleted_at IS NULL');
+            return $this->db->count_all_results('files');
+        }
+    }
+    

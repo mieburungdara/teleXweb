@@ -11,7 +11,7 @@ class SmartCollections extends CI_Controller {
             redirect('miniapp/unauthorized');
             return;
         }
-        $this->load->model(['Smart_Collection_Rule_model', 'File_model', 'Folder_model']);
+        $this->load->model(['Smart_Collection_Rule_model', 'File_model', 'Folder_model', 'Audit_Log_model']); // Load Audit Log Model
         $this->load->library('form_validation');
         $this->load->helper('url');
     }
@@ -92,11 +92,34 @@ class SmartCollections extends CI_Controller {
         ];
 
         if ($id) {
-            $this->Smart_Collection_Rule_model->update_rule($id, $user_id, $data);
-            $this->session->set_flashdata('success_message', 'Smart collection updated successfully.');
+            $old_rule_data = $this->Smart_Collection_Rule_model->get_rule($id, $user_id);
+            $success = $this->Smart_Collection_Rule_model->update_rule($id, $user_id, $data);
+            if ($success) {
+                $this->Audit_Log_model->log_action(
+                    'smart_collection_updated',
+                    'smart_collection',
+                    $id,
+                    $old_rule_data,
+                    $data
+                );
+                $this->session->set_flashdata('success_message', 'Smart collection updated successfully.');
+            } else {
+                $this->session->set_flashdata('error_message', 'Failed to update smart collection.');
+            }
         } else {
-            $this->Smart_Collection_Rule_model->create_rule($data);
-            $this->session->set_flashdata('success_message', 'Smart collection created successfully.');
+            $new_rule_id = $this->Smart_Collection_Rule_model->create_rule($data);
+            if ($new_rule_id) {
+                $this->Audit_Log_model->log_action(
+                    'smart_collection_created',
+                    'smart_collection',
+                    $new_rule_id,
+                    [],
+                    $data
+                );
+                $this->session->set_flashdata('success_message', 'Smart collection created successfully.');
+            } else {
+                $this->session->set_flashdata('error_message', 'Failed to create smart collection.');
+            }
         }
 
         redirect('smartcollections');
@@ -109,8 +132,26 @@ class SmartCollections extends CI_Controller {
     public function delete($id)
     {
         $user_id = $this->session->userdata('user_id');
-        $this->Smart_Collection_Rule_model->delete_rule($id, $user_id);
-        $this->session->set_flashdata('success_message', 'Smart collection deleted successfully.');
+        $old_rule_data = $this->Smart_Collection_Rule_model->get_rule($id, $user_id);
+        if (!$old_rule_data) {
+            $this->session->set_flashdata('error_message', 'Smart collection rule not found.');
+            redirect('smartcollections');
+            return;
+        }
+
+        $success = $this->Smart_Collection_Rule_model->delete_rule($id, $user_id);
+        if ($success) {
+            $this->Audit_Log_model->log_action(
+                'smart_collection_deleted',
+                'smart_collection',
+                $id,
+                ['deleted_at' => null], // Assuming it was not deleted before
+                ['deleted_at' => date('Y-m-d H:i:s')]
+            );
+            $this->session->set_flashdata('success_message', 'Smart collection deleted successfully.');
+        } else {
+            $this->session->set_flashdata('error_message', 'Failed to delete smart collection.');
+        }
         redirect('smartcollections');
     }
 

@@ -6,7 +6,7 @@ class Folders extends CI_Controller {
     public function __construct()
     {
         parent::__construct();
-        $this->load->model(['Folder_model', 'Folder_Review_model', 'File_model', 'Folder_Like_model', 'Access_Log_model']);
+        $this->load->model(['Folder_model', 'Folder_Review_model', 'File_model', 'Folder_Like_model', 'Access_Log_model', 'Audit_Log_model', 'Folder_Comment_model', 'User_model']); // Load Folder_Comment_model and User_model
         $this->load->library('form_validation');
         $this->load->helper('url');
         $this->load->library('session');
@@ -83,10 +83,12 @@ class Folders extends CI_Controller {
         $folder_id = $data['folder']['id'];
         
         // Log access
-        $this->Access_Log_model->log_access('folder', $folder_id, $this->session->userdata('user_id'));
+        $user_id = $this->session->userdata('logged_in') ? $this->session->userdata('user_id') : null;
+        $this->Access_Log_model->log_access('folder', $folder_id, $user_id);
 
         $data['folder']['tags'] = implode(', ', $this->Folder_model->get_folder_tags($folder_id));
         $data['reviews'] = $this->Folder_Review_model->get_reviews_for_folder($folder_id);
+        $data['comments'] = $this->Folder_Comment_model->get_comments_for_folder($folder_id); // Fetch comments
         $data['like_count'] = $this->Folder_Like_model->get_like_count($folder_id);
         $data['user_has_liked'] = $this->session->userdata('logged_in') ? $this->Folder_Like_model->has_user_liked($folder_id, $this->session->userdata('user_id')) : false;
 
@@ -95,6 +97,57 @@ class Folders extends CI_Controller {
         $this->load->view('templates/header', $data);
         $this->load->view('folders/view_shared', $data);
         $this->load->view('templates/footer');
+    }
+
+    /**
+     * Handle form submission for adding a comment to a shared folder.
+     */
+    public function submit_comment()
+    {
+        if (!$this->session->userdata('logged_in')) {
+            $this->session->set_flashdata('error_message', 'You must be logged in to post a comment.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+
+        $folder_id = $this->input->post('folder_id');
+        $comment_text = $this->input->post('comment_text');
+        $user_id = $this->session->userdata('user_id');
+        $parent_comment_id = $this->input->post('parent_comment_id'); // For replies
+
+        $this->form_validation->set_rules('comment_text', 'Comment', 'required|max_length[1000]');
+        $this->form_validation->set_rules('folder_id', 'Folder ID', 'required|numeric');
+
+        if ($this->form_validation->run() === FALSE) {
+            $this->session->set_flashdata('error_message', validation_errors());
+        } else {
+            $comment_data = [
+                'folder_id' => $folder_id,
+                'user_id' => $user_id,
+                'comment_text' => $comment_text,
+                'parent_comment_id' => !empty($parent_comment_id) ? $parent_comment_id : null,
+            ];
+
+            if ($this->Folder_Comment_model->create_comment($comment_data)) {
+                 $this->Audit_Log_model->log_action(
+                    'folder_comment_added',
+                    'folder_comment',
+                    $this->db->insert_id(), // Get the ID of the newly created comment
+                    [],
+                    $comment_data
+                );
+                $this->User_model->add_xp($user_id, 5); // Award XP for commenting
+                $this->session->set_flashdata('success_message', 'Comment posted successfully.');
+            } else {
+                $this->session->set_flashdata('error_message', 'Failed to post comment.');
+            }
+        }
+        $folder = $this->Folder_model->get_folder_by_id($folder_id, $user_id); // Fetch folder to redirect
+        if ($folder) {
+            redirect('folders/view_shared/' . $folder['code']);
+        } else {
+            redirect('folders'); // Fallback
+        }
     }
 
     /**
@@ -109,11 +162,32 @@ class Folders extends CI_Controller {
             return;
         }
         $user_id = $this->session->userdata('user_id');
+        $folder = $this->Folder_model->get_folder_by_id($folder_id, $user_id);
+        if (!$folder) {
+            $this->session->set_flashdata('error_message', 'Folder not found.');
+            redirect('folders');
+            return;
+        }
+        
+        $old_is_favorited = $folder['is_favorited'];
+
         $this->Folder_Like_model->toggle_like($folder_id, $user_id);
         
+        // Assuming toggle_like also updates the is_favorited status in the DB
+        $new_folder_data = $this->Folder_model->get_folder_by_id($folder_id, $user_id);
+        $new_is_favorited = $new_folder_data['is_favorited'];
+
+        $this->Audit_Log_model->log_action(
+            'toggle_folder_like',
+            'folder',
+            $folder_id,
+            ['is_favorited' => $old_is_favorited],
+            ['is_favorited' => $new_is_favorited]
+        );
+
         // Redirect back to the shared folder view
-        $folder = $this->db->get_where('folders', ['id' => $folder_id])->row();
-        redirect('folders/view_shared/' . $folder->code);
+        $folder_after_toggle = $this->db->get_where('folders', ['id' => $folder_id])->row_array();
+        redirect('folders/view_shared/' . $folder_after_toggle['code']);
     }
 
     /**
@@ -169,6 +243,14 @@ class Folders extends CI_Controller {
             // In a real app, you would check if the user already reviewed this.
             // For now, we allow multiple reviews for simplicity of this step.
             if ($this->Folder_Review_model->add_review($data)) {
+                 $this->Audit_Log_model->log_action(
+                    'folder_review_added',
+                    'folder',
+                    $folder_id,
+                    [],
+                    $data
+                );
+                $this->User_model->add_xp($user_id, 10); // Award XP for submitting a review
                 $this->session->set_flashdata('success_message', 'Review submitted successfully.');
             } else {
                 $this->session->set_flashdata('error_message', 'Failed to submit review.');
@@ -211,14 +293,34 @@ class Folders extends CI_Controller {
 
         if ($id) {
             // Update
-            $this->Folder_model->update_folder($id, $user_id, $folder_data);
-            $this->Folder_model->update_folder_tags($id, $tags_string, $user_id);
-            $this->session->set_flashdata('success_message', 'Folder updated successfully.');
+            $old_folder_data = $this->Folder_model->get_folder_by_id($id, $user_id);
+            $success = $this->Folder_model->update_folder($id, $user_id, $folder_data);
+            if ($success) {
+                $this->Folder_model->update_folder_tags($id, $tags_string, $user_id);
+                $this->Audit_Log_model->log_action(
+                    'folder_updated',
+                    'folder',
+                    $id,
+                    $old_folder_data,
+                    $folder_data
+                );
+                $this->session->set_flashdata('success_message', 'Folder updated successfully.');
+            } else {
+                $this->session->set_flashdata('error_message', 'Failed to update folder.');
+            }
         } else {
             // Create
             $new_folder_id = $this->Folder_model->create_folder($folder_data);
             if ($new_folder_id) {
                 $this->Folder_model->update_folder_tags($new_folder_id, $tags_string, $user_id);
+                $this->Audit_Log_model->log_action(
+                    'folder_created',
+                    'folder',
+                    $new_folder_id,
+                    [],
+                    $folder_data
+                );
+                $this->User_model->add_xp($user_id, 15); // Award XP for creating a folder
                 $this->session->set_flashdata('success_message', 'Folder created successfully.');
             } else {
                 $this->session->set_flashdata('error_message', 'Failed to create folder.');
@@ -265,8 +367,26 @@ class Folders extends CI_Controller {
             return;
         }
         $user_id = $this->session->userdata('user_id');
-        $this->Folder_model->delete_folder($id, $user_id);
-        $this->session->set_flashdata('success_message', 'Folder deleted successfully.');
+        $old_folder_data = $this->Folder_model->get_folder_by_id($id, $user_id);
+        if (!$old_folder_data) {
+            $this->session->set_flashdata('error_message', 'Folder not found.');
+            redirect('folders');
+            return;
+        }
+
+        $success = $this->Folder_model->delete_folder($id, $user_id);
+        if ($success) {
+            $this->Audit_Log_model->log_action(
+                'folder_soft_deleted',
+                'folder',
+                $id,
+                ['deleted_at' => $old_folder_data['deleted_at']],
+                ['deleted_at' => date('Y-m-d H:i:s')]
+            );
+            $this->session->set_flashdata('success_message', 'Folder deleted successfully.');
+        } else {
+            $this->session->set_flashdata('error_message', 'Failed to delete folder.');
+        }
         redirect('folders');
     }
 }

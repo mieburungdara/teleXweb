@@ -231,4 +231,28 @@ class Folder_model extends CI_Model {
 
         return $stats;
     }
+
+    /**
+     * Count all non-deleted folder records.
+     *
+     * @return int
+     */
+    public function count_all_folders()
+    {
+        $this->db->where('deleted_at IS NULL');
+        return $this->db->count_all_results('folders');
+    }
+
+    /**
+     * Count all non-deleted folders for a specific user.
+     *
+     * @param int $user_id
+     * @return int
+     */
+    public function count_all_folders_for_user($user_id)
+    {
+        $this->db->where('user_id', $user_id);
+        $this->db->where('deleted_at IS NULL');
+        return $this->db->count_all_results('folders');
+    }
 }

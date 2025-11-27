@@ -57,7 +57,8 @@ $route['miniapp/dashboard'] = 'MiniApp/dashboard';
 $route['miniapp/unauthorized'] = 'MiniApp/unauthorized';
 
 // Admin Routes for Bot Management
-$route['admin'] = 'Admin/index';
+$route['admin'] = 'Admin/dashboard'; // Default admin route to dashboard
+$route['admin/dashboard'] = 'Admin/dashboard';
 $route['admin/form'] = 'Admin/form';
 $route['admin/form/(:num)'] = 'Admin/form/$1';
 $route['admin/save'] = 'Admin/save';
@@ -67,6 +68,16 @@ $route['admin/delete/(:num)'] = 'Admin/delete/$1';
 $route['admin/users'] = 'Admin/users';
 $route['admin/edit_user_role/(:num)'] = 'Admin/edit_user_role/$1';
 $route['admin/update_user_role'] = 'Admin/update_user_role';
+
+// Admin Routes for Role Management
+$route['admin/roles'] = 'Admin/roles';
+$route['admin/edit_role_permissions/(:num)'] = 'Admin/edit_role_permissions/$1';
+$route['admin/update_role_permissions'] = 'Admin/update_role_permissions';
+
+// Admin Routes for Tag Management
+$route['admin/tagmanagement'] = 'TagManagement/index';
+$route['admin/tagmanagement/find_duplicates'] = 'TagManagement/find_duplicates';
+$route['admin/tagmanagement/merge'] = 'TagManagement/merge';
 
 // Main file view
 $route['files'] = 'Files/index';
@@ -100,6 +111,7 @@ $route['folders/delete/(:num)'] = 'Folders/delete/$1';
 // Folder View & Review Routes
 $route['folders/view/(:num)'] = 'Folders/view/$1';
 $route['folders/submit_review'] = 'Folders/submit_review';
+$route['folders/submit_comment'] = 'Folders/submit_comment';
 
 // Folder Sharing Routes
 $route['folders/share/(:num)'] = 'Folders/share/$1';
@@ -119,6 +131,23 @@ $route['smartcollections/create_edit/(:num)'] = 'SmartCollections/create_edit/$1
 $route['smartcollections/save'] = 'SmartCollections/save';
 $route['smartcollections/delete/(:num)'] = 'SmartCollections/delete/$1';
 $route['smartcollections/view_collection/(:num)'] = 'SmartCollections/view_collection/$1';
+
+// Public Collections Routes
+$route['publiccollections'] = 'PublicCollections/index';
+$route['publiccollections/create_edit'] = 'PublicCollections/create_edit';
+$route['publiccollections/create_edit/(:num)'] = 'PublicCollections/create_edit/$1';
+$route['publiccollections/save'] = 'PublicCollections/save';
+$route['publiccollections/delete/(:num)'] = 'PublicCollections/delete/$1';
+$route['publiccollections/view_public/(:any)'] = 'PublicCollections/view_public/$1';
+
+// User Profile Routes
+$route['users/profile'] = 'Users/profile';
+$route['users/edit_profile'] = 'Users/edit_profile';
+$route['users/update_profile'] = 'Users/update_profile';
+
+// Monetization Routes
+$route['monetization/balance'] = 'Monetization/balance';
+$route['monetization/add_funds'] = 'Monetization/add_funds';
 
 
 
