@@ -60,6 +60,7 @@ class MiniApp extends CI_Controller {
                     'language_code' => $telegram_user_data['language_code'] ?? null,
                 ];
 
+                $is_new_user = FALSE;
                 $user_id = null;
                 if ($user) {
                     // Update existing user
@@ -80,6 +81,7 @@ class MiniApp extends CI_Controller {
                         redirect('miniapp/unauthorized');
                         return;
                     }
+                    $is_new_user = TRUE;
                 }
 
                 // Retrieve the full user data including role_id and role_name for session
@@ -98,7 +100,8 @@ class MiniApp extends CI_Controller {
                     'username' => $full_user_data['username'],
                     'logged_in' => TRUE,
                     'role_id' => $full_user_data['role_id'],
-                    'role_name' => $full_user_data['role_name']
+                    'role_name' => $full_user_data['role_name'],
+                    'new_user_onboard' => $is_new_user // Set onboarding flag
                 ]);
 
                 log_message('info', 'MiniApp Auth: User ' . $user_id . ' (Telegram ID: ' . $telegram_id . ') authenticated and session created.');
@@ -193,6 +196,13 @@ class MiniApp extends CI_Controller {
             redirect('miniapp/unauthorized');
             return;
         }
+        
+        if ($this->session->userdata('new_user_onboard')) {
+            $this->session->unset_userdata('new_user_onboard'); // Unset flag after showing
+            $this->load->view('welcome_onboarding_view');
+            return;
+        }
+
         $this->load->view('dashboard_view');
     }
 
@@ -203,5 +213,26 @@ class MiniApp extends CI_Controller {
     {
         $data['error_message'] = $this->session->flashdata('error_message');
         $this->load->view('auth_error_view', $data);
+    }
+
+    /**
+     * Set the user's preferred language.
+     * @param string $lang The language code (e.g., 'english', 'indonesian').
+     */
+    public function set_language($lang)
+    {
+        $this->load->library('user_agent'); // Load user agent for referrer access
+        // Validate language
+        $available_languages = $this->config->item('available_languages');
+        if (array_key_exists($lang, $available_languages)) {
+            $this->session->set_userdata('site_language', $lang);
+        }
+
+        // Redirect back to the previous page or default
+        if ($this->agent->is_referral()) {
+            redirect($this->agent->referrer());
+        } else {
+            redirect('miniapp/dashboard');
+        }
     }
 }

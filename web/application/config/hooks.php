@@ -19,3 +19,10 @@ $hook['post_controller_constructor'][] = array(
     'filename' => 'Monolog_hook.php',
     'filepath' => 'hooks'
 );
+
+$hook['post_controller_constructor'][] = array(
+    'class'    => 'LanguageLoader',
+    'function' => 'load_language',
+    'filename' => 'LanguageLoader.php',
+    'filepath' => 'hooks'
+);

@@ -73,7 +73,7 @@ Berikut adalah daftar fitur yang direncanakan untuk proyek teleXweb, disusun ber
 *   [x] Implement Monetization (Tiered Subscription Model, User Balance Management, Folder Monetization/Selling Folders). This is a very large feature set.
 
 ## Phase 6: Polish & User Experience
-*   [ ] Implement i18n (Multi-Language Support).
-*   [ ] UI Theming (Light/Dark theme switcher).
-*   [ ] Build Onboarding Flow (Tutorials).
+*   [x] Implement i18n (Multi-Language Support).
+*   [x] UI Theming (Light/Dark theme switcher).
+*   [x] Build Onboarding Flow (Tutorials).
 *   [ ] Develop User Documentation.

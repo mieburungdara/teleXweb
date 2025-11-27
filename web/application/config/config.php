@@ -78,7 +78,33 @@ $config['url_suffix'] = '';
 | than english.
 |
 */
-$config['language']	= 'english';
+$config['language']	= 'english'; // Default language, overridden by session
+
+/*
+|--------------------------------------------------------------------------
+| Available Languages
+|--------------------------------------------------------------------------
+|
+| A list of available languages in the format 'folder_name' => 'Display Name'.
+|
+*/
+$config['available_languages'] = [
+    'english' => 'English',
+    'indonesian' => 'Bahasa Indonesia'
+];
+
+/*
+|--------------------------------------------------------------------------
+| Language Abbreviation Map
+|--------------------------------------------------------------------------
+|
+| Maps short language codes (e.g., 'en', 'id') to their full folder names.
+|
+*/
+$config['language_abbr'] = [
+    'en' => 'english',
+    'id' => 'indonesian'
+];
 
 /*
 |--------------------------------------------------------------------------
