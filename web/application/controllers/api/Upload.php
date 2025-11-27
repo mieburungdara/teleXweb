@@ -230,4 +230,36 @@ class Upload extends CI_Controller {
             echo json_encode(['status' => 'error', 'message' => 'Failed to update file.']);
         }
     }
+
+    public function file_preview_data($id)
+    {
+        $this->load->library('session');
+        if (!$this->session->userdata('logged_in')) {
+            $this->output->set_status_header(403);
+            echo json_encode(['status' => 'error', 'message' => 'Unauthorized']);
+            return;
+        }
+
+        $user_id = $this->session->userdata('user_id');
+        $file = $this->File_model->get_file_by_id($id, $user_id);
+
+        if (!$file) {
+            $this->output->set_status_header(404);
+            echo json_encode(['status' => 'error', 'message' => 'File not found.']);
+            return;
+        }
+
+        // Generate thumbnail URL for the preview
+        $file['thumbnail_url'] = null;
+        if (!empty($file['thumbnail_file_id']) && !empty($file['bot_id'])) {
+            $bot_record = $this->Bot_model->get_bot_by_id($file['bot_id']);
+            if ($bot_record && !empty($bot_record['token'])) {
+                if ($this->Telegram_bot_model->init($bot_record['token'])) {
+                    $file['thumbnail_url'] = $this->Telegram_bot_model->get_file_url($file['thumbnail_file_id']);
+                }
+            }
+        }
+
+        echo json_encode(['status' => 'success', 'file' => $file]);
+    }
 }

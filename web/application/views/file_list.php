@@ -43,10 +43,14 @@
                                 <td><?php echo date('Y-m-d H:i', strtotime($file['created_at'])); ?></td>
                                 <td>
                                     <?php if ($file['is_favorited']): ?>
-                                        <span class="text-warning">&#9733;</span>
+                                        <a href="<?php echo site_url('files/toggle_favorite/' . $file['id']); ?>" class="text-warning" title="Toggle Favorite">&#9733;</a>
                                     <?php else: ?>
-                                        <span class="text-muted">&#9734;</span>
+                                        <a href="<?php echo site_url('files/toggle_favorite/' . $file['id']); ?>" class="text-muted" title="Toggle Favorite">&#9734;</a>
                                     <?php endif; ?>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-secondary preview-btn" data-id="<?php echo $file['id']; ?>" data-bs-toggle="modal" data-bs-target="#previewModal">Preview</button>
+                                    <a href="<?php echo site_url('files/details/' . $file['id']); ?>" class="btn btn-sm btn-outline-info">Details</a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

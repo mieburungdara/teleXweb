@@ -6,8 +6,67 @@
     </div>
 </footer>
 
+<div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="previewModalLabel">File Preview</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="previewModalBody">
+        <!-- Content will be loaded here via AJAX -->
+        <p>Loading...</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Bootstrap 5 JS Bundle with Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const previewModal = document.getElementById('previewModal');
+    if (previewModal) {
+        previewModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const fileId = button.getAttribute('data-id');
+            const modalBody = document.getElementById('previewModalBody');
+            modalBody.innerHTML = '<p>Loading...</p>';
+
+            fetch(`<?php echo site_url('api/file_preview_data/'); ?>${fileId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        const file = data.file;
+                        let content = `
+                            <h3>${file.original_file_name || 'N/A'}</h3>
+                            <table class="table">
+                                <tr><th>ID</th><td>${file.id}</td></tr>
+                                <tr><th>Type</th><td>${file.mime_type || 'N/A'}</td></tr>
+                                <tr><th>Size</th><td>${file.file_size ? (file.file_size / 1024).toFixed(2) + ' KB' : 'N/A'}</td></tr>
+                                <tr><th>Folder</th><td>${file.folder_name || 'Unfiled'}</td></tr>
+                            </table>
+                        `;
+                        if (file.thumbnail_url) {
+                            content = `<div class="text-center"><img src="${file.thumbnail_url}" class="img-fluid mb-3"></div>` + content;
+                        }
+                        modalBody.innerHTML = content;
+                    } else {
+                        modalBody.innerHTML = `<p class="text-danger">Error: ${data.message}</p>`;
+                    }
+                })
+                .catch(error => {
+                    modalBody.innerHTML = '<p class="text-danger">Failed to load file data.</p>';
+                    console.error('Error:', error);
+                });
+        });
+    }
+});
+</script>
 
 </body>
 </html>
