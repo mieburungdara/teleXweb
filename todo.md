@@ -3,7 +3,7 @@
 Berikut adalah daftar fitur yang direncanakan untuk proyek teleXweb, disusun berdasarkan fase dan status implementasi. Anda dapat menandai (`[x]`) tugas yang telah selesai.
 
 ## Phase 1: Project & Database Setup
-*   [ ] Install `telegram-bot-sdk` (or similar library) for simplified Telegram Bot API interaction.
+*   [x] Install `telegram-bot-sdk` (or similar library) for simplified Telegram Bot API interaction.
 *   [x] Run `schema.sql` to create `files` table (and other initial tables not created by migrations). (Implemented via migrations)
 
 ## Phase 2: Backend API & Bot Logic (Core)
@@ -11,31 +11,31 @@ Berikut adalah daftar fitur yang direncanakan untuk proyek teleXweb, disusun ber
 *   [x] Create `Folder_model.php` and `Tag_model.php`, `Folder_Tag_model.php` (and related migrations).
 *   [x] Develop `Api.php` controller (`/api/upload`) for file metadata reception:
     *   [x] Handle `file_unique_id` for deduplication. (Basic implementation)
-    *   [ ] Perform `copyMessages` to storage channel and store `storage_channel_id`, `storage_message_id`, `media_group_id`.
+    *   [x] Perform `copyMessages` to storage channel and store `storage_channel_id`, `storage_message_id`, `media_group_id`.
     *   [x] Set initial `process_status` and `webhook_reliability_status`. (Basic implementation)
     *   [ ] Trigger `Folder_model->update_folder_size()` on file additions.
     *   [ ] Trigger XP/achievement checks.
-*   [ ] Implement Webhook Script (`webhook.php`) to receive updates from Telegram and forward to CI API.
-*   [ ] Implement Bot Commands Logic (in `webhook.php` or dedicated bot controller):
-    *   [ ] `/start` command (with deep-link parsing for purchases).
-    *   [ ] `/help` command.
-    *   [ ] `/recent [N]` command.
-    *   [ ] `/search [keyword]` command (folder-based tagging).
-    *   [ ] `/fav` command.
+*   [x] Implement Webhook Script (`webhook.php`) to receive updates from Telegram and forward to CI API. (Basic implementation)
+*   [x] Implement Bot Commands Logic (in `webhook.php` or dedicated bot controller):
+    *   [x] `/start` command (with deep-link parsing for purchases).
+    *   [x] `/help` command.
+    *   [x] `/recent [N]` command.
+    *   [x] `/search [keyword]` command (folder-based tagging).
+    *   [x] `/fav` command.
 
 ## Phase 3: Frontend Web Interface (Core)
-*   [ ] Create Base Templates (`application/views/templates/header.php`, `footer.php`).
-*   [ ] Create `Files.php` Controller for file metadata listing.
-*   [ ] Develop `file_list.php` View (tabular format, folder navigation, tag display, media grouping).
-*   [ ] Implement Folder Management (Web Interface):
-    *   [ ] Create/Rename/Delete/Move Folders (`Folders.php` controller, `Folder_model.php`).
-    *   [ ] `folder_management_view.php`.
-    *   [ ] Implement managing tags for folders.
-    *   [ ] Implement folder rating and review functionalities (`folder_reviews` table, `Folder_Review_model.php`).
-    *   [ ] Implement folder sharing (unique codes, shareable links, Telegram Deep Links).
-    *   [ ] Implement nested folder hierarchy (subfolders, breadcrumbs).
-    *   [ ] Implement folder quick actions (pin/favorite).
-    *   [ ] Implement "Folder Stars/Hearts" for public folders (`Folder_Like_model.php`).
+*   [x] Create Base Templates (`application/views/templates/header.php`, `footer.php`).
+*   [x] Create `Files.php` Controller for file metadata listing.
+*   [x] Develop `file_list.php` View (tabular format, folder navigation, tag display, media grouping).
+*   [x] Implement Folder Management (Web Interface):
+    *   [x] Create/Rename/Delete/Move Folders (`Folders.php` controller, `Folder_model.php`).
+    *   [x] `folder_management_view.php`.
+    *   [x] Implement managing tags for folders.
+    *   [x] Implement folder rating and review functionalities (`folder_reviews` table, `Folder_Review_model.php`).
+    *   [x] Implement folder sharing (unique codes, shareable links, Telegram Deep Links).
+    *   [x] Implement nested folder hierarchy (subfolders, breadcrumbs).
+    *   [x] Implement folder quick actions (pin/favorite).
+    *   [x] Implement "Folder Stars/Hearts" for public folders (`Folder_Like_model.php`).
 *   [ ] Implement UI/UX Features:
     *   [ ] Display file-type icons and thumbnails.
     *   [ ] Gallery and File Detail pages (`gallery_view.php`, `file_detail_view.php`).

@@ -1,62 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Telegram Mini App</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            padding: 20px;
-            background-color: #f0f2f5;
-            color: #333;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: #007bff;
-            margin-bottom: 20px;
-        }
-        p {
-            margin-bottom: 10px;
-        }
-        .user-info span {
-            font-weight: bold;
-        }
-        .error-message {
-            color: red;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Dashboard Mini App Telegram</h1>
+<?php $this->load->view('templates/header', ['title' => 'Dashboard']); ?>
+
+<div class="card">
+    <div class="card-header">
+        <h1>Dashboard</h1>
+    </div>
+    <div class="card-body">
         <p>Selamat datang di dashboard Anda!</p>
 
         <?php if ($this->session->userdata('logged_in')): ?>
             <div class="user-info">
-                <p>Halo, <span><?php echo $this->session->userdata('username') ?? 'Pengguna'; ?></span>!</p>
-                <p>ID Telegram: <span><?php echo $this->session->userdata('telegram_id'); ?></span></p>
-                <p>Role: <span><?php echo $this->session->userdata('role_name'); ?> (ID: <?php echo $this->session->userdata('role_id'); ?>)</span></p>
+                <p>Halo, <strong><?php echo $this->session->userdata('username') ?? 'Pengguna'; ?></strong>!</p>
+                <p>ID Telegram: <strong><?php echo $this->session->userdata('telegram_id'); ?></strong></p>
+                <p>Role: <strong><?php echo $this->session->userdata('role_name'); ?> (ID: <?php echo $this->session->userdata('role_id'); ?>)</strong></p>
             </div>
-            <p>Ini adalah halaman yang dilindungi, hanya dapat diakses setelah autentikasi berhasil.</p>
+            <p class="mt-3">Ini adalah halaman yang dilindungi, hanya dapat diakses setelah autentikasi berhasil.</p>
 
             <?php if (is_admin()): ?>
                 <hr>
                 <h2>Admin Actions</h2>
-                <p><a href="<?php echo site_url('admin'); ?>">Manage Bots</a></p>
-                <p><a href="<?php echo site_url('admin/users'); ?>">Manage Users</a></p>
+                <div class="list-group">
+                    <a href="<?php echo site_url('admin'); ?>" class="list-group-item list-group-item-action">Manage Bots</a>
+                    <a href="<?php echo site_url('admin/users'); ?>" class="list-group-item list-group-item-action">Manage Users</a>
+                </div>
             <?php endif; ?>
         <?php else: ?>
-            <p class="error-message">Anda tidak login.</p>
+            <p class="text-danger">Anda tidak login.</p>
         <?php endif; ?>
     </div>
-</body>
-</html>
+</div>
+
+<?php $this->load->view('templates/footer'); ?>

@@ -5,7 +5,8 @@
     "license": "MIT",
     "require": {
         "php": ">=5.6",
-        "monolog/monolog": "^1.26"
+        "monolog/monolog": "^1.26",
+        "irazasyed/telegram-bot-sdk": "^3.9"
     },
     "minimum-stability": "stable",
     "config": {

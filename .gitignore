@@ -5,3 +5,4 @@ web/composer.lock
 
 web/application/config/database.php
 web/application/logs/monolog.log
+web/application/logs/monolog.log

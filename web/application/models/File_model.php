@@ -36,4 +36,78 @@ class File_model extends CI_Model {
         $query = $this->db->get_where('files', ['file_unique_id' => $file_unique_id]);
         return $query->row_array();
     }
+
+    /**
+     * Get recent files for a user.
+     *
+     * @param int $user_id
+     * @param int $limit
+     * @return array
+     */
+    public function get_recent_files($user_id, $limit = 5)
+    {
+        $this->db->where('user_id', $user_id);
+        $this->db->order_by('created_at', 'DESC');
+        $this->db->limit($limit);
+        $query = $this->db->get('files');
+        return $query->result_array();
+    }
+
+    /**
+     * Search files by keyword (in file name or folder tags).
+     *
+     * @param int $user_id
+     * @param string $keyword
+     * @return array
+     */
+    public function search_files($user_id, $keyword)
+    {
+        $this->db->select('files.*');
+        $this->db->from('files');
+        $this->db->join('folders', 'files.folder_id = folders.id', 'left');
+        $this->db->join('folder_tags', 'folders.id = folder_tags.folder_id', 'left');
+        $this->db->join('tags', 'folder_tags.tag_id = tags.id', 'left');
+        $this->db->where('files.user_id', $user_id);
+        $this->db->group_start();
+        $this->db->like('files.original_file_name', $keyword);
+        $this->db->or_like('tags.tag_name', $keyword);
+        $this->db->group_end();
+        $this->db->group_by('files.id');
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    /**
+     * Toggle the favorite status of a file.
+     *
+     * @param int $file_id
+     * @param int $user_id
+     * @return bool
+     */
+    public function toggle_favorite($file_id, $user_id)
+    {
+        $this->db->where('id', $file_id);
+        $this->db->where('user_id', $user_id);
+        $this->db->set('is_favorited', '1 - is_favorited', FALSE); // SQL to toggle boolean/tinyint
+        return $this->db->update('files');
+    }
+
+    /**
+     * Get all files for a user, with folder and user info.
+     *
+     * @param int $user_id
+     * @return array
+     */
+    public function get_user_files($user_id)
+    {
+        $this->db->select('files.*, folders.folder_name, users.username');
+        $this->db->from('files');
+        $this->db->join('users', 'files.user_id = users.id');
+        $this->db->join('folders', 'files.folder_id = folders.id', 'left');
+        $this->db->where('files.user_id', $user_id);
+        $this->db->where('files.deleted_at IS NULL');
+        $this->db->order_by('files.created_at', 'DESC');
+        $query = $this->db->get();
+        return $query->result_array();
+    }
 }

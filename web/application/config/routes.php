@@ -68,8 +68,43 @@ $route['admin/users'] = 'Admin/users';
 $route['admin/edit_user_role/(:num)'] = 'Admin/edit_user_role/$1';
 $route['admin/update_user_role'] = 'Admin/update_user_role';
 
+// Main file view
+$route['files'] = 'Files/index';
+
 // API Routes
 $route['api/upload'] = 'api/Upload/index';
+$route['api/send_message'] = 'api/Upload/send_message';
+$route['api/get_recent_files'] = 'api/Upload/get_recent_files';
+$route['api/search_files'] = 'api/Upload/search_files';
+$route['api/toggle_favorite'] = 'api/Upload/toggle_favorite';
+
+// Folder Management Routes
+$route['folders'] = 'Folders/index';
+$route['folders/index/(:num)'] = 'Folders/index/$1';
+$route['folders/save'] = 'Folders/save';
+$route['folders/edit/(:num)'] = 'Folders/edit/$1';
+$route['folders/delete/(:num)'] = 'Folders/delete/$1';
+
+// Folder View & Review Routes
+$route['folders/view/(:num)'] = 'Folders/view/$1';
+$route['folders/submit_review'] = 'Folders/submit_review';
+
+// Folder Sharing Routes
+$route['folders/share/(:num)'] = 'Folders/share/$1';
+$route['folders/view_shared/(:any)'] = 'Folders/view_shared/$1';
+
+// Folder Like/Star Route
+$route['folders/toggle_like/(:num)'] = 'Folders/toggle_like/$1';
+
+
+// Folder Quick Actions
+$route['folders/toggle_favorite/(:num)'] = 'Folders/toggle_favorite/$1';
+
+
+
+
+
+
 
 
 
