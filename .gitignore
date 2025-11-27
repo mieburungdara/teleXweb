@@ -4,3 +4,4 @@ web/composer.lock
 /web/.env
 
 web/application/config/database.php
+web/application/logs/monolog.log

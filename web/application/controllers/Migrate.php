@@ -24,5 +24,17 @@ class Migrate extends CI_Controller
             echo 'Migrations ran successfully!' . PHP_EOL;
         }
     }
+
+    public function down($version)
+    {
+        if ($this->migration->version($version) === FALSE)
+        {
+            show_error($this->migration->error_string());
+        }
+        else
+        {
+            echo 'Migration rolled back to version ' . $version . PHP_EOL;
+        }
+    }
 }
 

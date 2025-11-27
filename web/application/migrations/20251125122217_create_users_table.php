@@ -8,8 +8,8 @@ class Migration_Create_users_table extends CI_Migration {
     {
         $this->dbforge->add_field(array(
             'id' => array(
-                'type' => 'INT',
-                'constraint' => 11,
+                'type' => 'BIGINT',
+                'constraint' => 20,
                 'unsigned' => TRUE,
                 'auto_increment' => TRUE
             ),

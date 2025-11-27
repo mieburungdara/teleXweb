@@ -68,6 +68,10 @@ $route['admin/users'] = 'Admin/users';
 $route['admin/edit_user_role/(:num)'] = 'Admin/edit_user_role/$1';
 $route['admin/update_user_role'] = 'Admin/update_user_role';
 
+// API Routes
+$route['api/upload'] = 'api/Upload/index';
+
+
 
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
