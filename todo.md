@@ -44,7 +44,7 @@ Berikut adalah daftar fitur yang direncanakan untuk proyek teleXweb, disusun ber
     *   [x] Inline Metadata Editing (`/api/update_file` endpoint, frontend JS).
     *   [x] Quick Preview Modal (`/api/file_preview_data`).
     *   [x] Breadcrumb Navigation.
-    *   [ ] Folder Stats Widget.
+    *   [x] Folder Stats Widget.
     *   [ ] "Trending This Week" feature (`Access_Log_model.php`).
     *   [ ] JavaScript for bulk actions.
     *   [ ] Soft-delete functionality for files.

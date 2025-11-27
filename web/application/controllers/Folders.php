@@ -54,6 +54,7 @@ class Folders extends CI_Controller {
         }
         $data['folder']['tags'] = implode(', ', $this->Folder_model->get_folder_tags($id));
         $data['reviews'] = $this->Folder_Review_model->get_reviews_for_folder($id);
+        $data['stats'] = $this->Folder_model->get_folder_stats($id); // Fetch stats
         $data['title'] = 'View Folder: ' . $data['folder']['folder_name'];
 
         $this->load->view('templates/header', $data);

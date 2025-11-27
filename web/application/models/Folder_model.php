@@ -203,4 +203,32 @@ class Folder_model extends CI_Model {
         $this->db->set('is_favorited', '1 - is_favorited', FALSE); // SQL to toggle boolean/tinyint
         return $this->db->update('folders');
     }
+
+    /**
+     * Get statistics for a given folder.
+     *
+     * @param int $folder_id
+     * @return array
+     */
+    public function get_folder_stats($folder_id)
+    {
+        $stats = [];
+
+        // Get file count
+        $this->db->where('folder_id', $folder_id);
+        $this->db->where('deleted_at IS NULL');
+        $stats['file_count'] = $this->db->count_all_results('files');
+
+        // Get total size (already in folders.folder_size, but can be recalculated if needed)
+        // For now, we will rely on the pre-calculated folder_size.
+
+        // Get latest activity (latest file added)
+        $this->db->select_max('created_at', 'latest_activity');
+        $this->db->where('folder_id', $folder_id);
+        $query = $this->db->get('files');
+        $result = $query->row();
+        $stats['latest_activity'] = $result->latest_activity;
+
+        return $stats;
+    }
 }
