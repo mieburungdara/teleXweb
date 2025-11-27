@@ -236,4 +236,19 @@ class File_model extends CI_Model {
         $this->db->where('user_id', $user_id);
         return $this->db->update('files', $data);
     }
+
+    /**
+     * Get all files for a user, ordered by date for a timeline view.
+     *
+     * @param int $user_id
+     * @return array
+     */
+    public function get_files_for_timeline($user_id)
+    {
+        $this->db->where('user_id', $user_id);
+        $this->db->where('deleted_at IS NULL');
+        $this->db->order_by('created_at', 'DESC');
+        $query = $this->db->get('files');
+        return $query->result_array();
+    }
 }

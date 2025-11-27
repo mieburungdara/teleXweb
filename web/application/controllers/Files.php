@@ -136,4 +136,26 @@ class Files extends CI_Controller {
         $this->load->view('file_detail_view', $data);
         $this->load->view('templates/footer');
     }
+
+    public function timeline()
+    {
+        $user_id = $this->session->userdata('user_id');
+        $files = $this->File_model->get_files_for_timeline($user_id);
+
+        $timeline_data = [];
+        foreach ($files as $file) {
+            $date = date('Y-m-d', strtotime($file['created_at']));
+            if (!isset($timeline_data[$date])) {
+                $timeline_data[$date] = [];
+            }
+            $timeline_data[$date][] = $file;
+        }
+
+        $data['timeline_data'] = $timeline_data;
+        $data['title'] = 'File Timeline';
+
+        $this->load->view('templates/header', $data);
+        $this->load->view('timeline_view', $data);
+        $this->load->view('templates/footer');
+    }
 }

@@ -49,7 +49,7 @@ Berikut adalah daftar fitur yang direncanakan untuk proyek teleXweb, disusun ber
     *   [x] JavaScript for bulk actions.
     *   [x] Soft-delete functionality for files.
 *   [x] Implement Smart Collections (`Smart_Collection_Rule_model.php`, `SmartCollections.php` controller, views).
-*   [ ] Implement File Timeline (`timeline_view.php`, `/api/timeline_data`).
+*   [x] Implement File Timeline (`timeline_view.php`, `/api/timeline_data`).
 *   [ ] Implement Tag Autocomplete (`/api/tag_suggestions`).
 
 ## Phase 4: Advanced Features & Deployment
