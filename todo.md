@@ -48,7 +48,7 @@ Berikut adalah daftar fitur yang direncanakan untuk proyek teleXweb, disusun ber
     *   [x] "Trending This Week" feature (`Access_Log_model.php`).
     *   [x] JavaScript for bulk actions.
     *   [x] Soft-delete functionality for files.
-*   [ ] Implement Smart Collections (`Smart_Collection_Rule_model.php`, `SmartCollections.php` controller, views).
+*   [x] Implement Smart Collections (`Smart_Collection_Rule_model.php`, `SmartCollections.php` controller, views).
 *   [ ] Implement File Timeline (`timeline_view.php`, `/api/timeline_data`).
 *   [ ] Implement Tag Autocomplete (`/api/tag_suggestions`).
 

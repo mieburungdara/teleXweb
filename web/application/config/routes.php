@@ -108,6 +108,14 @@ $route['folders/toggle_like/(:num)'] = 'Folders/toggle_like/$1';
 // Folder Quick Actions
 $route['folders/toggle_favorite/(:num)'] = 'Folders/toggle_favorite/$1';
 
+// Smart Collections Routes
+$route['smartcollections'] = 'SmartCollections/index';
+$route['smartcollections/create_edit'] = 'SmartCollections/create_edit';
+$route['smartcollections/create_edit/(:num)'] = 'SmartCollections/create_edit/$1';
+$route['smartcollections/save'] = 'SmartCollections/save';
+$route['smartcollections/delete/(:num)'] = 'SmartCollections/delete/$1';
+$route['smartcollections/view_collection/(:num)'] = 'SmartCollections/view_collection/$1';
+
 
 
 
