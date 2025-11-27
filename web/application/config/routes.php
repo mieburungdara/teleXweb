@@ -81,6 +81,8 @@ $route['api/search_files'] = 'api/Upload/search_files';
 $route['api/toggle_favorite'] = 'api/Upload/toggle_favorite';
 $route['api/update_file'] = 'api/Upload/update_file';
 $route['api/file_preview_data/(:num)'] = 'api/Upload/file_preview_data/$1';
+$route['api/bulk_action'] = 'api/Upload/bulk_action';
+
 
 
 

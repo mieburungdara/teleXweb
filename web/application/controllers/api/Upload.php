@@ -262,4 +262,48 @@ class Upload extends CI_Controller {
 
         echo json_encode(['status' => 'success', 'file' => $file]);
     }
+
+    public function bulk_action()
+    {
+        $this->load->library('session');
+        if (!$this->session->userdata('logged_in')) {
+            $this->output->set_status_header(403);
+            echo json_encode(['status' => 'error', 'message' => 'Unauthorized']);
+            return;
+        }
+
+        $action = $this->input->post('action');
+        $file_ids = $this->input->post('file_ids');
+        $user_id = $this->session->userdata('user_id');
+
+        if (!$action || !$file_ids || !is_array($file_ids)) {
+            $this->output->set_status_header(400);
+            echo json_encode(['status' => 'error', 'message' => 'Missing required parameters: action or file_ids.']);
+            return;
+        }
+
+        $success_count = 0;
+        $error_count = 0;
+
+        switch ($action) {
+            case 'delete':
+                foreach ($file_ids as $file_id) {
+                    if ($this->File_model->soft_delete_file($file_id, $user_id)) {
+                        $success_count++;
+                    } else {
+                        $error_count++;
+                    }
+                }
+                break;
+            default:
+                $this->output->set_status_header(400);
+                echo json_encode(['status' => 'error', 'message' => 'Invalid action.']);
+                return;
+        }
+
+        echo json_encode([
+            'status' => 'success',
+            'message' => "Action '{$action}' completed. Success: {$success_count}, Failed: {$error_count}."
+        ]);
+    }
 }

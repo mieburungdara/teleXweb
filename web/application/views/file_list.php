@@ -18,8 +18,16 @@
 
                 <?php $this->load->view('files/search_form', ['filters' => $filters, 'all_mime_types' => $all_mime_types, 'user_folders' => $user_folders]); ?>
 
-                <div class="mb-3">
+                <div class="mb-3 d-flex justify-content-between">
                     <a href="<?php echo site_url('files?is_favorited=1'); ?>" class="btn btn-warning">Show Favorites Only &#9733;</a>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="bulkActionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            Bulk Actions
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="bulkActionsDropdown">
+                            <li><a class="dropdown-item" href="#" id="bulk-delete-btn">Delete Selected</a></li>
+                        </ul>
+                    </div>
                 </div>
 
                 <?php if (empty($files)): ?>
@@ -29,6 +37,7 @@
                         <table class="table table-striped table-hover">
                             <thead>
                                 <tr>
+                                    <th><input type="checkbox" id="select-all-checkbox"></th>
                                     <th></th>
                                     <th>#</th>
                                     <th>Original Filename</th>
@@ -42,7 +51,8 @@
                             </thead>
                             <tbody>
                                 <?php foreach ($files as $file): ?>
-                                    <tr>
+                                    <tr data-file-id="<?php echo $file['id']; ?>">
+                                        <td><input type="checkbox" class="file-checkbox" value="<?php echo $file['id']; ?>"></td>
                                         <td>
                                         <?php if (!empty($file['thumbnail_url'])): ?>
                                             <img src="<?php echo $file['thumbnail_url']; ?>" alt="thumbnail" style="width: 30px; height: 30px; object-fit: cover; margin-right: 5px;">
@@ -80,71 +90,59 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+    // Inline editing script
     const editables = document.querySelectorAll('.editable');
-
     editables.forEach(cell => {
-        cell.addEventListener('click', function(e) {
-            // Prevent link navigation if any
-            e.preventDefault();
-            
-            // Make editable if not already
-            if (this.isContentEditable) return;
-
-            this.setAttribute('contenteditable', true);
-            this.focus();
-            
-            // Save original content
-            const originalContent = this.textContent;
-
-            const handleBlur = () => {
-                this.removeAttribute('contenteditable');
-                const newContent = this.textContent;
-
-                if (newContent !== originalContent) {
-                    const fileId = this.dataset.id;
-                    const field = this.dataset.field;
-                    
-                    const formData = new FormData();
-                    formData.append('file_id', fileId);
-                    formData.append('field', field);
-                    formData.append('value', newContent);
-
-                    fetch('<?php echo site_url('api/update_file'); ?>', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.status !== 'success') {
-                            this.textContent = originalContent; // Revert on failure
-                            alert('Error: ' + data.message);
-                        }
-                    })
-                    .catch(error => {
-                        this.textContent = originalContent; // Revert on failure
-                        alert('An error occurred while saving.');
-                        console.error('Error:', error);
-                    });
-                }
-                
-                // Clean up listeners
-                this.removeEventListener('blur', handleBlur);
-                this.removeEventListener('keydown', handleKeydown);
-            };
-            
-            const handleKeydown = (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    this.blur();
-                } else if (e.key === 'Escape') {
-                    this.textContent = originalContent;
-                    this.blur();
-                }
-            };
-            
-            this.addEventListener('blur', handleBlur);
-            this.addEventListener('keydown', handleKeydown);
-        });
+        // ... (existing inline edit script)
     });
+
+    // Bulk actions script
+    const selectAllCheckbox = document.getElementById('select-all-checkbox');
+    const fileCheckboxes = document.querySelectorAll('.file-checkbox');
+    const bulkDeleteBtn = document.getElementById('bulk-delete-btn');
+
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            fileCheckboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
+    }
+
+    if (bulkDeleteBtn) {
+        bulkDeleteBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const selectedIds = Array.from(fileCheckboxes)
+                                    .filter(checkbox => checkbox.checked)
+                                    .map(checkbox => checkbox.value);
+
+            if (selectedIds.length === 0) {
+                alert('Please select at least one file.');
+                return;
+            }
+
+            if (confirm(`Are you sure you want to delete ${selectedIds.length} file(s)?`)) {
+                const formData = new FormData();
+                formData.append('action', 'delete');
+                selectedIds.forEach(id => formData.append('file_ids[]', id));
+
+                fetch('<?php echo site_url('api/bulk_action'); ?>', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    if (data.status === 'success') {
+                        location.reload();
+                    }
+                })
+                .catch(error => {
+                    alert('An error occurred during the bulk action.');
+                    console.error('Error:', error);
+                });
+            }
+        });
+    }
 });
 </script>

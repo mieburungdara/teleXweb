@@ -221,4 +221,19 @@ class File_model extends CI_Model {
         $this->db->where('user_id', $user_id);
         return $this->db->update('files', $data);
     }
+
+    /**
+     * Soft delete a file.
+     *
+     * @param int $file_id
+     * @param int $user_id
+     * @return bool
+     */
+    public function soft_delete_file($file_id, $user_id)
+    {
+        $data = ['deleted_at' => date('Y-m-d H:i:s')];
+        $this->db->where('id', $file_id);
+        $this->db->where('user_id', $user_id);
+        return $this->db->update('files', $data);
+    }
 }
