@@ -187,4 +187,47 @@ class Upload extends CI_Controller {
             echo json_encode(['status' => 'error', 'message' => 'Failed to toggle favorite status.']);
         }
     }
+
+    public function update_file()
+    {
+        $this->load->library('session');
+        if (!$this->session->userdata('logged_in')) {
+            $this->output->set_status_header(403);
+            echo json_encode(['status' => 'error', 'message' => 'Unauthorized']);
+            return;
+        }
+
+        $file_id = $this->input->post('file_id');
+        $field = $this->input->post('field');
+        $value = $this->input->post('value');
+        $user_id = $this->session->userdata('user_id');
+
+        // Basic validation
+        if (!$file_id || !$field || !isset($value)) {
+            $this->output->set_status_header(400);
+            echo json_encode(['status' => 'error', 'message' => 'Missing required parameters: file_id, field, or value.']);
+            return;
+        }
+
+        // Whitelist of editable fields
+        $allowed_fields = ['original_file_name', 'file_name'];
+        if (!in_array($field, $allowed_fields)) {
+            $this->output->set_status_header(400);
+            echo json_encode(['status' => 'error', 'message' => 'This field cannot be edited.']);
+            return;
+        }
+
+        $data = [
+            $field => $value
+        ];
+
+        $success = $this->File_model->update_file_field($file_id, $user_id, $data);
+
+        if ($success) {
+            echo json_encode(['status' => 'success', 'message' => 'File updated successfully.']);
+        } else {
+            $this->output->set_status_header(500);
+            echo json_encode(['status' => 'error', 'message' => 'Failed to update file.']);
+        }
+    }
 }

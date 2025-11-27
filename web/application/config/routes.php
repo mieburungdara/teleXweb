@@ -79,6 +79,8 @@ $route['api/send_message'] = 'api/Upload/send_message';
 $route['api/get_recent_files'] = 'api/Upload/get_recent_files';
 $route['api/search_files'] = 'api/Upload/search_files';
 $route['api/toggle_favorite'] = 'api/Upload/toggle_favorite';
+$route['api/update_file'] = 'api/Upload/update_file';
+
 
 // Folder Management Routes
 $route['folders'] = 'Folders/index';

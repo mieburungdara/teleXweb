@@ -36,7 +36,7 @@
                                 <?php echo get_file_icon($file['mime_type']); ?>
                             </td>
                                 <td><?php echo $file['id']; ?></td>
-                                <td><?php echo htmlspecialchars($file['original_file_name'] ?? 'N/A'); ?></td>
+                                <td class="editable" data-id="<?php echo $file['id']; ?>" data-field="original_file_name"><?php echo htmlspecialchars($file['original_file_name'] ?? 'N/A'); ?></td>
                                 <td><?php echo htmlspecialchars($file['folder_name'] ?? 'Unfiled'); ?></td>
                                 <td><?php echo htmlspecialchars($file['mime_type'] ?? 'N/A'); ?></td>
                                 <td><?php echo isset($file['file_size']) ? number_format($file['file_size'] / 1024, 2) . ' KB' : 'N/A'; ?></td>
@@ -56,3 +56,74 @@
         <?php endif; ?>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const editables = document.querySelectorAll('.editable');
+
+    editables.forEach(cell => {
+        cell.addEventListener('click', function(e) {
+            // Prevent link navigation if any
+            e.preventDefault();
+            
+            // Make editable if not already
+            if (this.isContentEditable) return;
+
+            this.setAttribute('contenteditable', true);
+            this.focus();
+            
+            // Save original content
+            const originalContent = this.textContent;
+
+            const handleBlur = () => {
+                this.removeAttribute('contenteditable');
+                const newContent = this.textContent;
+
+                if (newContent !== originalContent) {
+                    const fileId = this.dataset.id;
+                    const field = this.dataset.field;
+                    
+                    const formData = new FormData();
+                    formData.append('file_id', fileId);
+                    formData.append('field', field);
+                    formData.append('value', newContent);
+
+                    fetch('<?php echo site_url('api/update_file'); ?>', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status !== 'success') {
+                            this.textContent = originalContent; // Revert on failure
+                            alert('Error: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        this.textContent = originalContent; // Revert on failure
+                        alert('An error occurred while saving.');
+                        console.error('Error:', error);
+                    });
+                }
+                
+                // Clean up listeners
+                this.removeEventListener('blur', handleBlur);
+                this.removeEventListener('keydown', handleKeydown);
+            };
+            
+            const handleKeydown = (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    this.blur();
+                } else if (e.key === 'Escape') {
+                    this.textContent = originalContent;
+                    this.blur();
+                }
+            };
+            
+            this.addEventListener('blur', handleBlur);
+            this.addEventListener('keydown', handleKeydown);
+        });
+    });
+});
+</script>

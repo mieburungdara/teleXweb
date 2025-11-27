@@ -206,4 +206,19 @@ class File_model extends CI_Model {
         $query = $this->db->get('files');
         return $query->result_array();
     }
+
+    /**
+     * Update a specific field for a file.
+     *
+     * @param int $file_id
+     * @param int $user_id
+     * @param array $data
+     * @return bool
+     */
+    public function update_file_field($file_id, $user_id, $data)
+    {
+        $this->db->where('id', $file_id);
+        $this->db->where('user_id', $user_id);
+        return $this->db->update('files', $data);
+    }
 }
