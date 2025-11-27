@@ -5,6 +5,10 @@
     <div class="card-body">
         <?php $this->load->view('files/search_form', ['filters' => $filters, 'all_mime_types' => $all_mime_types, 'user_folders' => $user_folders]); ?>
 
+        <div class="mb-3">
+            <a href="<?php echo site_url('files?is_favorited=1'); ?>" class="btn btn-warning">Show Favorites Only &#9733;</a>
+        </div>
+
         <?php if (empty($files)): ?>
             <p>You have not saved any file metadata yet. Send files to your Telegram bot to get started.</p>
         <?php else: ?>
