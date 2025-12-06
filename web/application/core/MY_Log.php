@@ -7,6 +7,7 @@ if (file_exists(FCPATH . 'vendor/autoload.php')) {
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Formatter\LineFormatter;
+use Monolog\Processor\IntrospectionProcessor;
 
 class MY_Log extends CI_Log {
 
@@ -36,6 +37,9 @@ class MY_Log extends CI_Log {
         $logger_name = $config['monolog_logger_name'] ?? 'CodeIgniterApp';
         $this->monolog = new Logger($logger_name);
 
+        // Add a processor to include file and line number
+        $this->monolog->pushProcessor(new IntrospectionProcessor(Logger::DEBUG, [], 4));
+
         $handlers_config = $config['monolog_handlers'] ?? [];
 
         if (!empty($handlers_config)) {
@@ -49,8 +53,9 @@ class MY_Log extends CI_Log {
                         $handler = $reflectionClass->newInstanceArgs($handler_args);
 
                         if ($handler instanceof StreamHandler && !isset($handler_settings['formatter'])) {
-                            $output = "[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n";
-                            $formatter = new LineFormatter($output);
+                            // Customize the line format to include file and line from 'extra'
+                            $output = "[%datetime%] %channel%.%level_name%: %message% [Origin: %extra.file%:%extra.line%] %context%\n";
+                            $formatter = new LineFormatter($output, null, true, true);
                             $handler->setFormatter($formatter);
                         }
 
@@ -74,8 +79,8 @@ class MY_Log extends CI_Log {
      */
     public function write_log($level, $msg)
     {
-        // Do not log messages with the level 'INFO' or 'DEBUG' as requested.
-        $levels_to_exclude = ['INFO', 'DEBUG'];
+        // Do not log messages with the level 'INFO' as requested.
+        $levels_to_exclude = ['INFO'];
         if (in_array(strtoupper($level), $levels_to_exclude)) {
             return true; // Act as if handled, but do nothing.
         }
