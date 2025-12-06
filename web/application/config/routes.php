@@ -55,6 +55,8 @@ $route['miniapp/login/(:num)'] = 'MiniApp/index/$1';
 $route['miniapp/admin'] = 'MiniApp/admin_panel';
 $route['miniapp/dashboard'] = 'MiniApp/dashboard';
 $route['miniapp/unauthorized'] = 'MiniApp/unauthorized';
+$route['miniapp/auth'] = 'MiniApp/auth'; // Explicitly define auth route
+$route['miniapp/(:num)'] = 'MiniApp/index/$1'; // Route for miniapp with bot_id
 
 // Admin Routes for Bot Management
 $route['admin'] = 'Admin/dashboard'; // Default admin route to dashboard

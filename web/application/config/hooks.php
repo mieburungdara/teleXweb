@@ -12,14 +12,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 
-// Hook to initialize our Monolog logger
-$hook['post_controller_constructor'][] = array(
-    'class'    => 'Monolog_hook',
-    'function' => 'init_logger',
-    'filename' => 'Monolog_hook.php',
-    'filepath' => 'hooks'
-);
-
 $hook['post_controller_constructor'][] = array(
     'class'    => 'LanguageLoader',
     'function' => 'load_language',

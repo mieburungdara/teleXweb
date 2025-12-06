@@ -210,7 +210,8 @@ class File_model extends CI_Model {
      */
     public function get_all_mime_types($user_id)
     {
-        $this->db->select('DISTINCT mime_type');
+        $this->db->select('mime_type');
+        $this->db->distinct(TRUE);
         $this->db->where('user_id', $user_id);
         $this->db->where('deleted_at IS NULL');
         $this->db->order_by('mime_type', 'ASC');

@@ -11,14 +11,21 @@ class MiniApp extends CI_Controller {
         $this->load->model('User_model'); // Load the User_model
         $this->load->model('Bot_model'); // Load the Bot_model
         $this->load->library('session'); // Load the session library
+        $this->load->helper('file'); // Load the file helper for write_file() used by DB_cache
     }
 
-    public function index($bot_id = null)
-    {
-        $data['bot_id'] = $bot_id;
-        $this->load->view('miniapp_view', $data);
-    }
+            public function index($bot_id = null)
+            {
+                // Check if bot_id is provided and valid
+                if (empty($bot_id) || !$this->Bot_model->get_bot_by_telegram_id($bot_id)) {
+                    $this->session->set_flashdata('error_message', 'Invalid or missing Bot ID.');
+                    redirect('miniapp/unauthorized');
+                    return;
+                }
 
+                $data['bot_id'] = $bot_id;
+                $this->load->view('miniapp_loading_view', $data);
+            }
     /**
      * Authenticate the data from the Telegram Mini App.
      */
@@ -31,15 +38,19 @@ class MiniApp extends CI_Controller {
         if (!$init_data) {
             log_message('error', 'MiniApp Auth: init_data is missing from POST request (Bot ID: ' . ($bot_id ?? 'N/A') . ').');
             $this->session->set_flashdata('error_message', 'Telegram initialization data is missing.');
-            redirect('miniapp/unauthorized');
-            return;
+            ob_clean(); // Clear any existing output buffer
+            header('Location: ' . site_url('miniapp/unauthorized'));
+            exit;
+            // return; // unreachable code
         }
 
         if (!$bot_id) {
             log_message('error', 'MiniApp Auth: bot_id is missing from POST request.');
             $this->session->set_flashdata('error_message', 'Bot ID is missing from the request.');
-            redirect('miniapp/unauthorized');
-            return;
+            ob_clean(); // Clear any existing output buffer
+            header('Location: ' . site_url('miniapp/unauthorized'));
+            exit;
+            // return; // unreachable code
         }
 
         // --- Validate Telegram initData signature ---
@@ -68,8 +79,10 @@ class MiniApp extends CI_Controller {
                     if (!$updated) {
                         log_message('error', 'MiniApp Auth: Failed to update user with ID ' . $user['id'] . ' and Telegram ID ' . $telegram_id);
                         $this->session->set_flashdata('error_message', 'Internal server error: Could not update user data.');
-                        redirect('miniapp/unauthorized');
-                        return;
+                        ob_clean(); // Clear any existing output buffer
+                        header('Location: ' . site_url('miniapp/unauthorized'));
+                        exit;
+                        // return; // unreachable code
                     }
                     $user_id = $user['id'];
                 } else {
@@ -78,8 +91,10 @@ class MiniApp extends CI_Controller {
                     if (!$user_id) {
                         log_message('error', 'MiniApp Auth: Failed to create new user for Telegram ID: ' . $telegram_id . '. Data: ' . json_encode($db_user_data));
                         $this->session->set_flashdata('error_message', 'Internal server error: Could not create user record.');
-                        redirect('miniapp/unauthorized');
-                        return;
+                        ob_clean(); // Clear any existing output buffer
+                        header('Location: ' . site_url('miniapp/unauthorized'));
+                        exit;
+                        // return; // unreachable code
                     }
                     $is_new_user = TRUE;
                 }
@@ -89,8 +104,10 @@ class MiniApp extends CI_Controller {
                 if (!$full_user_data) {
                     log_message('error', 'MiniApp Auth: Could not retrieve full user data for ID: ' . $user_id);
                     $this->session->set_flashdata('error_message', 'Internal server error: Could not retrieve user session data.');
-                    redirect('miniapp/unauthorized');
-                    return;
+                    ob_clean(); // Clear any existing output buffer
+                    header('Location: ' . site_url('miniapp/unauthorized'));
+                    exit;
+                    // return; // unreachable code
                 }
 
                 // Store user data in session
@@ -105,20 +122,26 @@ class MiniApp extends CI_Controller {
                 ]);
 
                 log_message('info', 'MiniApp Auth: User ' . $user_id . ' (Telegram ID: ' . $telegram_id . ') authenticated and session created.');
-                redirect('miniapp/dashboard'); // Redirect to dashboard on success
-                return;
+                ob_clean(); // Clear any existing output buffer
+                header('Location: ' . site_url('miniapp/dashboard'));
+                exit;
+                // return; // unreachable code
 
             } else {
                 log_message('error', 'MiniApp Auth: Missing or invalid Telegram user data in init_data. Data: ' . $init_data . ' (Bot ID: ' . $bot_id . ').');
                 $this->session->set_flashdata('error_message', 'Invalid Telegram user data received.');
-                redirect('miniapp/unauthorized');
-                return;
+                ob_clean(); // Clear any existing output buffer
+                header('Location: ' . site_url('miniapp/unauthorized'));
+                exit;
+                // return; // unreachable code
             }
         } else {
             log_message('warning', 'MiniApp Auth: Authentication failed for init_data: ' . $init_data . ' (Bot ID: ' . $bot_id . ').');
             $this->session->set_flashdata('error_message', 'Authentication failed: Invalid data signature.');
-            redirect('miniapp/unauthorized');
-            return;
+            ob_clean(); // Clear any existing output buffer
+            header('Location: ' . site_url('miniapp/unauthorized'));
+            exit;
+            // return; // unreachable code
         }
     }
 
@@ -137,7 +160,8 @@ class MiniApp extends CI_Controller {
             return false;
         }
 
-        $bot_token = $bot_record['token'];
+        $bot_token_from_db = $bot_record['token'];
+        $full_bot_token = $bot_id . ':' . $bot_token_from_db; // Construct the full token
         
         parse_str($init_data, $data_array);
 
@@ -148,23 +172,30 @@ class MiniApp extends CI_Controller {
 
         $hash = $data_array['hash'];
         unset($data_array['hash']);
+        // Do NOT unset 'signature' as per user's working snippet
         ksort($data_array);
 
-        $data_check_string = '';
-        foreach ($data_array as $key => $value) {
-            $data_check_string .= $key . '=' . $value . "\n";
+        $data_check_string = ""; // Manual loop for data_check_string as per user's snippet
+        foreach ($data_array as $k => $v) {
+            $data_check_string .= "$k=$v\n";
         }
         $data_check_string = rtrim($data_check_string, "\n");
 
-        $secret_key = hash_hmac('sha256', 'WebAppData', $bot_token, true);
+        // Secret key generation with arguments swapped as per user's working snippet
+        $secret_key = hash_hmac('sha256', $full_bot_token, 'WebAppData', true);
+
         $calculated_hash = hash_hmac('sha256', $data_check_string, $secret_key);
 
-        if (!hash_equals($calculated_hash, $hash)) {
-            log_message('warning', 'MiniApp Auth: Invalid hash for Bot ID: ' . $bot_id . '. init_data: ' . $init_data);
-            return false;
+        if (hash_equals($calculated_hash, $hash)) {
+            // Remove debug logs here if this works
+            return true;
         }
 
-        return true;
+        // Log details on failure for debugging
+        log_message('debug', 'Hash Validation Failed. Telegram Hash: ' . $hash . ' | Calculated Hash: ' . $calculated_hash);
+        log_message('debug', 'Data Check String Used: ' . $data_check_string);
+
+        return false;
     }
 
 

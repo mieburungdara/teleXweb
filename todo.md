@@ -13,8 +13,8 @@ Berikut adalah daftar fitur yang direncanakan untuk proyek teleXweb, disusun ber
     *   [x] Handle `file_unique_id` for deduplication. (Basic implementation)
     *   [x] Perform `copyMessages` to storage channel and store `storage_channel_id`, `storage_message_id`, `media_group_id`.
     *   [x] Set initial `process_status` and `webhook_reliability_status`. (Basic implementation)
-    *   [ ] Trigger `Folder_model->update_folder_size()` on file additions.
-    *   [ ] Trigger XP/achievement checks.
+    *   [x] Trigger `Folder_model->update_folder_size()` on file additions.
+    *   [x] Trigger XP/achievement checks.
 *   [x] Implement Webhook Script (`webhook.php`) to receive updates from Telegram and forward to CI API. (Basic implementation)
 *   [x] Implement Bot Commands Logic (in `webhook.php` or dedicated bot controller):
     *   [x] `/start` command (with deep-link parsing for purchases).
@@ -76,4 +76,4 @@ Berikut adalah daftar fitur yang direncanakan untuk proyek teleXweb, disusun ber
 *   [x] Implement i18n (Multi-Language Support).
 *   [x] UI Theming (Light/Dark theme switcher).
 *   [x] Build Onboarding Flow (Tutorials).
-*   [ ] Develop User Documentation.
+*   [x] Develop User Documentation.

@@ -17,7 +17,9 @@ class Bot_model extends CI_Model {
      */
     public function get_bot_by_telegram_id($bot_id_telegram)
     {
+        $this->db->cache_off(); // Disable caching for this specific query
         $query = $this->db->get_where('bots', ['bot_id_telegram' => $bot_id_telegram]);
+        $this->db->cache_on(); // Re-enable caching if it was globally on
         return $query->row_array();
     }
 

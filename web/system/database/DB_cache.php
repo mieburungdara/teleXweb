@@ -38,6 +38,8 @@
  */
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+require_once BASEPATH . 'helpers/file_helper.php';
+
 /**
  * Database Cache Class
  *
@@ -77,7 +79,8 @@ class CI_DB_Cache {
 		// Assign the main CI object to $this->CI and load the file helper since we use it a lot
 		$this->CI =& get_instance();
 		$this->db =& $db;
-		$this->CI->load->helper('file');
+		// The file helper is now explicitly included above, no need to load it here
+		// $this->CI->load->helper('file');
 
 		$this->check_path();
 	}
