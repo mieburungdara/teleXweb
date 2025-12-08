@@ -1,5 +1,4 @@
-web/vendor
-web/composer.lock
+
 *.bak
 /web/.env
 
