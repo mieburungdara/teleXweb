@@ -8,7 +8,7 @@
  * Copyright 2013-2022 Start Bootstrap
  * Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-simple-sidebar/blob/master/LICENSE)
  */
-#wrapper {
+ #wrapper {
     overflow-x: hidden;
  }
  
@@ -19,19 +19,117 @@
     -moz-transition: margin .25s ease-out;
     -o-transition: margin .25s ease-out;
     transition: margin .25s ease-out;
+    background-color: #343a40; /* Dark background for sidebar */
+    color: #f8f9fa; /* Light text color for sidebar */
  }
  
  #sidebar-wrapper .sidebar-heading {
     padding: 0.875rem 1.25rem;
     font-size: 1.2rem;
+    color: #f8f9fa;
+    background-color: #212529; /* Darker background for heading */
  }
  
  #sidebar-wrapper .list-group {
     width: 15rem;
  }
+
+ #sidebar-wrapper .list-group-item {
+    background-color: #343a40; /* Dark background for list items */
+    color: #f8f9fa; /* Light text color for list items */
+    border-color: #454d55; /* Darker border for list items */
+ }
+
+ #sidebar-wrapper .list-group-item:hover {
+    background-color: #454d55; /* Slightly lighter background on hover */
+    color: #f8f9fa;
+ }
+
+ /* Dropdown specific styles */
+ #sidebar-wrapper .dropdown-menu {
+    background-color: #343a40;
+    border-color: #454d55;
+ }
+
+ #sidebar-wrapper .dropdown-item {
+    color: #f8f9fa;
+ }
+
+ #sidebar-wrapper .dropdown-item:hover {
+    background-color: #454d55;
+    color: #f8f9fa;
+ }
  
  #page-content-wrapper {
     min-width: 100vw;
+ }
+
+ .navbar {
+    background-color: #ffffff !important; /* White background for top navbar */
+    border-bottom: 1px solid #dee2e6; /* Light border for separation */
+ }
+
+ .navbar-light .navbar-nav .nav-link {
+    color: rgba(0, 0, 0, 0.7); /* Darker text for navbar links */
+ }
+
+ .navbar-light .navbar-nav .nav-link:hover {
+    color: rgba(0, 0, 0, 0.9);
+ }
+
+ body {
+    background-color: #f8f9fa; /* Light background for the body */
+    color: #212529; /* Default text color */
+ }
+
+ /* Dark Theme Styles */
+ body.dark-theme {
+    background-color: #212529; /* Dark background */
+    color: #f8f9fa; /* Light text color */
+ }
+ body.dark-theme .navbar {
+    background-color: #343a40 !important;
+    border-bottom-color: #454d55 !important;
+ }
+ body.dark-theme .navbar-light .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.7);
+ }
+ body.dark-theme .navbar-light .navbar-nav .nav-link:hover {
+    color: rgba(255, 255, 255, 0.9);
+ }
+ body.dark-theme .card {
+    background-color: #343a40;
+    color: #f8f9fa;
+    border-color: #454d55;
+ }
+ body.dark-theme .card-header {
+    background-color: #454d55;
+    color: #f8f9fa;
+    border-color: #343a40;
+ }
+ body.dark-theme .table {
+    color: #f8f9fa;
+ }
+ body.dark-theme .table-striped > tbody > tr:nth-of-type(odd) > * {
+    background-color: rgba(255, 255, 255, 0.05);
+ }
+ body.dark-theme .list-group-item {
+    background-color: #343a40;
+    color: #f8f9fa;
+    border-color: #454d55;
+ }
+ body.dark-theme .breadcrumb-item a {
+    color: #adb5bd;
+ }
+ body.dark-theme .breadcrumb-item.active {
+    color: #e9ecef;
+ }
+ body.dark-theme .btn-secondary {
+    background-color: #5a6268;
+    border-color: #545b62;
+ }
+ body.dark-theme .text-muted {
+    color: #adb5bd !important;
  }
  
  body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
