@@ -132,6 +132,25 @@ class MiniApp extends CI_Controller {
                     'new_user_onboard' => $is_new_user // Set onboarding flag
                 ];
                 $this->session->set_userdata($session_data);
+
+
+
+                    // MANUAL SESSION FIX FOR TELEGRAM
+    // Force write and close session to ensure it's saved
+    session_write_close();
+    
+    // Set headers for iframe compatibility
+    header('P3P: CP="CAO PSA OUR"'); // For IE/old browsers
+    header('Access-Control-Allow-Origin: https://web.telegram.org');
+    header('Access-Control-Allow-Credentials: true');
+    
+    // For JavaScript to access cookies in iframe
+    header('Set-Cookie: ' . session_name() . '=' . session_id() . 
+           '; Path=/; SameSite=None; Secure=false');
+
+
+
+           
                 log_message('debug', 'MiniApp Auth: Session data set: ' . json_encode($session_data));
 
                 // VERIFICATION STEP: Immediately check if the session data can be read back.
