@@ -87,6 +87,34 @@
     background-color: #212529; /* Dark background */
     color: #f8f9fa; /* Light text color */
  }
+ body.dark-theme #sidebar-wrapper {
+    background-color: #212529; /* Even darker sidebar in dark theme */
+    color: #f8f9fa;
+ }
+ body.dark-theme #sidebar-wrapper .sidebar-heading {
+    background-color: #343a40;
+    color: #f8f9fa;
+ }
+ body.dark-theme #sidebar-wrapper .list-group-item {
+    background-color: #212529;
+    color: #f8f9fa;
+    border-color: #454d55;
+ }
+ body.dark-theme #sidebar-wrapper .list-group-item:hover {
+    background-color: #343a40;
+    color: #f8f9fa;
+ }
+ body.dark-theme #sidebar-wrapper .dropdown-menu {
+    background-color: #212529;
+    border-color: #454d55;
+ }
+ body.dark-theme #sidebar-wrapper .dropdown-item {
+    color: #f8f9fa;
+ }
+ body.dark-theme #sidebar-wrapper .dropdown-item:hover {
+    background-color: #343a40;
+    color: #f8f9fa;
+ }
  body.dark-theme .navbar {
     background-color: #343a40 !important;
     border-bottom-color: #454d55 !important;
@@ -123,6 +151,14 @@
  }
  body.dark-theme .breadcrumb-item.active {
     color: #e9ecef;
+ }
+ body.dark-theme .btn-primary { /* Also make primary button dark-theme aware */
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+ }
+ body.dark-theme .btn-primary:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
  }
  body.dark-theme .btn-secondary {
     background-color: #5a6268;

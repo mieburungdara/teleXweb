@@ -24,9 +24,6 @@ window.addEventListener('DOMContentLoaded', event => {
     const themeDarkBtn = document.getElementById('theme-dark');
     const body = document.body;
 
-    console.log('Theme Light Button:', themeLightBtn);
-    console.log('Theme Dark Button:', themeDarkBtn);
-
     const currentTheme = localStorage.getItem('theme');
     if (currentTheme === 'dark') {
         body.classList.add('dark-theme');
@@ -34,7 +31,6 @@ window.addEventListener('DOMContentLoaded', event => {
 
     if(themeLightBtn) {
         themeLightBtn.addEventListener('click', () => {
-            console.log('Light theme button clicked');
             body.classList.remove('dark-theme');
             localStorage.setItem('theme', 'light');
         });
@@ -42,7 +38,6 @@ window.addEventListener('DOMContentLoaded', event => {
 
     if(themeDarkBtn) {
         themeDarkBtn.addEventListener('click', () => {
-            console.log('Dark theme button clicked');
             body.classList.add('dark-theme');
             localStorage.setItem('theme', 'dark');
         });
