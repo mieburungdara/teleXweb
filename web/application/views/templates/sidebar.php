@@ -65,5 +65,24 @@
         <li>
             <a href="<?php echo site_url('miniapp/logout'); ?>" class="article"><?php echo lang('logout'); ?></a>
         </li>
+        <li>
+            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdownLang" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <?php echo $this->config->item('available_languages')[$this->session->userdata('site_language') ?? $this->config->item('language')]; ?>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdownLang">
+                <?php foreach ($this->config->item('available_languages') as $lang_key => $lang_name): ?>
+                    <li><a class="dropdown-item" href="<?php echo site_url('miniapp/set_language/' . $lang_key); ?>"><?php echo $lang_name; ?></a></li>
+                <?php endforeach; ?>
+            </ul>
+        </li>
+        <li>
+            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdownTheme" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Theme
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdownTheme">
+                <li><button class="dropdown-item" id="theme-light">Light</button></li>
+                <li><button class="dropdown-item" id="theme-dark">Dark</button></li>
+            </ul>
+        </li>
     </ul>
 </nav>

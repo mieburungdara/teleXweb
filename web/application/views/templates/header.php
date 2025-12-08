@@ -30,29 +30,3 @@
             </div>
         </nav>
         <div class="container-fluid">
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const themeLightBtn = document.getElementById('theme-light');
-    const themeDarkBtn = document.getElementById('theme-dark');
-    const body = document.body;
-
-    const currentTheme = localStorage.getItem('theme');
-    if (currentTheme === 'dark') {
-        body.classList.add('dark-theme');
-    }
-
-    if(themeLightBtn) {
-        themeLightBtn.addEventListener('click', () => {
-            body.classList.remove('dark-theme');
-            localStorage.setItem('theme', 'light');
-        });
-    }
-
-    if(themeDarkBtn) {
-        themeDarkBtn.addEventListener('click', () => {
-            body.classList.add('dark-theme');
-            localStorage.setItem('theme', 'dark');
-        });
-    }
-});
-</script>
