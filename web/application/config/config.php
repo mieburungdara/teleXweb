@@ -423,7 +423,7 @@ $config['encryption_key'] = '8Xo44akjJnfTVnZ6cUjbE0QwYIWhOYs0UWXrrKtxwy0=';
 |
 */
 $config['sess_driver'] = 'files';
-$config['sess_cookie_name'] = 'php_session';
+$config['sess_cookie_name'] = 'phpsession';
 $config['sess_expiration'] = 7200;
 $config['sess_save_path'] = NULL;
 $config['sess_match_ip'] = FALSE;
