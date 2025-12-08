@@ -252,7 +252,7 @@ $config['allow_get_array'] = TRUE;
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 2;
+$config['log_threshold'] = 4;
 
 // Monolog configuration
 $config['monolog_handlers'] = [
@@ -275,7 +275,7 @@ $config['monolog_handlers'] = [
 | application/logs/ directory. Use a full server path with trailing slash.
 |
 */
-$config['log_path'] = '';
+$config['log_path'] = 'ngeloxxxxx';
 
 /*
 |--------------------------------------------------------------------------
@@ -289,7 +289,7 @@ $config['log_path'] = '';
 | Note: Leaving it blank will default to 'php'.
 |
 */
-$config['log_file_extension'] = '';
+$config['log_file_extension'] = 'txt';
 
 /*
 |--------------------------------------------------------------------------
@@ -334,7 +334,7 @@ $config['error_views_path'] = '';
 | application/cache/ directory.  Use a full server path with trailing slash.
 |
 */
-$config['cache_path'] = APPPATH . '';
+$config['cache_path'] = '';
 
 /*
 |--------------------------------------------------------------------------
@@ -422,15 +422,14 @@ $config['encryption_key'] = '8Xo44akjJnfTVnZ6cUjbE0QwYIWhOYs0UWXrrKtxwy0=';
 | except for 'cookie_prefix' and 'cookie_httponly', which are ignored here.
 |
 */
-$config['sess_driver'] = 'database';
-$config['sess_save_path'] = 'ci_sessions';  // database table name
-$config['sess_samesite'] = 'Lax';
+$config['sess_driver'] = 'files';
+$config['sess_cookie_name'] = 'php_session';
 $config['sess_expiration'] = 7200;
-$config['sess_save_path']  = 'ci_sessions';
-$config['sess_db_group']   = 'session';   // new DB group name
+$config['sess_save_path'] = NULL;
 $config['sess_match_ip'] = FALSE;
 $config['sess_time_to_update'] = 300;
 $config['sess_regenerate_destroy'] = FALSE;
+
 
 /*
 |--------------------------------------------------------------------------
