@@ -19,11 +19,7 @@ window.addEventListener('DOMContentLoaded', event => {
         });
     }
 
-});
-</script>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
+    // Theme switching logic
     const themeLightBtn = document.getElementById('theme-light');
     const themeDarkBtn = document.getElementById('theme-dark');
     const body = document.body;
@@ -47,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Modal logic (remains the same)
     const previewModal = document.getElementById('previewModal');
     if (previewModal) {
         previewModal.addEventListener('show.bs.modal', function (event) {
