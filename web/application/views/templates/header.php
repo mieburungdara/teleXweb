@@ -23,7 +23,9 @@
         <!-- Top navigation-->
         <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
             <div class="container-fluid">
-                <button class="btn btn-primary" id="sidebarToggle">Toggle Menu</button>
+                <button class="btn btn-primary" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
         </nav>
         <!-- Page content-->
