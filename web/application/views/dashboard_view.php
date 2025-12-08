@@ -11,6 +11,7 @@
             <div class="user-info">
                 <p>Halo, <strong><?php echo $this->session->userdata('username') ?? 'Pengguna'; ?></strong>!</p>
                 <p>ID Telegram: <strong><?php echo $this->session->userdata('telegram_id'); ?></strong></p>
+                <p>User Code: <strong><?php echo $this->session->userdata('user_code'); ?></strong></p>
                 <p>Role: <strong><?php echo $this->session->userdata('role_name'); ?> (ID: <?php echo $this->session->userdata('role_id'); ?>)</strong></p>
             </div>
             <p class="mt-3">Ini adalah halaman yang dilindungi, hanya dapat diakses setelah autentikasi berhasil.</p>

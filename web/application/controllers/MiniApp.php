@@ -6,9 +6,7 @@ class MiniApp extends CI_Controller {
     public function __construct()
     {
         parent::__construct();
-        log_message('debug', 'MiniApp Controller: __construct() called.');
         $this->load->helper('url');
-        $this->config->load('config');
         $this->load->model('User_model'); // Load the User_model
         $this->load->model('Bot_model'); // Load the Bot_model
         $this->load->helper('file'); // Load the file helper for write_file() used by DB_cache
@@ -140,7 +138,7 @@ class MiniApp extends CI_Controller {
                 log_message('debug', 'MiniApp Auth: VERIFYING session post-set. Logged_in status is: ' . ($this->session->userdata('logged_in') ? 'TRUE' : 'FALSE'));
 
 
-                log_message('info', 'MiniApp Auth: User ' . $user_id . ' (Telegram ID: ' . $telegram_id . ') authenticated and session created.');
+                log_message('debug', 'MiniApp Auth: User ' . $user_id . ' (Telegram ID: ' . $telegram_id . ') authenticated and session created.');
                 $this->output->set_content_type('application/json')->set_output(json_encode(['status' => 'success', 'redirect_url' => site_url('miniapp/dashboard')]));
 
             } else {

@@ -382,4 +382,44 @@ class Admin extends CI_Controller {
         }
         redirect('admin/roles');
     }
+
+    /**
+     * Populates user_code for existing users who do not have one.
+     * Accessible only by admins with 'manage_users' permission.
+     */
+    public function populate_user_codes()
+    {
+        if (!has_permission('manage_users')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: Insufficient permissions.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+
+        $users_without_code = $this->User_model->get_users_without_code(); // New method needed in User_model
+        $updated_count = 0;
+
+        foreach ($users_without_code as $user) {
+            $user_code = $this->User_model->generate_unique_user_code(); // Call the public version
+            if ($user_code) {
+                $success = $this->User_model->update_user($user['id'], ['user_code' => $user_code]);
+                if ($success) {
+                    $updated_count++;
+                    $this->Audit_Log_model->log_action(
+                        'user_code_generated',
+                        'user',
+                        $user['id'],
+                        ['old_user_code' => null],
+                        ['new_user_code' => $user_code]
+                    );
+                }
+            }
+        }
+
+        if ($updated_count > 0) {
+            $this->session->set_flashdata('success_message', "Successfully generated {$updated_count} user codes for existing users.");
+        } else {
+            $this->session->set_flashdata('info_message', 'No users found without a user code.');
+        }
+        redirect('admin/users'); // Redirect back to user list
+    }
 }

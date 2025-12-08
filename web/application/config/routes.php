@@ -74,7 +74,14 @@ $route['admin/update_user_role'] = 'Admin/update_user_role';
 // Admin Routes for Role Management
 $route['admin/roles'] = 'Admin/roles';
 $route['admin/edit_role_permissions/(:num)'] = 'Admin/edit_role_permissions/$1';
-$route['admin/update_role_permissions'] = 'Admin/update_role_permissions';
+$route['admin/update_role_permissions'] = 'Admin/update_user_role';
+
+// Admin Route to populate user codes (TEMPORARY - REMOVE AFTER USE)
+$route['admin/populate_user_codes'] = 'Admin/populate_user_codes';
+
+// Route for Migrations (CLI/Admin access)
+$route['cli/migrate/(:any)'] = 'Migrate/$1';
+$route['cli/migrate'] = 'Migrate';
 
 // Admin Routes for Tag Management
 $route['admin/tagmanagement'] = 'TagManagement/index';

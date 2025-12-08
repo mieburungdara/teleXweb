@@ -36,6 +36,7 @@ class User_model extends CI_Model {
         $user_data['created_at'] = date('Y-m-d H:i:s');
         $user_data['updated_at'] = date('Y-m-d H:i:s');
         $user_data['role_id'] = $user_data['role_id'] ?? 1; // Default to 'user' role ID (1)
+        $user_data['user_code'] = $this->generate_unique_user_code();
         
         if ($this->db->insert('users', $user_data)) {
             return $this->db->insert_id();
@@ -56,6 +57,23 @@ class User_model extends CI_Model {
         $this->db->where('id', $id);
         return $this->db->update('users', $user_data);
     }
+
+    /**
+     * Find a user by their user code.
+     *
+     * @param string $user_code
+     * @return array|null User data if found, null otherwise.
+     */
+    public function get_user_by_user_code($user_code)
+    {
+        $this->db->select('users.*, roles.name as role_name');
+        $this->db->from('users');
+        $this->db->join('roles', 'roles.id = users.role_id');
+        $this->db->where('users.user_code', $user_code);
+        $query = $this->db->get();
+        return $query->row_array();
+    }
+
 
     /**
      * Find a user by their primary key ID.
@@ -245,5 +263,36 @@ class User_model extends CI_Model {
     {
         $this->load->model('Balance_Transaction_model'); // Ensure Balance_Transaction_model is loaded
         return $this->Balance_Transaction_model->record_transaction($user_id, $amount, $type, $description);
+    }
+
+    /**
+     * Generate a unique alphanumeric user code.
+     *
+     * @return string Unique user code.
+     */
+    public function generate_unique_user_code() // Changed to public
+    {
+        $this->load->helper('string'); // Load the string helper for random_string()
+        $code_length = 8;
+        
+        do {
+            $code = random_string('alnum', $code_length);
+            $this->db->where('user_code', $code);
+            $query = $this->db->get('users');
+        } while ($query->num_rows() > 0); // Keep generating until unique
+
+        return $code;
+    }
+
+    /**
+     * Get users who do not have a user_code assigned yet.
+     *
+     * @return array An array of user data.
+     */
+    public function get_users_without_code()
+    {
+        $this->db->where('user_code IS NULL', null, FALSE);
+        $query = $this->db->get('users');
+        return $query->result_array();
     }
 }

@@ -93,24 +93,29 @@
                 fetch('<?php echo site_url('miniapp/auth'); ?>', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Accept': 'application/json' // We expect a JSON response
                     },
                     body: requestBody
                 })
                 .then(response => {
-                    if (response.redirected) {
-                        console.log('Redirecting to:', response.url);
-                        window.location.href = response.url;
-                        return; // Stop further processing
+                    // Check if the response is successful (2xx status) and is JSON
+                    if (response.ok && response.headers.get("Content-Type")?.includes("application/json")) {
+                        return response.json();
                     }
-                    // If not redirected, there might be an error message in the body
-                    return response.text();
+                    // Handle non-JSON or error responses
+                    return response.text().then(text => {
+                        throw new Error(`Server returned status ${response.status}: ${text}`);
+                    });
                 })
-                .then(text => {
-                    if (text) {
-                        authStatusDiv.style.color = 'red';
-                        authStatusDiv.innerHTML = `<h2>Backend Verification</h2><p>❌ Authentication failed, received content: ${text.substring(0, 300)}...</p>`;
-                        console.error('Authentication fetch did not redirect, received content:', text);
+                .then(data => {
+                    if (data && data.status === 'success' && data.redirect_url) {
+                        if (Telegram.WebApp.HapticFeedback) {
+                            Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+                        }
+                        window.location.href = data.redirect_url;
+                    } else {
+                        throw new Error(data.message || 'Authentication failed: Invalid response from server.');
                     }
                 })
                 .catch(error => {
@@ -118,8 +123,8 @@
                         Telegram.WebApp.HapticFeedback.notificationOccurred('error');
                     }
                     authStatusDiv.style.color = 'red';
-                    authStatusDiv.innerHTML = '<h2>Backend Verification</h2><p>❌ A network error occurred during authentication.</p>';
-                    console.error('Network error during authentication:', error);
+                    authStatusDiv.innerHTML = `<h2>Backend Verification</h2><p>❌ ${error.message}</p>`;
+                    console.error('Authentication error:', error);
                 });
             } else {
                 console.log("Entering else block for initData missing. Initiating redirect.");
