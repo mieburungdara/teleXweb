@@ -241,6 +241,8 @@ class MiniApp extends CI_Controller {
      */
     public function dashboard()
     {
+        log_message('debug', 'Session ID: ' . $this->session->session_id);
+        log_message('debug', 'Session save path: ' . ini_get('session.save_path'));
         log_message('debug', 'MiniApp Dashboard: Access attempt.');
         log_message('debug', 'MiniApp Dashboard: Session logged_in status: ' . ($this->session->userdata('logged_in') ? 'TRUE' : 'FALSE'));
         log_message('debug', 'MiniApp Dashboard: Session new_user_onboard status: ' . ($this->session->userdata('new_user_onboard') ? 'TRUE' : 'FALSE'));
@@ -269,6 +271,8 @@ class MiniApp extends CI_Controller {
      */
     public function unauthorized()
     {
+        log_message('debug', 'Session ID: ' . $this->session->session_id);
+        log_message('debug', 'Session save path: ' . ini_get('session.save_path'));
         $error_message = $this->session->flashdata('error_message');
         log_message('warn', 'MiniApp Controller: unauthorized() page loaded. Error message: ' . ($error_message ?? 'N/A'));
         $data['error_message'] = $error_message;
