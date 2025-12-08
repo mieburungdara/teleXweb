@@ -1,4 +1,4 @@
-</div> <!-- closing .main-container -->
+</div> <!-- closing .main-content -->
 
 <footer class="text-center mt-4 py-3 bg-light">
     <div class="container">
