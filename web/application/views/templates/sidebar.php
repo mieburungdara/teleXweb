@@ -1,8 +1,8 @@
-<div id="sidebar" class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark">
-    <a href="<?php echo site_url(); ?>" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-        <span class="fs-4"><?php echo lang('teleXweb'); ?></span>
+<main class="d-flex flex-nowrap">
+  <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px;">
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+      <span class="fs-4">teleXweb</span>
     </a>
-    <button id="sidebar-close-btn" class="btn btn-dark d-md-none">&times;</button>
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
         <?php if ($this->session->userdata('logged_in')): ?>
@@ -61,34 +61,14 @@
     </ul>
     <hr>
     <div class="dropdown">
-        <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-            <strong><?php echo $this->session->userdata('username'); ?></strong>
-        </a>
-        <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-            <li><a class="dropdown-item" href="<?php echo site_url('users/profile'); ?>"><?php echo lang('my_profile'); ?></a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="<?php echo site_url('miniapp/logout'); ?>"><?php echo lang('logout'); ?></a></li>
-        </ul>
+      <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+        <strong><?php echo $this->session->userdata('username'); ?></strong>
+      </a>
+      <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+        <li><a class="dropdown-item" href="<?php echo site_url('users/profile'); ?>"><?php echo lang('my_profile'); ?></a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="<?php echo site_url('miniapp/logout'); ?>"><?php echo lang('logout'); ?></a></li>
+      </ul>
     </div>
-    <hr>
-     <div class="dropdown">
-        <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdownLang" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <?php echo $this->config->item('available_languages')[$this->session->userdata('site_language') ?? $this->config->item('language')]; ?>
-        </a>
-        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdownLang">
-            <?php foreach ($this->config->item('available_languages') as $lang_key => $lang_name): ?>
-                <li><a class="dropdown-item" href="<?php echo site_url('miniapp/set_language/' . $lang_key); ?>"><?php echo $lang_name; ?></a></li>
-            <?php endforeach; ?>
-        </ul>
-    </div>
-    <hr>
-    <div class="dropdown">
-        <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdownTheme" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Theme
-        </a>
-        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdownTheme">
-            <li><button class="dropdown-item" id="theme-light">Light</button></li>
-            <li><button class="dropdown-item" id="theme-dark">Dark</button></li>
-        </ul>
-    </div>
-</div>
+  </div>
+</main>
