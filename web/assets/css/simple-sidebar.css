@@ -14,7 +14,7 @@
  
  #sidebar-wrapper {
     min-height: 100vh;
-    margin-left: -15rem;
+    margin-left: -15rem !important; /* Temporarily add !important for debugging */
     -webkit-transition: margin .25s ease-out;
     -moz-transition: margin .25s ease-out;
     -o-transition: margin .25s ease-out;
@@ -61,10 +61,16 @@
  }
  
  #page-content-wrapper {
+    padding: 20px; /* Add some padding to the content */
+    margin-left: 15rem; /* Default margin-left for content when sidebar is open */
     -webkit-transition: margin .25s ease-out;
     -moz-transition: margin .25s ease-out;
     -o-transition: margin .25s ease-out;
     transition: margin .25s ease-out;
+ }
+ 
+ body.sb-sidenav-toggled #page-content-wrapper {
+    margin-left: 0;
  }
 
  .navbar {
@@ -172,12 +178,12 @@
  }
  
  body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
-    margin-left: 0;
+    margin-left: 0 !important; /* Temporarily add !important for debugging */
  }
  
  @media (min-width: 768px) {
     #sidebar-wrapper {
-        margin-left: 0;
+        margin-left: 0 !important; /* Temporarily add !important for debugging */
     }
  
     #page-content-wrapper {
@@ -186,7 +192,7 @@
     }
  
     body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
-        margin-left: -15rem;
+        margin-left: -15rem !important; /* Temporarily add !important for debugging */
     }
  }
 
