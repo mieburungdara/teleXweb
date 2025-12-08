@@ -29,6 +29,38 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('main-content');
+    const sidebarToggleBtn = document.getElementById('sidebar-toggle-btn');
+    const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
+
+    const handleResize = () => {
+        if (window.innerWidth < 768) {
+            sidebar.classList.add('toggled');
+            mainContent.classList.add('toggled');
+        } else {
+            sidebar.classList.remove('toggled');
+            mainContent.classList.remove('toggled');
+        }
+    };
+
+    if(sidebarToggleBtn) {
+        sidebarToggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('toggled');
+            mainContent.classList.toggle('toggled');
+        });
+    }
+
+    if(sidebarCloseBtn) {
+        sidebarCloseBtn.addEventListener('click', () => {
+            sidebar.classList.add('toggled');
+            mainContent.classList.add('toggled');
+        });
+    }
+
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Initial check
+
     const previewModal = document.getElementById('previewModal');
     if (previewModal) {
         previewModal.addEventListener('show.bs.modal', function (event) {

@@ -1,7 +1,8 @@
-<div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px; height: 100vh; position: fixed; top: 0; left: 0;">
+<div id="sidebar" class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark">
     <a href="<?php echo site_url(); ?>" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
         <span class="fs-4"><?php echo lang('teleXweb'); ?></span>
     </a>
+    <button id="sidebar-close-btn" class="btn btn-dark d-md-none">&times;</button>
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
         <?php if ($this->session->userdata('logged_in')): ?>

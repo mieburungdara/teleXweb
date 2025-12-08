@@ -6,69 +6,22 @@
     <title><?php echo isset($title) ? $title : lang('teleXweb'); ?></title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script>
         window.csrfData = {
             tokenName: '<?php echo $this->security->get_csrf_token_name(); ?>',
             tokenHash: '<?php echo $this->security->get_csrf_hash(); ?>'
         };
     </script>
-<style>
-    body {
-        background-color: #f8f9fa;
-        color: #212529; /* Default text color */
-    }
-
-    .main-content {
-        margin-left: 280px; /* Same as sidebar width */
-        padding: 20px;
-    }
-
-    /* Dark Theme Styles */
-    body.dark-theme {
-        background-color: #212529; /* Dark background */
-        color: #f8f9fa; /* Light text color */
-    }
-    body.dark-theme .card {
-        background-color: #343a40;
-        color: #f8f9fa;
-        border-color: #454d55;
-    }
-    body.dark-theme .card-header {
-        background-color: #454d55;
-        color: #f8f9fa;
-        border-color: #343a40;
-    }
-    body.dark-theme .table {
-        color: #f8f9fa;
-    }
-    body.dark-theme .table-striped > tbody > tr:nth-of-type(odd) > * {
-        background-color: rgba(255, 255, 255, 0.05);
-    }
-    body.dark-theme .list-group-item {
-        background-color: #343a40;
-        color: #f8f9fa;
-        border-color: #454d55;
-    }
-    body.dark-theme .breadcrumb-item a {
-        color: #adb5bd;
-    }
-    body.dark-theme .breadcrumb-item.active {
-        color: #e9ecef;
-    }
-    body.dark-theme .btn-secondary {
-        background-color: #5a6268;
-        border-color: #545b62;
-    }
-    body.dark-theme .text-muted {
-        color: #adb5bd !important;
-    }
-</style>
+    <link href="<?php echo base_url('assets/css/sidebar.css'); ?>" rel="stylesheet">
 </head>
 <body>
 
+<button id="sidebar-toggle-btn" class="btn btn-dark d-md-none"><i class="fas fa-bars"></i></button>
+
 <?php $this->load->view('templates/sidebar'); ?>
 
-<div class="main-content">
+<div id="main-content" class="main-content">
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const themeLightBtn = document.getElementById('theme-light');
