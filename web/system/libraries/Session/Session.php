@@ -164,9 +164,11 @@ class CI_Session {
 						'expires' => $expires,
 						'path' => $this->_config['cookie_path'],
 						'domain' => $this->_config['cookie_domain'],
-						'secure' => $this->_config['cookie_secure'],
+						//'secure' => $this->_config['cookie_secure'],
+						'secure' => TRUE,
 						'httponly' => TRUE,
-						'samesite' => $this->_config['cookie_samesite']
+						//'samesite' => $this->_config['cookie_samesite']
+						'samesite' => 'None'
 					)
 				);
 			}
