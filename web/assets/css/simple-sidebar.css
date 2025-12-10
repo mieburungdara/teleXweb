@@ -65,6 +65,7 @@
     min-width: 0;
     transition: margin .25s ease-out;
     margin-left: 0; /* Mobile First: No margin by default */
+    margin-top: 1.5rem; /* Add space between header and content */
  }
 
  /* Push content on mobile when sidebar is toggled */
@@ -93,6 +94,7 @@
  .navbar {
     background-color: #ffffff !important; /* White background for top navbar */
     border-bottom: 1px solid #dee2e6; /* Light border for separation */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Add subtle shadow for depth */
  }
 
  .navbar-light .navbar-nav .nav-link {
