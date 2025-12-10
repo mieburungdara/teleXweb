@@ -28,6 +28,13 @@ class Users extends CI_Controller {
             redirect('dashboard'); // Redirect to a safe page
             return;
         }
+
+        // Load additional models and data for the dashboard
+        $this->load->model('Folder_model');
+        $this->load->model('File_model');
+        $data['recent_folders'] = $this->Folder_model->get_recent_folders_by_user($user_id, 5);
+        $data['recent_files'] = $this->File_model->get_recent_files($user_id, 5);
+
         $data['title'] = 'My Profile';
 
         $this->load->view('templates/header', $data);

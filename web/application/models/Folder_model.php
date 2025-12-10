@@ -255,4 +255,21 @@ class Folder_model extends CI_Model {
         $this->db->where('deleted_at IS NULL');
         return $this->db->count_all_results('folders');
     }
+
+    /**
+     * Get the most recent folders for a user.
+     *
+     * @param int $user_id
+     * @param int $limit
+     * @return array
+     */
+    public function get_recent_folders_by_user($user_id, $limit = 5)
+    {
+        $this->db->where('user_id', $user_id);
+        $this->db->where('deleted_at IS NULL');
+        $this->db->order_by('created_at', 'DESC');
+        $this->db->limit($limit);
+        $query = $this->db->get('folders');
+        return $query->result_array();
+    }
 }
