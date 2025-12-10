@@ -60,16 +60,34 @@
  }
  
  #page-content-wrapper {
-    padding: 20px; /* Add some padding to the content */
-    margin-left: 15rem; /* Default margin-left for content when sidebar is open */
-    -webkit-transition: margin .25s ease-out;
-    -moz-transition: margin .25s ease-out;
-    -o-transition: margin .25s ease-out;
+    padding: 20px;
+    width: 100%;
+    min-width: 0;
     transition: margin .25s ease-out;
+    margin-left: 0; /* Mobile First: No margin by default */
  }
- 
+
+ /* Push content on mobile when sidebar is toggled */
  body.sb-sidenav-toggled #page-content-wrapper {
-    margin-left: 0;
+    margin-left: 15rem;
+ }
+
+ @media (min-width: 768px) {
+    #sidebar-wrapper {
+        margin-left: 0;
+    }
+ 
+    #page-content-wrapper {
+        margin-left: 15rem; /* Desktop: Push content by default */
+    }
+ 
+    body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
+        margin-left: -15rem;
+    }
+
+    body.sb-sidenav-toggled #page-content-wrapper {
+        margin-left: 0; /* Desktop: Pull content back when toggled */
+    }
  }
 
  .navbar {
