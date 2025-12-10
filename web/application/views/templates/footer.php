@@ -6,31 +6,35 @@
 <script>
 window.addEventListener('DOMContentLoaded', event => {
 
-    // Toggle the side navigation
     const sidebarToggle = document.body.querySelector('#sidebarToggle');
+    const sidebarWrapper = document.getElementById('sidebar-wrapper'); // Get sidebar element
+
+    // Function to set the icon based on the sidebar state
+    // Defined here to be accessible for both toggle button and click-outside logic
+    const updateIcon = () => {
+        if (!sidebarToggle) return; // Ensure sidebarToggle exists before updating its content
+        // The sb-sidenav-toggled class has different meanings on mobile and desktop
+        const isToggled = document.body.classList.contains('sb-sidenav-toggled');
+        const isDesktop = window.matchMedia('(min-width: 768px)').matches;
+        
+        let isVisible;
+        if (isDesktop) {
+            // On desktop, "not toggled" means visible
+            isVisible = !isToggled;
+        } else {
+            // On mobile, "toggled" means visible
+            isVisible = isToggled;
+        }
+
+        if (isVisible) {
+            sidebarToggle.innerHTML = '&times;'; // 'X' close icon
+        } else {
+            sidebarToggle.innerHTML = '&#9776;'; // Hamburger menu icon
+        }
+    };
+
+    // Toggle the side navigation (existing logic, slightly refactored)
     if (sidebarToggle) {
-        // Function to set the icon based on the sidebar state
-        const updateIcon = () => {
-            // The sb-sidenav-toggled class has different meanings on mobile and desktop
-            const isToggled = document.body.classList.contains('sb-sidenav-toggled');
-            const isDesktop = window.matchMedia('(min-width: 768px)').matches;
-            
-            let isVisible;
-            if (isDesktop) {
-                // On desktop, "not toggled" means visible
-                isVisible = !isToggled;
-            } else {
-                // On mobile, "toggled" means visible
-                isVisible = isToggled;
-            }
-
-            if (isVisible) {
-                sidebarToggle.innerHTML = '&times;'; // 'X' close icon
-            } else {
-                sidebarToggle.innerHTML = '&#9776;'; // Hamburger menu icon
-            }
-        };
-
         // Set the initial icon on page load
         updateIcon();
 
@@ -51,6 +55,41 @@ window.addEventListener('DOMContentLoaded', event => {
             updateIcon(); // Update icon after every click
         });
     }
+
+    // Click outside to collapse sidebar
+    document.addEventListener('click', event => {
+        const isDesktop = window.matchMedia('(min-width: 768px)').matches;
+
+        // Check if the clicked target is outside the sidebar and not the toggle button itself
+        // Also ensure sidebarWrapper exists (it might not on some pages)
+        const isClickOutsideSidebar = sidebarWrapper && !sidebarWrapper.contains(event.target);
+        const isClickOnToggleButton = sidebarToggle && sidebarToggle.contains(event.target);
+
+        // Determine if sidebar is currently open
+        let isSidebarCurrentlyOpen;
+        if (isDesktop) {
+            isSidebarCurrentlyOpen = !document.body.classList.contains('sb-sidenav-toggled');
+        } else {
+            isSidebarCurrentlyOpen = document.body.classList.contains('sb-sidenav-toggled');
+        }
+
+        // Only collapse if sidebar is open, click was outside, and not on the toggle button
+        if (isClickOutsideSidebar && !isClickOnToggleButton && isSidebarCurrentlyOpen) {
+            event.preventDefault(); // Prevent any default action on the outside click
+            
+            // Collapse the sidebar: toggle the class based on desktop/mobile logic
+            if (isDesktop) {
+                // On desktop, add sb-sidenav-toggled to hide it
+                document.body.classList.add('sb-sidenav-toggled');
+            } else {
+                // On mobile, remove sb-sidenav-toggled to hide it
+                document.body.classList.remove('sb-sidenav-toggled');
+            }
+            
+            localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
+            updateIcon(); // Update icon after collapsing
+        }
+    });
 
     // Theme switching logic
     const themeLightBtn = document.getElementById('theme-light');
