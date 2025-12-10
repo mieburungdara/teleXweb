@@ -9,13 +9,46 @@ window.addEventListener('DOMContentLoaded', event => {
     // Toggle the side navigation
     const sidebarToggle = document.body.querySelector('#sidebarToggle');
     if (sidebarToggle) {
+        // Function to set the icon based on the sidebar state
+        const updateIcon = () => {
+            // The sb-sidenav-toggled class has different meanings on mobile and desktop
+            const isToggled = document.body.classList.contains('sb-sidenav-toggled');
+            const isDesktop = window.matchMedia('(min-width: 768px)').matches;
+            
+            let isVisible;
+            if (isDesktop) {
+                // On desktop, "not toggled" means visible
+                isVisible = !isToggled;
+            } else {
+                // On mobile, "toggled" means visible
+                isVisible = isToggled;
+            }
+
+            if (isVisible) {
+                sidebarToggle.innerHTML = '&times;'; // 'X' close icon
+            } else {
+                sidebarToggle.innerHTML = '&#9776;'; // Hamburger menu icon
+            }
+        };
+
+        // Set the initial icon on page load
+        updateIcon();
+
+        // Update the icon if the window is resized, as the logic changes
+        window.addEventListener('resize', updateIcon);
+        
+        // Logic to remember sidebar state is commented out, but if enabled,
+        // we would need to update the icon after loading the state.
         // if (localStorage.getItem('sb|sidebar-toggle') === 'true') {
         //     document.body.classList.toggle('sb-sidenav-toggled');
+        //     updateIcon();
         // }
+
         sidebarToggle.addEventListener('click', event => {
             event.preventDefault();
             document.body.classList.toggle('sb-sidenav-toggled');
             localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
+            updateIcon(); // Update icon after every click
         });
     }
 
