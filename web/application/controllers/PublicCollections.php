@@ -182,33 +182,4 @@ class PublicCollections extends CI_Controller {
         redirect('publiccollections');
     }
 
-    /**
-     * Public view for a shared collection.
-     * @param string $access_code The collection's unique access code.
-     */
-    public function view_public($access_code)
-    {
-        $collection = $this->Public_Collection_model->get_collection_by_code($access_code);
-        if (!$collection) {
-            $this->session->set_flashdata('error_message', 'Public collection not found or is private.');
-            redirect('miniapp/unauthorized'); // Or a public 404 page
-            return;
-        }
-
-        $data['collection'] = $collection;
-        $data['folders'] = $this->Public_Collection_Folder_model->get_folders_in_collection($collection['id']);
-        
-        // Log access to the public collection
-        $user_id = $this->session->userdata('logged_in') ? $this->session->userdata('user_id') : null;
-        $this->Audit_Log_model->log_action(
-            'public_collection_viewed',
-            'public_collection',
-            $collection['id'],
-            [],
-            [] // No specific old/new values for viewing
-        );
-
-        $data['title'] = 'View Public Collection: ' . $collection['name'];
-        $this->load->view('public_collections/view_public', $data);
-    }
 }

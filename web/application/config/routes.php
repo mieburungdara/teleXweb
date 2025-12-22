@@ -147,7 +147,7 @@ $route['publiccollections/create_edit'] = 'PublicCollections/create_edit';
 $route['publiccollections/create_edit/(:num)'] = 'PublicCollections/create_edit/$1';
 $route['publiccollections/save'] = 'PublicCollections/save';
 $route['publiccollections/delete/(:num)'] = 'PublicCollections/delete/$1';
-$route['publiccollections/view_public/(:any)'] = 'PublicCollections/view_public/$1';
+$route['collection/(:any)'] = 'Public/collection/$1';
 
 // User Profile Routes
 $route['users/profile'] = 'Users/profile';
