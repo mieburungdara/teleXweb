@@ -60,4 +60,4 @@
             </div>
         </nav>
         <!-- Page content-->
-        <div class="container-fluid p-4">
+        <div class="container-fluid py-4 px-3">
