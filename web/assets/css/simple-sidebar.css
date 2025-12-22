@@ -66,10 +66,6 @@
     margin-left: 0; /* Mobile First: No margin by default */
  }
 
- /* Push content on mobile when sidebar is toggled */
- body.sb-sidenav-toggled #page-content-wrapper {
-    margin-left: 15rem;
- }
 
  @media (min-width: 768px) {
     #sidebar-wrapper {
