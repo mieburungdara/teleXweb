@@ -25,9 +25,9 @@ class SmartCollections extends CI_Controller {
         $data['collections'] = $this->Smart_Collection_Rule_model->get_user_rules($user_id);
         $data['title'] = 'Smart Collections';
 
-        $this->load->view('templates/header', $data);
+        $this->load->view('templates/dashmix_header', $data);
         $this->load->view('smart_collections/index', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/dashmix_footer');
     }
 
     /**
@@ -58,9 +58,9 @@ class SmartCollections extends CI_Controller {
         $data['all_mime_types'] = $this->File_model->get_all_mime_types($user_id);
         $data['user_folders'] = $this->Folder_model->get_user_folders($user_id, null);
 
-        $this->load->view('templates/header', $data);
+        $this->load->view('templates/dashmix_header', $data);
         $this->load->view('smart_collections/create_edit', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/dashmix_footer');
     }
 
     /**
@@ -189,8 +189,8 @@ class SmartCollections extends CI_Controller {
         $data['title'] = $rule['name'];
         $data['rule_name'] = $rule['name'];
 
-        $this->load->view('templates/header', $data);
+        $this->load->view('templates/dashmix_header', $data);
         $this->load->view('smart_collections/view_collection', $data); // New view for displaying files in a smart collection
-        $this->load->view('templates/footer');
+        $this->load->view('templates/dashmix_footer');
     }
 }

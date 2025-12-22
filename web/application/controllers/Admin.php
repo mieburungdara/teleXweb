@@ -57,9 +57,9 @@ class Admin extends CI_Controller {
         }
 
         $data['title'] = 'Admin Dashboard';
-        $this->load->view('templates/header', $data);
+        $this->load->view('templates/dashmix_header', $data);
         $this->load->view('admin/dashboard_view', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/dashmix_footer');
     }
 
     /**
@@ -74,9 +74,9 @@ class Admin extends CI_Controller {
         }
         $data['bots'] = $this->Bot_model->get_all_bots();
         $data['title'] = 'Manage Bots';
-        $this->load->view('templates/header', $data);
+        $this->load->view('templates/dashmix_header', $data);
         $this->load->view('admin/bot_list', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/dashmix_footer');
     }
 
     /**
@@ -100,9 +100,9 @@ class Admin extends CI_Controller {
             }
         }
         $data['title'] = $id ? 'Edit Bot' : 'Add New Bot';
-        $this->load->view('templates/header', $data);
+        $this->load->view('templates/dashmix_header', $data);
         $this->load->view('admin/bot_form', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/dashmix_footer');
     }
 
     /**
@@ -225,9 +225,9 @@ class Admin extends CI_Controller {
         }
         $data['users'] = $this->User_model->get_all_users();
         $data['title'] = 'Manage Users';
-        $this->load->view('templates/header', $data);
+        $this->load->view('templates/dashmix_header', $data);
         $this->load->view('admin/user_list', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/dashmix_footer');
     }
 
     /**
@@ -249,9 +249,9 @@ class Admin extends CI_Controller {
         }
         $data['roles'] = $this->Role_model->get_all_roles();
         $data['title'] = 'Edit User Role';
-        $this->load->view('templates/header', $data);
+        $this->load->view('templates/dashmix_header', $data);
         $this->load->view('admin/user_role_form', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/dashmix_footer');
     }
 
     /**
@@ -305,9 +305,9 @@ class Admin extends CI_Controller {
         }
         $data['roles'] = $this->Role_model->get_all_roles();
         $data['title'] = 'Manage Roles';
-        $this->load->view('templates/header', $data);
+        $this->load->view('templates/dashmix_header', $data);
         $this->load->view('admin/role_list', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/dashmix_footer');
     }
 
     /**
@@ -337,9 +337,9 @@ class Admin extends CI_Controller {
             // Add other permissions as needed
         ];
         $data['title'] = 'Edit Role Permissions';
-        $this->load->view('templates/header', $data);
+        $this->load->view('templates/dashmix_header', $data);
         $this->load->view('admin/role_permissions_form', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/dashmix_footer');
     }
 
     /**

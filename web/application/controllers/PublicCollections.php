@@ -25,9 +25,9 @@ class PublicCollections extends CI_Controller {
         $data['collections'] = $this->Public_Collection_model->get_user_collections($user_id);
         $data['title'] = 'My Public Collections';
 
-        $this->load->view('templates/header', $data);
+        $this->load->view('templates/dashmix_header', $data);
         $this->load->view('public_collections/index', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/dashmix_footer');
     }
 
     /**
@@ -60,9 +60,9 @@ class PublicCollections extends CI_Controller {
 
         $data['available_folders'] = $this->Folder_model->get_user_folders($user_id); // All user folders
         
-        $this->load->view('templates/header', $data);
+        $this->load->view('templates/dashmix_header', $data);
         $this->load->view('public_collections/create_edit', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/dashmix_footer');
     }
 
     /**
@@ -205,8 +205,6 @@ class PublicCollections extends CI_Controller {
         );
 
         $data['title'] = 'View Public Collection: ' . $collection['name'];
-        $this->load->view('templates/header', $data);
         $this->load->view('public_collections/view_public', $data);
-        $this->load->view('templates/footer');
     }
 }

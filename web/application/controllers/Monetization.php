@@ -27,9 +27,9 @@ class Monetization extends CI_Controller {
         $data['transactions'] = $this->Balance_Transaction_model->get_user_transactions($user_id);
         $data['title'] = 'My Balance';
 
-        $this->load->view('templates/header', $data);
+        $this->load->view('templates/dashmix_header', $data);
         $this->load->view('monetization/balance', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/dashmix_footer');
     }
 
     /**

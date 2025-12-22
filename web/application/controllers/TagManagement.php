@@ -28,9 +28,9 @@ class TagManagement extends CI_Controller {
         }
         $data['tags'] = $this->Tag_model->get_all_tags(); // Need to add get_all_tags to Tag_model
         $data['title'] = 'Tag Management';
-        $this->load->view('templates/header', $data);
+        $this->load->view('templates/dashmix_header', $data);
         $this->load->view('admin/tag_management/index', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/dashmix_footer');
     }
 
     /**
@@ -63,9 +63,9 @@ class TagManagement extends CI_Controller {
             }
         }
         $data['title'] = 'Find Duplicate Tags';
-        $this->load->view('templates/header', $data);
+        $this->load->view('templates/dashmix_header', $data);
         $this->load->view('admin/tag_management/duplicates', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/dashmix_footer');
     }
 
     /**

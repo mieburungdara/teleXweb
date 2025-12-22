@@ -24,9 +24,9 @@ class Notifications extends CI_Controller {
         $data['notifications'] = $this->Notification_model->get_user_notifications($user_id);
         $data['title'] = 'My Notifications';
 
-        $this->load->view('templates/header', $data);
+        $this->load->view('templates/dashmix_header', $data);
         $this->load->view('notifications/index', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/dashmix_footer');
     }
 
     /**

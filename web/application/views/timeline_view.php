@@ -1,67 +1,51 @@
-<div class="card">
-    <div class="card-header">
-        <h1>File Timeline</h1>
-    </div>
-    <div class="card-body">
-        <?php if (empty($timeline_data)): ?>
-            <p>No files to display in the timeline.</p>
-        <?php else: ?>
-            <div class="timeline">
-                <?php foreach ($timeline_data as $date => $files): ?>
-                    <div class="timeline-item">
-                        <div class="timeline-marker"></div>
-                        <div class="timeline-content">
-                            <h4 class="timeline-title"><?php echo date('F j, Y', strtotime($date)); ?></h4>
-                            <div class="row">
-                                <?php foreach ($files as $file): ?>
-                                    <div class="col-md-2 mb-2">
-                                        <a href="<?php echo site_url('files/details/' . $file['id']); ?>" title="<?php echo htmlspecialchars($file['original_file_name']); ?>">
-                                            <?php echo get_file_icon($file['mime_type']); ?>
-                                            <span class="d-block small text-truncate"><?php echo htmlspecialchars($file['original_file_name']); ?></span>
-                                        </a>
-                                    </div>
-                                <?php endforeach; ?>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
+<!-- Hero -->
+<div class="content">
+    <div class="d-md-flex justify-content-md-between align-items-md-center py-3 pt-md-3 pb-md-0 text-center text-md-start">
+        <div>
+            <h1 class="h3 mb-1">
+                File Timeline
+            </h1>
+            <p class="fw-medium mb-0 text-muted">
+                A chronological view of your file uploads.
+            </p>
+        </div>
     </div>
 </div>
+<!-- END Hero -->
 
-<style>
-.timeline {
-    position: relative;
-    padding: 20px 0;
-}
-.timeline::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 10px;
-    height: 100%;
-    width: 4px;
-    background: #f1f1f1;
-}
-.timeline-item {
-    position: relative;
-    margin-bottom: 20px;
-    padding-left: 40px;
-}
-.timeline-marker {
-    position: absolute;
-    top: 5px;
-    left: 0;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #0d6efd;
-    border: 3px solid #fff;
-}
-.timeline-content {
-    background: #f8f9fa;
-    padding: 20px;
-    border-radius: 5px;
-}
-</style>
+<!-- Page Content -->
+<div class="content">
+    <?php if (empty($timeline_data)): ?>
+        <div class="block block-rounded">
+            <div class="block-content">
+                <p>No files to display in the timeline.</p>
+            </div>
+        </div>
+    <?php else: ?>
+        <div class="block block-rounded">
+            <div class="block-content">
+                <ul class="list-activity">
+                    <?php foreach ($timeline_data as $date => $files): ?>
+                        <li>
+                            <i class="fa fa-calendar-alt text-gray-dark"></i>
+                            <div class="fw-semibold"><?php echo date('F j, Y', strtotime($date)); ?></div>
+                             <div class="mt-2">
+                                <div class="d-flex flex-wrap">
+                                <?php foreach ($files as $file): ?>
+                                     <a class="me-4 mb-2" href="<?php echo site_url('files/details/' . $file['id']); ?>" title="<?php echo htmlspecialchars($file['original_file_name']); ?>">
+                                        <div class="d-flex align-items-center">
+                                            <?php echo get_file_icon($file['mime_type']); ?>
+                                            <span class="ms-2 text-truncate" style="max-width: 150px;"><?php echo htmlspecialchars($file['original_file_name']); ?></span>
+                                        </div>
+                                    </a>
+                                <?php endforeach; ?>
+                                </div>
+                            </div>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        </div>
+    <?php endif; ?>
+</div>
+<!-- END Page Content -->

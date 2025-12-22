@@ -37,9 +37,9 @@ class Users extends CI_Controller {
 
         $data['title'] = 'My Profile';
 
-        $this->load->view('templates/header', $data);
+        $this->load->view('templates/dashmix_header', $data);
         $this->load->view('user/profile', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/dashmix_footer');
     }
 
     /**
@@ -56,9 +56,9 @@ class Users extends CI_Controller {
         }
         $data['title'] = 'Edit Profile';
 
-        $this->load->view('templates/header', $data);
+        $this->load->view('templates/dashmix_header', $data);
         $this->load->view('user/profile_edit', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/dashmix_footer');
     }
 
     /**

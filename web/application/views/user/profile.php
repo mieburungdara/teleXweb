@@ -1,7 +1,25 @@
-<!-- User Profile Dashboard -->
-<div class="container-fluid">
-    <h1 class="mb-4">My Dashboard</h1>
+<!-- Hero -->
+<div class="bg-image" style="background-image: url('<?php echo base_url('assets/dashmix/media/various/bg_profile.jpg'); ?>');">
+    <div class="bg-primary-dark-op">
+        <div class="content content-full text-center">
+            <div class="my-3">
+                <img class="img-avatar img-avatar-thumb" src="<?php echo base_url('assets/dashmix/media/avatars/avatar13.jpg'); ?>" alt="">
+            </div>
+            <h1 class="h2 text-white mb-0"><?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?></h1>
+            <h2 class="h4 fw-normal text-white-75">
+                <?php echo htmlspecialchars($user['role_name']); ?>
+            </h2>
+            <a class="btn btn-alt-secondary" href="<?php echo site_url('users/edit_profile'); ?>">
+                <i class="fa fa-fw fa-pencil-alt me-1"></i> Edit Profile
+            </a>
+        </div>
+    </div>
+</div>
+<!-- END Hero -->
 
+<!-- Page Content -->
+<div class="content content-full">
+    <!-- Flash Messages -->
     <?php if ($this->session->flashdata('success_message')): ?>
         <div class="alert alert-success"><?php echo $this->session->flashdata('success_message'); ?></div>
     <?php endif; ?>
@@ -9,81 +27,63 @@
         <div class="alert alert-danger"><?php echo $this->session->flashdata('error_message'); ?></div>
     <?php endif; ?>
 
-    <!-- Stat Cards -->
-    <div class="row">
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Folders</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $user['total_folders']; ?></div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-folder fa-2x text-gray-300"></i>
-                        </div>
+    <!-- Stats -->
+    <div class="row items-push">
+        <div class="col-sm-6 col-xl-3">
+            <div class="block block-rounded text-center d-flex flex-column h-100 mb-0">
+                <div class="block-content block-content-full flex-grow-1">
+                    <div class="item rounded-3 bg-body mx-auto my-3">
+                        <i class="fa fa-folder fa-lg text-primary"></i>
                     </div>
+                    <div class="fs-1 fw-bold"><?php echo $user['total_folders']; ?></div>
+                    <div class="text-muted mb-3">Total Folders</div>
                 </div>
             </div>
         </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Files</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $user['total_files']; ?></div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-file fa-2x text-gray-300"></i>
-                        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="block block-rounded text-center d-flex flex-column h-100 mb-0">
+                <div class="block-content block-content-full flex-grow-1">
+                    <div class="item rounded-3 bg-body mx-auto my-3">
+                        <i class="fa fa-file fa-lg text-primary"></i>
                     </div>
+                    <div class="fs-1 fw-bold"><?php echo $user['total_files']; ?></div>
+                    <div class="text-muted mb-3">Total Files</div>
                 </div>
             </div>
         </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">XP</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $user['xp']; ?> (Level: <?php echo $user['level']; ?>)</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-star fa-2x text-gray-300"></i>
-                        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="block block-rounded text-center d-flex flex-column h-100 mb-0">
+                <div class="block-content block-content-full flex-grow-1">
+                    <div class="item rounded-3 bg-body mx-auto my-3">
+                        <i class="fa fa-star fa-lg text-primary"></i>
                     </div>
+                    <div class="fs-1 fw-bold"><?php echo $user['xp']; ?></div>
+                    <div class="text-muted mb-3">XP (Level <?php echo $user['level']; ?>)</div>
                 </div>
             </div>
         </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Balance</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">Rp <?php echo number_format($user['balance'], 2, ',', '.'); ?></div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-wallet fa-2x text-gray-300"></i>
-                        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="block block-rounded text-center d-flex flex-column h-100 mb-0">
+                <div class="block-content block-content-full">
+                    <div class="item rounded-3 bg-body mx-auto my-3">
+                        <i class="fa fa-wallet fa-lg text-primary"></i>
                     </div>
+                    <div class="fs-1 fw-bold">Rp <?php echo number_format($user['balance'], 2, ',', '.'); ?></div>
+                    <div class="text-muted mb-3">Balance</div>
                 </div>
             </div>
         </div>
     </div>
+    <!-- END Stats -->
 
     <!-- Recent Activity -->
     <div class="row">
-        <div class="col-lg-6 mb-4">
-            <div class="card shadow">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Recent Folders</h6>
+        <div class="col-md-6">
+            <div class="block block-rounded">
+                <div class="block-header block-header-default">
+                    <h3 class="block-title">Recent Folders</h3>
                 </div>
-                <div class="card-body">
+                <div class="block-content">
                     <?php if (!empty($recent_folders)): ?>
                         <ul class="list-group list-group-flush">
                             <?php foreach ($recent_folders as $folder): ?>
@@ -94,19 +94,18 @@
                             <?php endforeach; ?>
                         </ul>
                     <?php else: ?>
-                        <p class="text-center text-muted">No folders created yet.</p>
+                        <p class="text-center p-3 text-muted">No folders created yet.</p>
                     <?php endif; ?>
                 </div>
             </div>
         </div>
-
-        <div class="col-lg-6 mb-4">
-            <div class="card shadow">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Recent Files</h6>
+        <div class="col-md-6">
+            <div class="block block-rounded">
+                <div class="block-header block-header-default">
+                    <h3 class="block-title">Recent Files</h3>
                 </div>
-                <div class="card-body">
-                    <?php if (!empty($recent_files)): ?>
+                <div class="block-content">
+                     <?php if (!empty($recent_files)): ?>
                         <ul class="list-group list-group-flush">
                             <?php foreach ($recent_files as $file): ?>
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -116,33 +115,12 @@
                             <?php endforeach; ?>
                         </ul>
                     <?php else: ?>
-                        <p class="text-center text-muted">No files uploaded yet.</p>
+                        <p class="text-center p-3 text-muted">No files uploaded yet.</p>
                     <?php endif; ?>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Profile Info and Actions -->
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Profile Information</h6>
-                </div>
-                <div class="card-body">
-                    <p><strong>Telegram ID:</strong> <?php echo htmlspecialchars($user['telegram_id']); ?></p>
-                    <p><strong>Username:</strong> <?php echo htmlspecialchars($user['username'] ?? 'N/A'); ?></p>
-                    <p><strong>Full Name:</strong> <?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?></p>
-                    <p><strong>Role:</strong> <?php echo htmlspecialchars($user['role_name']); ?></p>
-                    <p><strong>Member Since:</strong> <?php echo date('F j, Y', strtotime($user['created_at'])); ?></p>
-                    
-                    <hr>
-
-                    <a href="<?php echo site_url('users/edit_profile'); ?>" class="btn btn-primary">Edit Profile</a>
-                    <a href="<?php echo site_url('folders'); ?>" class="btn btn-secondary">Go to My Folders</a>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- END Recent Activity -->
 </div>
+<!-- END Page Content -->

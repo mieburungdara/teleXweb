@@ -72,9 +72,9 @@ class Files extends CI_Controller {
         $data['user_folders'] = $this->Folder_model->get_user_folders($user_id, null); // Top-level folders
         $data['breadcrumbs'] = !empty($filters['folder_id']) ? $this->Folder_model->get_folder_hierarchy($filters['folder_id']) : [];
 
-        $this->load->view('templates/header', $data);
+        $this->load->view('templates/dashmix_header', $data);
         $this->load->view('file_list', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/dashmix_footer');
     }
 
     public function gallery()
@@ -98,9 +98,9 @@ class Files extends CI_Controller {
         $data['files'] = $files;
         $data['title'] = 'Image Gallery';
 
-        $this->load->view('templates/header', $data);
+        $this->load->view('templates/dashmix_header', $data);
         $this->load->view('gallery_view', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/dashmix_footer');
     }
 
     public function details($id)
@@ -132,9 +132,9 @@ class Files extends CI_Controller {
         $data['title'] = 'File Details';
         $data['breadcrumbs'] = !empty($file['folder_id']) ? $this->Folder_model->get_folder_hierarchy($file['folder_id']) : [];
 
-        $this->load->view('templates/header', $data);
+        $this->load->view('templates/dashmix_header', $data);
         $this->load->view('file_detail_view', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/dashmix_footer');
     }
 
     public function toggle_favorite($id)
@@ -187,8 +187,8 @@ class Files extends CI_Controller {
         $data['timeline_data'] = $timeline_data;
         $data['title'] = 'File Timeline';
 
-        $this->load->view('templates/header', $data);
+        $this->load->view('templates/dashmix_header', $data);
         $this->load->view('timeline_view', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/dashmix_footer');
     }
 }

@@ -30,9 +30,9 @@ class Folders extends CI_Controller {
         $data['parent_folder_id'] = $parent_folder_id;
         $data['title'] = 'My Folders';
 
-        $this->load->view('templates/header', $data);
+        $this->load->view('templates/dashmix_header', $data);
         $this->load->view('folder_management_view', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/dashmix_footer');
     }
 
     /**
@@ -60,9 +60,9 @@ class Folders extends CI_Controller {
         $data['stats'] = $this->Folder_model->get_folder_stats($id); // Fetch stats
         $data['title'] = 'View Folder: ' . $data['folder']['folder_name'];
 
-        $this->load->view('templates/header', $data);
+        $this->load->view('templates/dashmix_header', $data);
         $this->load->view('folders/view', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/dashmix_footer');
     }
 
     /**
@@ -209,9 +209,9 @@ class Folders extends CI_Controller {
         }
         $data['title'] = 'Share Folder: ' . $data['folder']['folder_name'];
 
-        $this->load->view('templates/header', $data);
+        $this->load->view('templates/dashmix_header', $data);
         $this->load->view('folders/share', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/dashmix_footer');
     }
 
     /**
@@ -351,9 +351,9 @@ class Folders extends CI_Controller {
         $data['breadcrumbs'] = $this->Folder_model->get_folder_hierarchy($data['folder']['parent_folder_id']);
         $data['title'] = 'Edit Folder';
 
-        $this->load->view('templates/header', $data);
+        $this->load->view('templates/dashmix_header', $data);
         $this->load->view('folder_management_view', $data); // Re-use the same view for edit form
-        $this->load->view('templates/footer');
+        $this->load->view('templates/dashmix_footer');
     }
 
     /**
