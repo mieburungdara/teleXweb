@@ -23,8 +23,8 @@
         <!-- Top navigation-->
         <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
             <div class="container-fluid">
-                <button class="btn btn-primary me-3" id="sidebarToggle">
-                    <i class="fas fa-bars"></i>
+                <button class="navbar-toggler me-3" id="sidebarToggle" type="button" aria-controls="sidebar-wrapper" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
                 </button>
 
                 <a class="navbar-brand fw-bold" href="<?php echo site_url(); ?>">teleXweb</a>
