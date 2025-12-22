@@ -1,77 +1,146 @@
-<?php $this->load->view('templates/header', ['title' => 'Dashboard']); ?>
-
-<div class="container-fluid mt-4">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1 class="h3 mb-2 text-gray-800">Dashboard</h1>
-            <p class="mb-4">Selamat datang di dashboard Anda, <strong><?php echo $this->session->userdata('username') ?? 'Pengguna'; ?></strong>!</p>
+<!-- Hero -->
+<div class="content">
+    <div class="d-md-flex justify-content-md-between align-items-md-center py-3 pt-md-3 pb-md-0 text-center text-md-start">
+        <div>
+            <h1 class="h3 mb-1">
+                Dashboard
+            </h1>
+            <p class="fw-medium mb-0 text-muted">
+                Selamat datang, <?php echo $this->session->userdata('username') ?? 'Pengguna'; ?>!
+            </p>
         </div>
     </div>
+</div>
+<!-- END Hero -->
 
-    <div class="row">
-        <div class="col-lg-6 mb-4">
-            <div class="card shadow mb-4 h-100">
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-user-circle mr-2"></i>Informasi Pengguna</h6>
-                    <span class="badge badge-primary"><?php echo $this->session->userdata('role_name'); ?></span>
+<!-- Page Content -->
+<div class="content">
+    <!-- Overview -->
+    <div class="row items-push">
+        <div class="col-sm-6 col-xl-3">
+            <div class="block block-rounded text-center d-flex flex-column h-100 mb-0">
+                <div class="block-content block-content-full flex-grow-1">
+                    <div class="item rounded-3 bg-body mx-auto my-3">
+                        <i class="fa fa-users fa-lg text-primary"></i>
+                    </div>
+                    <div class="fs-1 fw-bold">0</div>
+                    <div class="text-muted mb-3">Total Files</div>
                 </div>
-                <div class="card-body">
+                <div class="block-content block-content-full block-content-sm bg-body-light fs-sm">
+                    <a class="fw-medium" href="<?php echo site_url('files'); ?>">
+                        View all files
+                        <i class="fa fa-arrow-right ms-1 opacity-25"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="block block-rounded text-center d-flex flex-column h-100 mb-0">
+                <div class="block-content block-content-full flex-grow-1">
+                    <div class="item rounded-3 bg-body mx-auto my-3">
+                        <i class="fa fa-folder fa-lg text-primary"></i>
+                    </div>
+                    <div class="fs-1 fw-bold">0</div>
+                    <div class="text-muted mb-3">Total Folders</div>
+                </div>
+                <div class="block-content block-content-full block-content-sm bg-body-light fs-sm">
+                     <a class="fw-medium" href="<?php echo site_url('folders'); ?>">
+                        View all folders
+                        <i class="fa fa-arrow-right ms-1 opacity-25"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+             <div class="block block-rounded text-center d-flex flex-column h-100 mb-0">
+                <div class="block-content block-content-full flex-grow-1">
+                    <div class="item rounded-3 bg-body mx-auto my-3">
+                        <i class="fa fa-chart-line fa-lg text-primary"></i>
+                    </div>
+                    <div class="fs-1 fw-bold">0</div>
+                    <div class="text-muted mb-3">Total Hits</div>
+                </div>
+                <div class="block-content block-content-full block-content-sm bg-body-light fs-sm">
+                    <a class="fw-medium" href="javascript:void(0)">
+                        Explore analytics
+                        <i class="fa fa-arrow-right ms-1 opacity-25"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="block block-rounded text-center d-flex flex-column h-100 mb-0">
+                <div class="block-content block-content-full">
+                    <div class="item rounded-3 bg-body mx-auto my-3">
+                        <i class="fa fa-wallet fa-lg text-primary"></i>
+                    </div>
+                    <div class="fs-1 fw-bold">$0</div>
+                    <div class="text-muted mb-3">Total Earnings</div>
+                </div>
+                <div class="block-content block-content-full block-content-sm bg-body-light fs-sm">
+                    <a class="fw-medium" href="javascript:void(0)">
+                        Withdrawal options
+                        <i class="fa fa-arrow-right ms-1 opacity-25"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END Overview -->
+
+    <!-- User Info and Admin Actions -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="block block-rounded">
+                <div class="block-header block-header-default">
+                    <h3 class="block-title">User Information</h3>
+                </div>
+                <div class="block-content">
                     <?php if ($this->session->userdata('logged_in')): ?>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                Nama Pengguna
-                                <strong><?php echo $this->session->userdata('username') ?? 'N/A'; ?></strong>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                ID Telegram
-                                <strong><?php echo $this->session->userdata('telegram_id') ?? 'N/A'; ?></strong>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                Kode Pengguna
-                                <strong><?php echo $this->session->userdata('user_code') ?? 'N/A'; ?></strong>
-                            </li>
-                             <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                Peran
-                                <strong><?php echo $this->session->userdata('role_name'); ?> (ID: <?php echo $this->session->userdata('role_id'); ?>)</strong>
-                            </li>
-                        </ul>
+                        <table class="table table-borderless fs-sm">
+                            <tbody>
+                                <tr>
+                                    <td class="fw-medium" style="width: 30%;">Username</td>
+                                    <td><?php echo $this->session->userdata('username') ?? 'N/A'; ?></td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-medium">Telegram ID</td>
+                                    <td><?php echo $this->session->userdata('telegram_id') ?? 'N/A'; ?></td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-medium">User Code</td>
+                                    <td><?php echo $this->session->userdata('user_code') ?? 'N/A'; ?></td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-medium">Role</td>
+                                    <td><?php echo $this->session->userdata('role_name'); ?> (ID: <?php echo $this->session->userdata('role_id'); ?>)</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     <?php else: ?>
-                        <p class="text-danger">Anda tidak login.</p>
+                        <p class="text-danger">You are not logged in.</p>
                     <?php endif; ?>
                 </div>
             </div>
         </div>
-
         <?php if (is_admin()): ?>
-        <div class="col-lg-6 mb-4">
-            <div class="card shadow mb-4 h-100">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-cogs mr-2"></i>Tindakan Admin</h6>
+        <div class="col-md-6">
+            <div class="block block-rounded">
+                <div class="block-header block-header-default">
+                    <h3 class="block-title">Admin Actions</h3>
                 </div>
-                <div class="card-body">
+                <div class="block-content">
                     <div class="list-group">
-                        <a href="<?php echo site_url('admin'); ?>" class="list-group-item list-group-item-action"><i class="fas fa-robot mr-2"></i>Kelola Bot</a>
-                        <a href="<?php echo site_url('admin/users'); ?>" class="list-group-item list-group-item-action"><i class="fas fa-users-cog mr-2"></i>Kelola Pengguna</a>
+                        <a href="<?php echo site_url('admin/dashboard'); ?>" class="list-group-item list-group-item-action">Manage Dashboard</a>
+                        <a href="<?php echo site_url('admin/users'); ?>" class="list-group-item list-group-item-action">Manage Users</a>
+                        <a href="<?php echo site_url('admin/roles'); ?>" class="list-group-item list-group-item-action">Manage Roles</a>
+                        <a href="<?php echo site_url('admin/tagmanagement'); ?>" class="list-group-item list-group-item-action">Manage Tags</a>
                     </div>
                 </div>
             </div>
         </div>
         <?php endif; ?>
     </div>
-
-    <div class="row">
-        <div class="col-12">
-            <div class="card shadow">
-                <div class="card-header py-3">
-                     <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-chart-line mr-2"></i>Aktivitas Terbaru</h6>
-                </div>
-                <div class="card-body">
-                    <p class="text-muted">Untuk saat ini, tidak ada aktivitas terbaru untuk ditampilkan.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <!-- END User Info and Admin Actions -->
 </div>
-
-<?php $this->load->view('templates/footer'); ?>
+<!-- END Page Content -->

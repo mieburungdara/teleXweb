@@ -260,12 +260,8 @@ class MiniApp extends CI_Controller {
      */
     public function dashboard()
     {
-        log_message('debug', 'Session ID: ' . $this->session->session_id);
-        log_message('debug', 'Session save path: ' . ini_get('session.save_path'));
         log_message('debug', 'MiniApp Dashboard: Access attempt.');
         log_message('debug', 'MiniApp Dashboard: Session logged_in status: ' . ($this->session->userdata('logged_in') ? 'TRUE' : 'FALSE'));
-        log_message('debug', 'MiniApp Dashboard: Session new_user_onboard status: ' . ($this->session->userdata('new_user_onboard') ? 'TRUE' : 'FALSE'));
-        log_message('debug', 'MiniApp Dashboard: Full Session Data: ' . json_encode($this->session->all_userdata()));
 
         if (!$this->session->userdata('logged_in')) {
             log_message('warn', 'MiniApp Dashboard: Unauthenticated access attempt. Redirecting to unauthorized.');
@@ -281,8 +277,13 @@ class MiniApp extends CI_Controller {
             return;
         }
 
-        log_message('debug', 'MiniApp Dashboard: Existing user, loading dashboard_view.');
-        $this->load->view('dashboard_view');
+        log_message('debug', 'MiniApp Dashboard: Existing user, loading Dashmix dashboard view.');
+        $data['title'] = 'Dashboard';
+
+        // Load the new Dashmix template
+        $this->load->view('templates/dashmix_header', $data);
+        $this->load->view('dashboard_view', $data); // We will adapt this view in the next step
+        $this->load->view('templates/dashmix_footer', $data);
     }
 
     /**
