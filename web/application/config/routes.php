@@ -166,5 +166,5 @@ $route['monetization/add_funds'] = 'Monetization/add_funds';
 
 
 
-$route['404_override'] = '';
+$route['404_override'] = 'errors/show_404';
 $route['translate_uri_dashes'] = FALSE;
