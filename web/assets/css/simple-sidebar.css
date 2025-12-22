@@ -60,12 +60,10 @@
  }
  
  #page-content-wrapper {
-    padding: 20px;
     width: 100%;
     min-width: 0;
     transition: margin .25s ease-out;
     margin-left: 0; /* Mobile First: No margin by default */
-    margin-top: 1.5rem; /* Add space between header and content */
  }
 
  /* Push content on mobile when sidebar is toggled */
