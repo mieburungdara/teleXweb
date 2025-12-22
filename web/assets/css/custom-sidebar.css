@@ -1,164 +1,216 @@
 /*
- * Custom Sidebar Styles
- * Inspired by SB Admin 2
+ * Modern, Minimalist, and Responsive Sidebar
  */
+
+:root {
+    --sidebar-width: 260px;
+    --sidebar-width-collapsed: 90px;
+    --sidebar-bg: #ffffff;
+    --sidebar-border-color: #e5e6eb;
+    --sidebar-link-color: #4E5969;
+    --sidebar-link-hover-bg: #F2F3F5;
+    --sidebar-link-active-color: #165DFF;
+    --sidebar-heading-color: #86909C;
+    --sidebar-transition-speed: 0.3s;
+}
 
 #wrapper {
     display: flex;
-}
-
-.sidebar {
-    width: 15rem !important;
-    min-height: 100vh;
-    transition: margin .25s ease-out, width .25s ease-out;
-}
-
-.sidebar .nav-item {
-    margin-bottom: 0.25rem;
-}
-
-.sidebar .nav-link {
-    display: block;
-    padding: 0.75rem 1rem;
-    color: rgba(255, 255, 255, 0.6);
-    border-radius: 0.35rem;
-}
-
-.sidebar .nav-link i {
-    margin-right: 0.5rem;
-    color: rgba(255, 255, 255, 0.3);
-    transition: color 0.15s ease-in-out;
-}
-
-.sidebar .nav-link:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: #fff;
-}
-
-.sidebar .nav-link:hover i {
-    color: #fff;
-}
-
-.sidebar .nav-item.active .nav-link {
-    font-weight: bold;
-    color: #fff;
-    background-color: rgba(255, 255, 255, 0.15);
-}
-
-.sidebar .nav-item.active .nav-link i {
-    color: #fff;
-}
-
-.sidebar-brand {
-    height: 4.375rem;
-    text-decoration: none;
-    font-size: 1rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    color: #fff;
-}
-
-.sidebar-brand .sidebar-brand-icon {
-    font-size: 1.5rem;
-}
-
-.sidebar-heading {
-    padding: 1.5rem 1rem 0.5rem;
-    font-size: .75rem;
-    color: rgba(255, 255, 255, 0.4);
-    text-transform: uppercase;
-}
-
-.sidebar-divider {
-    margin: 1rem 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-/* Collapsed state */
-body.sidebar-toggled .sidebar {
-    width: 6.5rem !important;
-    overflow: hidden;
-}
-
-body.sidebar-toggled .sidebar .sidebar-brand-text {
-    display: none;
-}
-
-body.sidebar-toggled .sidebar .nav-item .nav-link span {
-    display: none;
-}
-
-body.sidebar-toggled .sidebar .sidebar-heading {
-    text-align: center;
-    padding: 1.5rem 0.5rem 0.5rem;
-}
-
-body.sidebar-toggled .sidebar .nav-link {
-    justify-content: center;
-    text-align: center;
-}
-body.sidebar-toggled .sidebar .nav-link i {
-    margin-right: 0;
-    font-size: 1.2rem;
-}
-
-/* Admin submenu */
-.collapse-inner .collapse-item {
-    padding: .5rem 1rem;
-    margin: 0 .5rem;
-    display: block;
-    color: #3a3b45;
-    text-decoration: none;
-    border-radius: .35rem;
-    white-space: nowrap;
-}
-.collapse-inner .collapse-item:hover,
-.collapse-inner .collapse-item.active {
-    background-color: #eaecf4;
-    color: #2e59d9;
+    background-color: #F7F8FA; /* Main content background */
 }
 
 #sidebar-wrapper {
-    background: #2e59d9; /* fallback */
-    background-image: linear-gradient(180deg, #4e73df 10%, #224abe 100%);
-    background-size: cover;
-}
-.border-end {
-    border-right: 1px solid #dee2e6!important;
-}
-
-.sidebar-bottom-controls {
-    position: absolute;
-    bottom: 1rem;
-    width: 100%;
-    padding: 0 1rem;
-}
-.sidebar-bottom-controls .dropdown a {
-    font-size: 0.8rem;
-    color: rgba(255,255,255,.6);
-}
-.sidebar-bottom-controls .dropdown-menu {
-    background: rgba(0,0,0,0.2);
-    border: none;
-}
-.sidebar-bottom-controls .dropdown-item {
-    color: rgba(255,255,255,.8);
-}
-.sidebar-bottom-controls .dropdown-item:hover {
-    background: rgba(0,0,0,0.3);
+    width: var(--sidebar-width);
+    background-color: var(--sidebar-bg);
+    border-right: 1px solid var(--sidebar-border-color);
+    transition: width var(--sidebar-transition-speed) cubic-bezier(0.4, 0, 0.2, 1), 
+                left var(--sidebar-transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 #page-content-wrapper {
-  width: 100%;
-  min-width: 0;
-  transition: margin .25s ease-out;
+    width: calc(100% - var(--sidebar-width));
+    flex-grow: 1;
+    transition: margin-left var(--sidebar-transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@media (min-width: 768px) {
-  #page-content-wrapper {
-    margin-left: 15rem;
-  }
-  body.sidebar-toggled #page-content-wrapper {
-    margin-left: 6.5rem;
-  }
+.sidebar-nav {
+    padding: 0.5rem 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    padding: 0 1.5rem;
+    height: 60px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1D2129;
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.sidebar-brand .sidebar-brand-icon {
+    margin-right: 0.75rem;
+    font-size: 1.5rem;
+    color: var(--sidebar-link-active-color);
+}
+
+.sidebar-heading {
+    padding: 1.5rem 1.25rem 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--sidebar-heading-color);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.navbar-nav {
+    list-style: none;
+    padding-left: 0;
+}
+
+.nav-item {
+    margin: 0 0.75rem;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    padding: 0.6rem 0.75rem;
+    color: var(--sidebar-link-color);
+    text-decoration: none;
+    border-radius: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.nav-link:hover {
+    background-color: var(--sidebar-link-hover-bg);
+    color: #1D2129;
+}
+
+.nav-item.active > .nav-link,
+.nav-link[aria-expanded="true"] {
+    color: var(--sidebar-link-active-color);
+    font-weight: 500;
+    background-color: #E8F3FF;
+}
+
+.nav-link i.fa-fw {
+    width: 1.5em;
+    margin-right: 0.75rem;
+    font-size: 1rem;
+    text-align: center;
+}
+
+.collapse.show .collapse-inner {
+    padding-bottom: 0.5rem;
+}
+.collapse-inner a {
+    position: relative;
+    padding: .5rem 1rem .5rem 3.25rem; /* Indent sub-items */
+    font-size: 0.9rem;
+    color: var(--sidebar-link-color);
+    display: block;
+    text-decoration: none;
+    border-radius: 6px;
+}
+.collapse-inner a:hover {
+    background-color: var(--sidebar-link-hover-bg);
+}
+.collapse-inner a.active {
+    color: var(--sidebar-link-active-color);
+    font-weight: 500;
+}
+
+.collapse-inner a::before {
+    content: '';
+    position: absolute;
+    left: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 4px;
+    background-color: #C9CDD4;
+    border-radius: 50%;
+}
+
+
+/* --- Collapsed State (Desktop) --- */
+body.sidebar-collapsed #sidebar-wrapper {
+    width: var(--sidebar-width-collapsed);
+}
+
+body.sidebar-collapsed #page-content-wrapper {
+    width: calc(100% - var(--sidebar-width-collapsed));
+}
+
+body.sidebar-collapsed .sidebar-brand-text,
+body.sidebar-collapsed .sidebar-heading,
+body.sidebar-collapsed .nav-link span,
+body.sidebar-collapsed .collapse {
+    display: none;
+}
+
+body.sidebar-collapsed .sidebar-brand {
+    padding: 0;
+    justify-content: center;
+}
+body.sidebar-collapsed .sidebar-brand-icon {
+    margin-right: 0;
+}
+body.sidebar-collapsed .nav-link {
+    justify-content: center;
+}
+body.sidebar-collapsed .nav-link i.fa-fw {
+    margin-right: 0;
+}
+body.sidebar-collapsed .nav-item {
+    margin: 0 0.5rem;
+}
+
+
+/* --- Toggled State (Mobile) --- */
+@media (max-width: 768px) {
+    #sidebar-wrapper {
+        position: fixed;
+        left: calc(-1 * var(--sidebar-width));
+        z-index: 1031;
+    }
+    #page-content-wrapper {
+        width: 100%;
+        margin-left: 0;
+    }
+    body.sidebar-toggled #sidebar-wrapper {
+        left: 0;
+    }
+    
+    .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(29,33,41,0.6);
+        z-index: 1030;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity var(--sidebar-transition-speed) ease, visibility var(--sidebar-transition-speed) ease;
+    }
+    body.sidebar-toggled .sidebar-overlay {
+        opacity: 1;
+        visibility: visible;
+    }
 }

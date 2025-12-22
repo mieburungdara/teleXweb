@@ -6,28 +6,44 @@
 <script>
 window.addEventListener('DOMContentLoaded', event => {
 
-    // --- New, Simplified Sidebar Toggle Logic ---
-    const sidebarToggle = document.body.querySelector('#sidebarToggle');
-    if (sidebarToggle) {
-        // On page load, check if sidebar was previously toggled and apply the class
-        if (localStorage.getItem('teleXweb|sidebar-toggle') === 'true') {
-            document.body.classList.add('sidebar-toggled');
-        }
+    const body = document.body;
+    const sidebarToggle = body.querySelector('#sidebarToggle');
+    const sidebarOverlay = body.querySelector('#sidebarOverlay');
 
+    const isDesktop = () => window.matchMedia('(min-width: 769px)').matches;
+
+    // --- Sidebar Toggle Logic for Desktop and Mobile ---
+    if (sidebarToggle) {
+        // Restore sidebar state on page load for desktop
+        if (localStorage.getItem('sidebarCollapsed') === 'true' && isDesktop()) {
+            body.classList.add('sidebar-collapsed');
+        }
+        
         sidebarToggle.addEventListener('click', event => {
             event.preventDefault();
-            // Toggle the class on the body element
-            document.body.classList.toggle('sidebar-toggled');
-            // Save the current state to localStorage
-            localStorage.setItem('teleXweb|sidebar-toggle', document.body.classList.contains('sidebar-toggled'));
+            if (isDesktop()) {
+                // On desktop, toggle the collapsed state
+                body.classList.toggle('sidebar-collapsed');
+                // Save state to localStorage
+                localStorage.setItem('sidebarCollapsed', body.classList.contains('sidebar-collapsed'));
+            } else {
+                // On mobile, toggle the slide-in menu
+                body.classList.toggle('sidebar-toggled');
+            }
+        });
+    }
+
+    // On mobile, click the overlay to close the sidebar
+    if (sidebarOverlay) {
+        sidebarOverlay.addEventListener('click', () => {
+            body.classList.remove('sidebar-toggled');
         });
     }
 
     // --- Theme switching logic (remains the same) ---
     const themeLightBtn = document.getElementById('theme-light');
     const themeDarkBtn = document.getElementById('theme-dark');
-    const body = document.body;
-
+    
     const currentTheme = localStorage.getItem('theme');
     if (currentTheme === 'dark') {
         body.classList.add('dark-theme');
