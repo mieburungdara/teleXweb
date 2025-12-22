@@ -6,92 +6,24 @@
 <script>
 window.addEventListener('DOMContentLoaded', event => {
 
+    // --- New, Simplified Sidebar Toggle Logic ---
     const sidebarToggle = document.body.querySelector('#sidebarToggle');
-    const sidebarWrapper = document.getElementById('sidebar-wrapper'); // Get sidebar element
-
-    // Function to set the icon based on the sidebar state
-    // Defined here to be accessible for both toggle button and click-outside logic
-    const updateIcon = () => {
-        if (!sidebarToggle) return; // Ensure sidebarToggle exists before updating its content
-        // The sb-sidenav-toggled class has different meanings on mobile and desktop
-        const isToggled = document.body.classList.contains('sb-sidenav-toggled');
-        const isDesktop = window.matchMedia('(min-width: 768px)').matches;
-        
-        let isVisible;
-        if (isDesktop) {
-            // On desktop, "not toggled" means visible
-            isVisible = !isToggled;
-        } else {
-            // On mobile, "toggled" means visible
-            isVisible = isToggled;
-        }
-
-        if (isVisible) {
-            sidebarToggle.innerHTML = '&times;'; // 'X' close icon
-        } else {
-            sidebarToggle.innerHTML = '&#9776;'; // Hamburger menu icon
-        }
-    };
-
-    // Toggle the side navigation (existing logic, slightly refactored)
     if (sidebarToggle) {
-        // Set the initial icon on page load
-        updateIcon();
-
-        // Update the icon if the window is resized, as the logic changes
-        window.addEventListener('resize', updateIcon);
-        
-        // Logic to remember sidebar state is commented out, but if enabled,
-        // we would need to update the icon after loading the state.
-        // if (localStorage.getItem('sb|sidebar-toggle') === 'true') {
-        //     document.body.classList.toggle('sb-sidenav-toggled');
-        //     updateIcon();
-        // }
+        // On page load, check if sidebar was previously toggled and apply the class
+        if (localStorage.getItem('teleXweb|sidebar-toggle') === 'true') {
+            document.body.classList.add('sidebar-toggled');
+        }
 
         sidebarToggle.addEventListener('click', event => {
             event.preventDefault();
-            document.body.classList.toggle('sb-sidenav-toggled');
-            localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
-            updateIcon(); // Update icon after every click
+            // Toggle the class on the body element
+            document.body.classList.toggle('sidebar-toggled');
+            // Save the current state to localStorage
+            localStorage.setItem('teleXweb|sidebar-toggle', document.body.classList.contains('sidebar-toggled'));
         });
     }
 
-    // Click outside to collapse sidebar
-    document.addEventListener('click', event => {
-        const isDesktop = window.matchMedia('(min-width: 768px)').matches;
-
-        // Check if the clicked target is outside the sidebar and not the toggle button itself
-        // Also ensure sidebarWrapper exists (it might not on some pages)
-        const isClickOutsideSidebar = sidebarWrapper && !sidebarWrapper.contains(event.target);
-        const isClickOnToggleButton = sidebarToggle && sidebarToggle.contains(event.target);
-
-        // Determine if sidebar is currently open
-        let isSidebarCurrentlyOpen;
-        if (isDesktop) {
-            isSidebarCurrentlyOpen = !document.body.classList.contains('sb-sidenav-toggled');
-        } else {
-            isSidebarCurrentlyOpen = document.body.classList.contains('sb-sidenav-toggled');
-        }
-
-        // Only collapse if sidebar is open, click was outside, and not on the toggle button
-        if (isClickOutsideSidebar && !isClickOnToggleButton && isSidebarCurrentlyOpen) {
-            event.preventDefault(); // Prevent any default action on the outside click
-            
-            // Collapse the sidebar: toggle the class based on desktop/mobile logic
-            if (isDesktop) {
-                // On desktop, add sb-sidenav-toggled to hide it
-                document.body.classList.add('sb-sidenav-toggled');
-            } else {
-                // On mobile, remove sb-sidenav-toggled to hide it
-                document.body.classList.remove('sb-sidenav-toggled');
-            }
-            
-            localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
-            updateIcon(); // Update icon after collapsing
-        }
-    });
-
-    // Theme switching logic
+    // --- Theme switching logic (remains the same) ---
     const themeLightBtn = document.getElementById('theme-light');
     const themeDarkBtn = document.getElementById('theme-dark');
     const body = document.body;
@@ -115,7 +47,7 @@ window.addEventListener('DOMContentLoaded', event => {
         });
     }
 
-    // Modal logic (remains the same)
+    // --- Modal logic (remains the same) ---
     const previewModal = document.getElementById('previewModal');
     if (previewModal) {
         previewModal.addEventListener('show.bs.modal', function (event) {
