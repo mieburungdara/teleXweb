@@ -8,7 +8,7 @@ class PublicCollections extends CI_Controller {
         parent::__construct();
         $this->load->model(['Public_Collection_model', 'Public_Collection_Folder_model', 'Folder_model', 'Audit_Log_model']);
         $this->load->library('form_validation');
-        $this->load->helper(['url', 'auth_helper']);
+        $this->load->helper('url'); // Removed 'auth_helper' from here
     }
 
     /**
@@ -16,6 +16,7 @@ class PublicCollections extends CI_Controller {
      */
     public function index()
     {
+        $this->load->helper('auth_helper'); // Load auth helper specifically for this method
         if (!has_permission('manage_public_collections')) {
             $this->session->set_flashdata('error_message', 'Access Denied: Insufficient permissions.');
             redirect('miniapp/unauthorized');
@@ -36,6 +37,7 @@ class PublicCollections extends CI_Controller {
      */
     public function create_edit($id = null)
     {
+        $this->load->helper('auth_helper'); // Load auth helper specifically for this method
         if (!has_permission('manage_public_collections')) {
             $this->session->set_flashdata('error_message', 'Access Denied: Insufficient permissions.');
             redirect('miniapp/unauthorized');
@@ -70,6 +72,7 @@ class PublicCollections extends CI_Controller {
      */
     public function save()
     {
+        $this->load->helper('auth_helper'); // Load auth helper specifically for this method
         if (!has_permission('manage_public_collections')) {
             $this->session->set_flashdata('error_message', 'Access Denied: Insufficient permissions.');
             redirect('miniapp/unauthorized');
@@ -149,6 +152,7 @@ class PublicCollections extends CI_Controller {
      */
     public function delete($id)
     {
+        $this->load->helper('auth_helper'); // Load auth helper specifically for this method
         if (!has_permission('manage_public_collections')) {
             $this->session->set_flashdata('error_message', 'Access Denied: Insufficient permissions.');
             redirect('miniapp/unauthorized');
