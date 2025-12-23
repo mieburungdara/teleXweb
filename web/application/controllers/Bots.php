@@ -21,7 +21,7 @@ class Bots extends CI_Controller {
 
         $this->load->model(['Bot_model', 'Audit_Log_model']);
         $this->load->library('form_validation');
-        $this.load->helper('url');
+        $this->load->helper('url');
     }
 
     /**
