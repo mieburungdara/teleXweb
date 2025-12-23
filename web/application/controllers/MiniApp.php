@@ -123,14 +123,23 @@ class MiniApp extends CI_Controller {
                 // Get all roles and permissions for the user
                 $this->load->model('Role_model');
                 $user_roles = $this->User_model->get_user_roles($user_id);
-                $role_names = array_column($user_roles, 'role_name');
+                $role_names = [];
                 $user_permissions = [];
-                foreach ($user_roles as $role) {
-                    $role_permissions = $this->Role_model->get_role_permissions($role['id']);
-                    $permission_names = array_column($role_permissions, 'permission_name');
-                    $user_permissions = array_merge($user_permissions, $permission_names);
+                if (!empty($user_roles)) {
+                    foreach ($user_roles as $role) {
+                        if (isset($role['role_name'])) {
+                            $role_names[] = $role['role_name'];
+                        }
+                        if (isset($role['id'])) {
+                            $role_permissions = $this->Role_model->get_role_permissions($role['id']);
+                            if (!empty($role_permissions)) {
+                                $permission_names = array_column($role_permissions, 'permission_name');
+                                $user_permissions = array_merge($user_permissions, $permission_names);
+                            }
+                        }
+                    }
+                    $user_permissions = array_unique($user_permissions);
                 }
-                $user_permissions = array_unique($user_permissions);
 
                 // Store user data in session
                 $session_data = [
