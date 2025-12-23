@@ -342,15 +342,15 @@ class Admin extends CI_Controller {
             redirect('admin/roles');
             return;
         }
-        $data['role_permissions'] = $this->Role_model->get_role_permissions($id);
-        $data['all_permissions'] = [
-            'view_admin_dashboard', // New permission
-            'manage_bots',
-            'manage_users',
-            'manage_roles',
-            'manage_public_collections', // New permission
-            // Add other permissions as needed
-        ];
+        
+        // Get permissions assigned to this role (these are full permission objects)
+        $assigned_permissions = $this->Role_model->get_role_permissions($id);
+        // Extract just the IDs of assigned permissions for easy checking in the view
+        $data['assigned_permission_ids'] = array_column($assigned_permissions, 'id');
+
+        // Get all available permissions (full permission objects)
+        $data['all_permissions'] = $this->Permission_model->get_all_permissions();
+        
         $data['title'] = 'Edit Role Permissions';
         $this->load->view('templates/dashmix_header', $data);
         $this->load->view('admin/role_permissions_form', $data);
