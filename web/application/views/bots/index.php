@@ -10,11 +10,9 @@
             </p>
         </div>
         <div class="mt-4 mt-md-0">
-            <?php if (has_permission('manage_bots')): ?>
-                <a href="<?php echo site_url('admin/form'); ?>" class="btn btn-primary">
-                    <i class="fa fa-plus me-1"></i> Add New Bot
-                </a>
-            <?php endif; ?>
+            <a href="<?php echo site_url('bots/form'); ?>" class="btn btn-primary">
+                <i class="fa fa-plus me-1"></i> Add New Bot
+            </a>
         </div>
     </div>
 </div>
@@ -49,19 +47,14 @@
                     </div>
                 </div>
             <?php endif; ?>
-            <?php if ($this->session->flashdata('errors')): ?>
-                 <div class="alert alert-danger d-flex align-items-center" role="alert">
-                    <div class="flex-shrink-0">
-                        <i class="fa fa-fw fa-exclamation-triangle"></i>
-                    </div>
-                    <div class="flex-grow-1 ms-3">
-                        <p class="mb-0"><strong>Validation Errors:</strong> <?php echo $this->session->flashdata('errors'); ?></p>
-                    </div>
-                </div>
-            <?php endif; ?>
-
+            
             <?php if (empty($bots)): ?>
-                <p>No bots registered yet.</p>
+                <div class="text-center p-4">
+                    <p>No bots registered yet.</p>
+                    <a href="<?php echo site_url('bots/form'); ?>" class="btn btn-primary">
+                        <i class="fa fa-plus me-1"></i> Add the First Bot
+                    </a>
+                </div>
             <?php else: ?>
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped table-vcenter">
@@ -71,9 +64,7 @@
                                 <th>Name</th>
                                 <th>Telegram Bot ID</th>
                                 <th>Token (Partial)</th>
-                                <?php if (has_permission('manage_bots')): ?>
-                                    <th class="text-center" style="width: 100px;">Actions</th>
-                                <?php endif; ?>
+                                <th class="text-center" style="width: 100px;">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -83,18 +74,16 @@
                                     <td class="fw-semibold fs-sm"><?php echo htmlspecialchars($bot['name']); ?></td>
                                     <td class="fs-sm"><?php echo $bot['bot_id_telegram']; ?></td>
                                     <td class="fs-sm"><code><?php echo substr($bot['token'], 0, 10); ?>...</code></td>
-                                    <?php if (has_permission('manage_bots')): ?>
-                                        <td class="text-center">
-                                            <div class="btn-group">
-                                                <a href="<?php echo site_url('admin/form/' . $bot['id']); ?>" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="Edit">
-                                                    <i class="fa fa-pencil-alt"></i>
-                                                </a>
-                                                <a href="<?php echo site_url('admin/delete/' . $bot['id']); ?>" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="Delete" onclick="return confirm('Are you sure you want to delete this bot?');">
-                                                    <i class="fa fa-times"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    <?php endif; ?>
+                                    <td class="text-center">
+                                        <div class="btn-group">
+                                            <a href="<?php echo site_url('bots/form/' . $bot['id']); ?>" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="Edit">
+                                                <i class="fa fa-pencil-alt"></i>
+                                            </a>
+                                            <a href="<?php echo site_url('bots/delete/' . $bot['id']); ?>" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="Delete" onclick="return confirm('Are you sure you want to delete this bot? This action cannot be undone.');">
+                                                <i class="fa fa-times"></i>
+                                            </a>
+                                        </div>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>

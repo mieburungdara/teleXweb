@@ -76,6 +76,15 @@
                     </a>
                 </li>
                 <?php endif; ?>
+
+                <?php if (has_permission('manage_bots')): ?>
+                <li class="nav-main-item">
+                    <a class="nav-main-link <?php echo ($this->uri->segment(1) == 'bots') ? 'active' : ''; ?>" href="<?php echo site_url('bots'); ?>">
+                        <i class="nav-main-link-icon fa fa-robot"></i>
+                        <span class="nav-main-link-name"><?php echo lang('manage_bots'); ?></span>
+                    </a>
+                </li>
+                <?php endif; ?>
                 
                 <?php if (has_permission('view_admin_dashboard')): ?>
                 <li class="nav-main-heading"><?php echo lang('admin'); ?></li>
@@ -89,13 +98,6 @@
                         <li class="nav-main-item">
                             <a class="nav-main-link" href="<?php echo site_url('admin/dashboard'); ?>">
                                 <span class="nav-main-link-name"><?php echo lang('admin_dashboard'); ?></span>
-                            </a>
-                        </li>
-                        <?php endif; ?>
-                        <?php if (has_permission('manage_bots')): ?>
-                        <li class="nav-main-item">
-                            <a class="nav-main-link" href="<?php echo site_url('admin/bots'); ?>">
-                                <span class="nav-main-link-name"><?php echo lang('manage_bots'); ?></span>
                             </a>
                         </li>
                         <?php endif; ?>
