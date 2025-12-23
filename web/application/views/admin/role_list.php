@@ -6,8 +6,13 @@
                 Manage Roles
             </h1>
             <p class="fw-medium mb-0 text-muted">
-                Edit permissions for each user role.
+                Create, edit, and assign permissions to user roles.
             </p>
+        </div>
+        <div class="mt-3 mt-md-0 ms-md-3">
+            <a href="<?php echo site_url('admin/role_form'); ?>" class="btn btn-sm btn-alt-primary">
+                <i class="fa fa-plus-circle"></i> Add New Role
+            </a>
         </div>
     </div>
 </div>
@@ -53,19 +58,25 @@
                                 <th class="text-center" style="width: 80px;">ID</th>
                                 <th>Role Name</th>
                                 <th>Description</th>
-                                <th class="text-center" style="width: 150px;">Actions</th>
+                                <th class="text-center" style="width: 250px;">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($roles as $role): ?>
                                 <tr>
                                     <td class="text-center fs-sm"><?php echo $role['id']; ?></td>
-                                    <td class="fw-semibold fs-sm"><?php echo htmlspecialchars($role['name']); ?></td>
+                                    <td class="fw-semibold fs-sm"><?php echo htmlspecialchars($role['role_name']); ?></td>
                                     <td class="fs-sm"><?php echo htmlspecialchars($role['description']); ?></td>
                                     <td class="text-center">
                                         <div class="btn-group">
+                                            <a href="<?php echo site_url('admin/role_form/' . $role['id']); ?>" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="Edit Role">
+                                                <i class="fa fa-fw fa-pencil-alt"></i>
+                                            </a>
                                             <a href="<?php echo site_url('admin/edit_role_permissions/' . $role['id']); ?>" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="Edit Permissions">
-                                                <i class="fa fa-pencil-alt"></i> Edit Permissions
+                                                <i class="fa fa-fw fa-key"></i>
+                                            </a>
+                                            <a href="<?php echo site_url('admin/delete_role/' . $role['id']); ?>" class="btn btn-sm btn-alt-danger" data-bs-toggle="tooltip" title="Delete Role" onclick="return confirm('Are you sure you want to delete this role?');">
+                                                <i class="fa fa-fw fa-times"></i>
                                             </a>
                                         </div>
                                     </td>

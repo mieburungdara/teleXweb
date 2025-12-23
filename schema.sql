@@ -431,3 +431,63 @@ CREATE TABLE `folder_purchases` (
   CONSTRAINT `fk_folder_purchases_seller_user_id` FOREIGN KEY (`seller_user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_folder_purchases_balance_transaction_id` FOREIGN KEY (`balance_transaction_id`) REFERENCES `balance_transactions` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Tracks purchases of folders by users.';
+
+--
+-- Table structure for table `roles`
+--
+CREATE TABLE `roles` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `role_name` VARCHAR(50) NOT NULL COMMENT 'The name of the role (e.g., admin, editor, viewer).',
+  `description` TEXT DEFAULT NULL COMMENT 'A brief description of the role''s responsibilities.',
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Timestamp when the role was created.',
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp when the role was last updated.',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_role_name` (`role_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Stores user roles for permission management.';
+
+--
+-- Table structure for table `permissions`
+--
+CREATE TABLE `permissions` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `permission_name` VARCHAR(255) NOT NULL COMMENT 'The programmatic name of the permission (e.g., "edit_files").',
+  `category` VARCHAR(100) DEFAULT 'general' COMMENT 'A category for grouping permissions (e.g., "files", "users").',
+  `description` TEXT DEFAULT NULL COMMENT 'A user-friendly description of what this permission allows.',
+  `is_active` TINYINT(1) NOT NULL DEFAULT 1 COMMENT 'Whether the permission is currently active and can be assigned (0 = no, 1 = yes).',
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Timestamp when the permission was created.',
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp when the permission was last updated.',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_permission_name` (`permission_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Defines individual permissions that can be assigned to roles.';
+
+--
+-- Table structure for table `role_permissions`
+--
+CREATE TABLE `role_permissions` (
+  `role_id` INT UNSIGNED NOT NULL,
+  `permission_id` INT UNSIGNED NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Timestamp when the permission was granted to the role.',
+  PRIMARY KEY (`role_id`, `permission_id`),
+  INDEX `idx_role_id` (`role_id`),
+  INDEX `idx_permission_id` (`permission_id`),
+  CONSTRAINT `fk_role_permissions_role_id` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_role_permissions_permission_id` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Junction table to assign permissions to roles (many-to-many).';
+
+--
+-- Alter `users` table to use `role_id`
+--
+ALTER TABLE `users`
+DROP COLUMN `role`,
+ADD COLUMN `role_id` INT UNSIGNED DEFAULT NULL AFTER `status`,
+ADD INDEX `idx_role_id` (`role_id`),
+ADD CONSTRAINT `fk_users_role_id` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Insert default roles
+--
+INSERT INTO `roles` (`role_name`, `description`) VALUES
+('admin', 'Administrator with full system access.'),
+('editor', 'Can edit content and manage users.'),
+('viewer', 'Can view content.'),
+('user', 'A standard user with basic permissions.');

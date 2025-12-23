@@ -12,7 +12,7 @@ class Admin extends CI_Controller {
             redirect('miniapp/unauthorized');
             return;
         }
-        $this->load->model(['Bot_model', 'User_model', 'Role_model', 'File_model', 'Folder_model', 'Access_Log_model', 'Audit_Log_model']); // Load all necessary models
+        $this->load->model(['Bot_model', 'User_model', 'Role_model', 'File_model', 'Folder_model', 'Access_Log_model', 'Audit_Log_model', 'Permission_model']); // Load all necessary models including Permission_model
         $this->load->library('form_validation');
         $this->load->helper(['url', 'auth_helper']); // Ensure auth_helper is loaded
     }
@@ -353,7 +353,7 @@ class Admin extends CI_Controller {
             return;
         }
         $role_id = $this->input->post('role_id');
-        $permissions = $this->input->post('permissions'); // Array of selected permissions
+        $permissions = $this->input->post('permissions'); // Array of selected permission IDs
 
         if (!$role_id) {
             $this->session->set_flashdata('error_message', 'Role ID is required.');
@@ -364,8 +364,9 @@ class Admin extends CI_Controller {
         // Ensure $permissions is an array, even if empty
         $permissions = is_array($permissions) ? $permissions : [];
 
-        $old_role_data = $this->Role_model->get_role_by_id($role_id);
-        $old_permissions = json_decode($old_role_data['permissions'], true) ?: [];
+        // Get old permissions before updating for audit logging
+        $old_assigned_permissions_objects = $this->Role_model->get_role_permissions($role_id);
+        $old_assigned_permission_ids = array_column($old_assigned_permissions_objects, 'id');
 
         $success = $this->Role_model->update_role_permissions($role_id, $permissions);
         if ($success) {
@@ -373,12 +374,122 @@ class Admin extends CI_Controller {
                 'role_permissions_updated',
                 'role',
                 $role_id,
-                ['permissions' => $old_permissions],
-                ['permissions' => $permissions]
+                ['old_permissions' => $old_assigned_permission_ids],
+                ['new_permissions' => $permissions]
             );
             $this->session->set_flashdata('success_message', 'Role permissions updated successfully.');
         } else {
             $this->session->set_flashdata('error_message', 'Failed to update role permissions.');
+        }
+        redirect('admin/roles');
+    }
+
+    /**
+     * Display form to add a new role or edit an existing one.
+     * @param int $id Role ID to edit, if any.
+     */
+    public function role_form($id = null)
+    {
+        if (!has_permission('manage_roles')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: Insufficient permissions.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+
+        $data['role'] = null;
+        if ($id) {
+            $data['role'] = $this->Role_model->get_role_by_id($id);
+            if (!$data['role']) {
+                $this->session->set_flashdata('error_message', 'Role not found.');
+                redirect('admin/roles');
+                return;
+            }
+        }
+
+        $data['title'] = $id ? 'Edit Role' : 'Add New Role';
+        $this->load->view('templates/dashmix_header', $data);
+        $this->load->view('admin/role_form', $data);
+        $this->load->view('templates/dashmix_footer');
+    }
+
+    /**
+     * Handle form submission for adding or updating a role.
+     */
+    public function save_role()
+    {
+        if (!has_permission('manage_roles')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: Insufficient permissions.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+
+        $id = $this->input->post('id');
+        $role_name = $this->input->post('role_name');
+        $description = $this->input->post('description');
+
+        $this->form_validation->set_rules('role_name', 'Role Name', 'required|max_length[50]');
+        
+        if ($this->form_validation->run() === FALSE) {
+            $this->session->set_flashdata('errors', validation_errors());
+            redirect('admin/role_form/' . $id);
+            return;
+        }
+
+        $role_data = [
+            'role_name' => $role_name,
+            'description' => $description
+        ];
+
+        if ($id) {
+            // Update existing role
+            $success = $this->Role_model->update_role($id, $role_data);
+            if ($success) {
+                $this->session->set_flashdata('success_message', 'Role updated successfully.');
+            } else {
+                $this->session->set_flashdata('error_message', 'Failed to update role.');
+            }
+        } else {
+            // Add new role
+            $new_role_id = $this->Role_model->create_role($role_data);
+            if ($new_role_id) {
+                $this->session->set_flashdata('success_message', 'Role created successfully.');
+            } else {
+                $this->session->set_flashdata('error_message', 'Failed to create role. It might already exist.');
+            }
+        }
+        redirect('admin/roles');
+    }
+
+    /**
+     * Delete a role.
+     * @param int $id Role ID to delete.
+     */
+    public function delete_role($id)
+    {
+        if (!has_permission('manage_roles')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: Insufficient permissions.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+
+        if (!$id) {
+            $this->session->set_flashdata('error_message', 'Role ID is required for deletion.');
+            redirect('admin/roles');
+            return;
+        }
+
+        // Prevent deletion of default roles if needed
+        if ($id <= 4) { // Assuming IDs 1-4 are default roles
+            $this->session->set_flashdata('error_message', 'Default roles cannot be deleted.');
+            redirect('admin/roles');
+            return;
+        }
+
+        $success = $this->Role_model->delete_role($id);
+        if ($success) {
+            $this->session->set_flashdata('success_message', 'Role deleted successfully.');
+        } else {
+            $this->session->set_flashdata('error_message', 'Failed to delete role. It might be in use.');
         }
         redirect('admin/roles');
     }
@@ -422,4 +533,5 @@ class Admin extends CI_Controller {
         }
         redirect('admin/users'); // Redirect back to user list
     }
+
 }

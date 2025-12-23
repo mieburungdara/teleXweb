@@ -6,7 +6,7 @@
                 Edit Permissions
             </h1>
             <p class="fw-medium mb-0 text-muted">
-                Role: <strong><?php echo htmlspecialchars($role['name']); ?></strong>
+                Role: <strong><?php echo htmlspecialchars($role['role_name']); ?></strong>
             </p>
         </div>
     </div>
@@ -31,14 +31,26 @@
                     <div class="col-lg-8 col-xl-5">
                         <div class="mb-4">
                             <label class="form-label">Permissions</label>
-                            <?php foreach ($all_permissions as $permission): ?>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="<?php echo $permission; ?>" id="perm_<?php echo $permission; ?>"
-                                        <?php echo in_array($permission, $role_permissions) ? 'checked' : ''; ?>>
-                                    <label class="form-check-label" for="perm_<?php echo $permission; ?>">
-                                        <?php echo str_replace('_', ' ', ucfirst($permission)); ?>
-                                    </label>
-                                </div>
+                            <?php
+                            $permissions_by_category = [];
+                            foreach ($all_permissions as $permission) {
+                                $permissions_by_category[$permission['category']][] = $permission;
+                            }
+                            ?>
+                            <?php foreach ($permissions_by_category as $category => $permissions_in_category): ?>
+                                <h4 class="h5 mt-3"><?php echo htmlspecialchars(ucfirst(str_replace('_', ' ', $category))); ?></h4>
+                                <?php foreach ($permissions_in_category as $permission): ?>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="permissions[]" value="<?php echo $permission['id']; ?>" id="perm_<?php echo $permission['id']; ?>"
+                                            <?php echo in_array($permission['id'], $assigned_permission_ids) ? 'checked' : ''; ?>>
+                                        <label class="form-check-label" for="perm_<?php echo $permission['id']; ?>">
+                                            <?php echo htmlspecialchars(str_replace('_', ' ', ucfirst($permission['permission_name']))); ?>
+                                        </label>
+                                        <?php if (!empty($permission['description'])): ?>
+                                            <p class="form-text text-muted ps-4"><?php echo htmlspecialchars($permission['description']); ?></p>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endforeach; ?>
                             <?php endforeach; ?>
                         </div>
                     </div>

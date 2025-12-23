@@ -74,8 +74,12 @@ $route['admin/update_user_role'] = 'Admin/update_user_role';
 
 // Admin Routes for Role Management
 $route['admin/roles'] = 'Admin/roles';
+$route['admin/role_form'] = 'Admin/role_form';
+$route['admin/role_form/(:num)'] = 'Admin/role_form/$1';
+$route['admin/save_role'] = 'Admin/save_role';
+$route['admin/delete_role/(:num)'] = 'Admin/delete_role/$1';
 $route['admin/edit_role_permissions/(:num)'] = 'Admin/edit_role_permissions/$1';
-$route['admin/update_role_permissions'] = 'Admin/update_user_role';
+$route['admin/update_role_permissions'] = 'Admin/update_role_permissions';
 
 // Admin Route to populate user codes (TEMPORARY - REMOVE AFTER USE)
 $route['admin/populate_user_codes'] = 'Admin/populate_user_codes';
@@ -106,6 +110,12 @@ $route['api/update_file'] = 'api/Upload/update_file';
 $route['api/file_preview_data/(:num)'] = 'api/Upload/file_preview_data/$1';
 $route['api/bulk_action'] = 'api/Upload/bulk_action';
 $route['api/tag_suggestions'] = 'api/Upload/tag_suggestions';
+
+// Permissions API Routes
+$route['api/permissions'] = 'api/permissions/index';
+$route['api/permissions/(:num)'] = 'api/permissions/index/$1';
+$route['api/roles/(:num)/permissions'] = 'api/permissions/role_permissions/$1';
+$route['api/roles/(:num)/permissions/(:num)'] = 'api/permissions/role_permissions/$1/$2';
 
 
 
