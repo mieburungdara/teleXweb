@@ -12,11 +12,17 @@ class Files extends CI_Controller {
             return;
         }
         $this->load->model(['File_model', 'Bot_model', 'Telegram_bot_model', 'Folder_model', 'Access_Log_model', 'Audit_Log_model']);
-        $this->load->helper('url');
+        $this->load->helper(['url', 'auth_helper']);
     }
 
     public function index()
     {
+        if (!has_permission('view_own_files')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: You do not have permission to view files.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+
         $user_id = $this->session->userdata('user_id');
 
         // Extract filters from GET request
@@ -79,6 +85,12 @@ class Files extends CI_Controller {
 
     public function gallery()
     {
+        if (!has_permission('view_own_files')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: You do not have permission to view the gallery.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+
         $user_id = $this->session->userdata('user_id');
         $files = $this->File_model->get_user_image_files($user_id);
 
@@ -105,6 +117,12 @@ class Files extends CI_Controller {
 
     public function details($id)
     {
+        if (!has_permission('view_own_files')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: You do not have permission to view file details.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+
         $user_id = $this->session->userdata('user_id');
         $file = $this->File_model->get_file_by_id($id, $user_id);
 
@@ -139,6 +157,12 @@ class Files extends CI_Controller {
 
     public function toggle_favorite($id)
     {
+        if (!has_permission('favorite_files')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: You do not have permission to favorite files.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+
         if (!$this->session->userdata('logged_in')) {
             redirect('miniapp/unauthorized');
             return;
@@ -172,6 +196,12 @@ class Files extends CI_Controller {
 
     public function timeline()
     {
+        if (!has_permission('view_own_files')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: You do not have permission to view the timeline.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+
         $user_id = $this->session->userdata('user_id');
         $files = $this->File_model->get_files_for_timeline($user_id);
 

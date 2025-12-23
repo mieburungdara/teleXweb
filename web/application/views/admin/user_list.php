@@ -75,11 +75,19 @@
                                     <td class="text-center fs-sm"><?php echo $user['id']; ?></td>
                                     <td class="fw-semibold fs-sm"><?php echo htmlspecialchars($user['username'] ?? 'N/A'); ?></td>
                                     <td class="fs-sm"><?php echo $user['telegram_id']; ?></td>
-                                    <td class="fs-sm"><?php echo htmlspecialchars($user['role_name']); ?></td>
+                                    <td class="fs-sm">
+                                        <?php if (!empty($user['roles'])): ?>
+                                            <?php foreach ($user['roles'] as $role): ?>
+                                                <span class="badge bg-primary"><?php echo htmlspecialchars($role['role_name']); ?></span>
+                                            <?php endforeach; ?>
+                                        <?php else: ?>
+                                            <span class="badge bg-secondary">No Roles</span>
+                                        <?php endif; ?>
+                                    </td>
                                     <?php if (has_permission('manage_users')): ?>
                                         <td class="text-center">
                                             <div class="btn-group">
-                                                <a href="<?php echo site_url('admin/edit_user_role/' . $user['id']); ?>" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="Edit Role">
+                                                <a href="<?php echo site_url('admin/edit_user_roles/' . $user['id']); ?>" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="Edit Roles">
                                                     <i class="fa fa-pencil-alt"></i>
                                                 </a>
                                             </div>

@@ -8,7 +8,7 @@ class Folders extends CI_Controller {
         parent::__construct();
         $this->load->model(['Folder_model', 'Folder_Review_model', 'File_model', 'Folder_Like_model', 'Access_Log_model', 'Audit_Log_model', 'Folder_Comment_model', 'User_model']); // Load Folder_Comment_model and User_model
         $this->load->library('form_validation');
-        $this->load->helper('url');
+        $this->load->helper(['url', 'auth_helper']);
         $this->load->library('session');
     }
 
@@ -17,6 +17,11 @@ class Folders extends CI_Controller {
      */
     public function index($parent_folder_id = null)
     {
+        if (!has_permission('view_own_folders')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: You do not have permission to view folders.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
         if (!$this->session->userdata('logged_in')) {
             $this->session->set_flashdata('error_message', 'You must be logged in to manage folders.');
             redirect('miniapp/unauthorized');
@@ -41,6 +46,11 @@ class Folders extends CI_Controller {
      */
     public function view($id)
     {
+        if (!has_permission('view_own_folders')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: You do not have permission to view folders.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
         if (!$this->session->userdata('logged_in')) {
             redirect('miniapp/unauthorized');
             return;
@@ -71,6 +81,13 @@ class Folders extends CI_Controller {
      */
     public function view_shared($code)
     {
+        // This is a public page, but we can check for 'view_shared_content' if the user is logged in.
+        if ($this->session->userdata('logged_in') && !has_permission('view_shared_content')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: You do not have permission to view shared content.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+
         // Cache this page for 60 minutes
         $this->output->cache(60);
 
@@ -104,6 +121,11 @@ class Folders extends CI_Controller {
      */
     public function submit_comment()
     {
+        if (!has_permission('comment_on_folders')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: You do not have permission to comment.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
         if (!$this->session->userdata('logged_in')) {
             $this->session->set_flashdata('error_message', 'You must be logged in to post a comment.');
             redirect('miniapp/unauthorized');
@@ -156,6 +178,11 @@ class Folders extends CI_Controller {
      */
     public function toggle_like($folder_id)
     {
+        if (!has_permission('like_folders')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: You do not have permission to like folders.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
         if (!$this->session->userdata('logged_in')) {
             $this->session->set_flashdata('error_message', 'You must be logged in to like a folder.');
             redirect('miniapp/unauthorized');
@@ -196,6 +223,11 @@ class Folders extends CI_Controller {
      */
     public function share($id)
     {
+        if (!has_permission('share_content')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: You do not have permission to share content.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
         if (!$this->session->userdata('logged_in')) {
             redirect('miniapp/unauthorized');
             return;
@@ -219,6 +251,11 @@ class Folders extends CI_Controller {
      */
     public function submit_review()
     {
+        if (!has_permission('review_folders')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: You do not have permission to review folders.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
         if (!$this->session->userdata('logged_in')) {
             redirect('miniapp/unauthorized');
             return;
@@ -270,6 +307,20 @@ class Folders extends CI_Controller {
             return;
         }
         $id = $this->input->post('id');
+        if ($id) {
+            if (!has_permission('edit_folders')) {
+                $this->session->set_flashdata('error_message', 'Access Denied: You do not have permission to edit folders.');
+                redirect('miniapp/unauthorized');
+                return;
+            }
+        } else {
+            if (!has_permission('create_folders')) {
+                $this->session->set_flashdata('error_message', 'Access Denied: You do not have permission to create folders.');
+                redirect('miniapp/unauthorized');
+                return;
+            }
+        }
+
         $folder_name = $this->input->post('folder_name');
         $description = $this->input->post('description');
         $tags_string = $this->input->post('tags');
@@ -335,6 +386,11 @@ class Folders extends CI_Controller {
      */
     public function edit($id)
     {
+        if (!has_permission('edit_folders')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: You do not have permission to edit folders.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
         if (!$this->session->userdata('logged_in')) {
             redirect('miniapp/unauthorized');
             return;
@@ -362,6 +418,11 @@ class Folders extends CI_Controller {
      */
     public function delete($id)
     {
+        if (!has_permission('delete_folders')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: You do not have permission to delete folders.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
         if (!$this->session->userdata('logged_in')) {
             redirect('miniapp/unauthorized');
             return;
@@ -386,6 +447,38 @@ class Folders extends CI_Controller {
             $this->session->set_flashdata('success_message', 'Folder deleted successfully.');
         } else {
             $this->session->set_flashdata('error_message', 'Failed to delete folder.');
+        }
+        redirect('folders');
+    }
+    
+    /**
+     * Toggle the favorite status of a folder.
+     * @param int $id
+     */
+    public function toggle_favorite($id)
+    {
+        if (!has_permission('favorite_folders')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: You do not have permission to favorite folders.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+        if (!$this->session->userdata('logged_in')) {
+            redirect('miniapp/unauthorized');
+            return;
+        }
+        $user_id = $this->session->userdata('user_id');
+        $folder = $this->Folder_model->get_folder_by_id($id, $user_id);
+        if (!$folder) {
+            $this->session->set_flashdata('error_message', 'Folder not found.');
+            redirect('folders');
+            return;
+        }
+
+        $success = $this->Folder_model->toggle_favorite($id, $user_id);
+        if ($success) {
+            $this->session->set_flashdata('success_message', 'Folder favorite status toggled.');
+        } else {
+            $this->session->set_flashdata('error_message', 'Failed to toggle folder favorite status.');
         }
         redirect('folders');
     }

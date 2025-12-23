@@ -13,7 +13,7 @@ class SmartCollections extends CI_Controller {
         }
         $this->load->model(['Smart_Collection_Rule_model', 'File_model', 'Folder_model', 'Audit_Log_model']); // Load Audit Log Model
         $this->load->library('form_validation');
-        $this->load->helper('url');
+        $this->load->helper(['url', 'auth_helper']);
     }
 
     /**
@@ -21,6 +21,12 @@ class SmartCollections extends CI_Controller {
      */
     public function index()
     {
+        if (!has_permission('manage_own_smart_collections')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: You do not have permission to manage smart collections.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+
         $user_id = $this->session->userdata('user_id');
         $data['collections'] = $this->Smart_Collection_Rule_model->get_user_rules($user_id);
         $data['title'] = 'Smart Collections';
@@ -36,6 +42,12 @@ class SmartCollections extends CI_Controller {
      */
     public function create_edit($id = null)
     {
+        if (!has_permission('manage_own_smart_collections')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: You do not have permission to manage smart collections.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+
         $user_id = $this->session->userdata('user_id');
         $data['rule'] = null;
         $data['files'] = []; // Files matching the rule preview
@@ -68,6 +80,12 @@ class SmartCollections extends CI_Controller {
      */
     public function save()
     {
+        if (!has_permission('manage_own_smart_collections')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: You do not have permission to manage smart collections.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+
         $id = $this->input->post('id');
         $name = $this->input->post('name');
         $rule_conditions = $this->input->post('rule_conditions'); // Array of conditions from form
@@ -131,6 +149,12 @@ class SmartCollections extends CI_Controller {
      */
     public function delete($id)
     {
+        if (!has_permission('manage_own_smart_collections')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: You do not have permission to manage smart collections.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+
         $user_id = $this->session->userdata('user_id');
         $old_rule_data = $this->Smart_Collection_Rule_model->get_rule($id, $user_id);
         if (!$old_rule_data) {
@@ -161,6 +185,12 @@ class SmartCollections extends CI_Controller {
      */
     public function view_collection($id)
     {
+        if (!has_permission('manage_own_smart_collections')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: You do not have permission to manage smart collections.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+
         $user_id = $this->session->userdata('user_id');
         $rule = $this->Smart_Collection_Rule_model->get_rule($id, $user_id);
         if (!$rule) {

@@ -223,7 +223,13 @@ class Admin extends CI_Controller {
             redirect('miniapp/unauthorized');
             return;
         }
-        $data['users'] = $this->User_model->get_all_users();
+
+        $users = $this->User_model->get_all_users();
+        foreach ($users as &$user) { // Use reference to modify array directly
+            $user['roles'] = $this->User_model->get_user_roles($user['id']);
+        }
+
+        $data['users'] = $users;
         $data['title'] = 'Manage Users';
         $this->load->view('templates/dashmix_header', $data);
         $this->load->view('admin/user_list', $data);
@@ -234,7 +240,7 @@ class Admin extends CI_Controller {
      * Display form to edit a user's role.
      * @param int $id User ID to edit.
      */
-    public function edit_user_role($id)
+    public function edit_user_roles($id)
     {
         if (!has_permission('manage_users')) {
             $this->session->set_flashdata('error_message', 'Access Denied: Insufficient permissions.');
@@ -247,17 +253,21 @@ class Admin extends CI_Controller {
             redirect('admin/users');
             return;
         }
-        $data['roles'] = $this->Role_model->get_all_roles();
-        $data['title'] = 'Edit User Role';
+        
+        $assigned_roles = $this->User_model->get_user_roles($id);
+        $data['assigned_role_ids'] = array_column($assigned_roles, 'id');
+        $data['all_roles'] = $this->Role_model->get_all_roles();
+        
+        $data['title'] = 'Edit User Roles';
         $this->load->view('templates/dashmix_header', $data);
-        $this->load->view('admin/user_role_form', $data);
+        $this->load->view('admin/user_roles_form', $data);
         $this->load->view('templates/dashmix_footer');
     }
 
     /**
-     * Handle form submission for updating a user's role.
+     * Handle form submission for updating a user's roles.
      */
-    public function update_user_role()
+    public function update_user_roles()
     {
         if (!has_permission('manage_users')) {
             $this->session->set_flashdata('error_message', 'Access Denied: Insufficient permissions.');
@@ -265,30 +275,35 @@ class Admin extends CI_Controller {
             return;
         }
         $user_id = $this->input->post('user_id');
-        $role_id = $this->input->post('role_id');
+        $role_ids = $this->input->post('role_ids');
 
         $this->form_validation->set_rules('user_id', 'User ID', 'required|numeric');
-        $this->form_validation->set_rules('role_id', 'Role', 'required|numeric');
-
+        
         if ($this->form_validation->run() === FALSE) {
             $this->session->set_flashdata('errors', validation_errors());
-            redirect('admin/edit_user_role/' . $user_id);
+            redirect('admin/edit_user_roles/' . $user_id);
             return;
         }
 
-        $old_user_data = $this->User_model->get_user_by_id($user_id);
-        $success = $this->User_model->update_user_role($user_id, $role_id);
+        // Ensure $role_ids is an array
+        $role_ids = is_array($role_ids) ? $role_ids : [];
+
+        // For audit logging
+        $old_assigned_roles = $this->User_model->get_user_roles($user_id);
+        $old_role_ids = array_column($old_assigned_roles, 'id');
+
+        $success = $this->User_model->update_user_roles($user_id, $role_ids);
         if ($success) {
             $this->Audit_Log_model->log_action(
-                'user_role_updated',
+                'user_roles_updated',
                 'user',
                 $user_id,
-                ['role_id' => $old_user_data['role_id']],
-                ['role_id' => $role_id]
+                ['old_role_ids' => $old_role_ids],
+                ['new_role_ids' => $role_ids]
             );
-            $this->session->set_flashdata('success_message', 'User role updated successfully.');
+            $this->session->set_flashdata('success_message', 'User roles updated successfully.');
         } else {
-            $this->session->set_flashdata('error_message', 'Failed to update user role.');
+            $this->session->set_flashdata('error_message', 'Failed to update user roles.');
         }
         redirect('admin/users');
     }

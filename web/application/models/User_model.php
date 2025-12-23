@@ -17,31 +17,35 @@ class User_model extends CI_Model {
      */
     public function get_user_by_telegram_id($telegram_id)
     {
-        $this->db->select('users.*, roles.name as role_name');
-        $this->db->from('users');
-        $this->db->join('roles', 'roles.id = users.role_id');
-        $this->db->where('users.telegram_id', $telegram_id);
-        $query = $this->db->get();
+        $query = $this->db->get_where('users', ['telegram_id' => $telegram_id]);
         return $query->row_array();
     }
 
     /**
-     * Create a new user record.
+     * Create a new user record and assign default role.
      *
      * @param array $user_data Data conforming to the users table structure.
      * @return int|bool The ID of the new user on success, or FALSE on failure.
      */
     public function create_user($user_data)
     {
+        $this->db->trans_start();
+
         $user_data['created_at'] = date('Y-m-d H:i:s');
         $user_data['updated_at'] = date('Y-m-d H:i:s');
-        $user_data['role_id'] = $user_data['role_id'] ?? 1; // Default to 'user' role ID (1)
         $user_data['user_code'] = $this->generate_unique_user_code();
         
-        if ($this->db->insert('users', $user_data)) {
-            return $this->db->insert_id();
+        $this->db->insert('users', $user_data);
+        $user_id = $this->db->insert_id();
+
+        if ($user_id) {
+            // Assign default 'user' role (assuming ID 4)
+            $this->db->insert('user_roles', ['user_id' => $user_id, 'role_id' => 4]);
         }
-        return FALSE;
+        
+        $this->db->trans_complete();
+
+        return $this->db->trans_status() ? $user_id : FALSE;
     }
 
     /**
@@ -66,11 +70,7 @@ class User_model extends CI_Model {
      */
     public function get_user_by_user_code($user_code)
     {
-        $this->db->select('users.*, roles.name as role_name');
-        $this->db->from('users');
-        $this->db->join('roles', 'roles.id = users.role_id');
-        $this->db->where('users.user_code', $user_code);
-        $query = $this->db->get();
+        $query = $this->db->get_where('users', ['user_code' => $user_code]);
         return $query->row_array();
     }
 
@@ -83,39 +83,64 @@ class User_model extends CI_Model {
      */
     public function get_user_by_id($id)
     {
-        $this->db->select('users.*, roles.name as role_name');
-        $this->db->from('users');
-        $this->db->join('roles', 'roles.id = users.role_id');
-        $this->db->where('users.id', $id);
-        $query = $this->db->get();
+        $query = $this->db->get_where('users', ['id' => $id]);
         return $query->row_array();
     }
 
     /**
-     * Get all user records with their role names.
+     * Get all user records.
      *
      * @return array An array of all user data.
      */
     public function get_all_users()
     {
-        $this->db->select('users.*, roles.name as role_name');
-        $this->db->from('users');
-        $this->db->join('roles', 'roles.id = users.role_id');
+        $query = $this->db->get('users');
+        return $query->result_array();
+    }
+
+    /**
+     * Get all roles for a specific user.
+     *
+     * @param int $user_id
+     * @return array An array of roles.
+     */
+    public function get_user_roles($user_id)
+    {
+        $this->db->select('r.*');
+        $this->db->from('roles r');
+        $this->db->join('user_roles ur', 'r.id = ur.role_id');
+        $this->db->where('ur.user_id', $user_id);
         $query = $this->db->get();
         return $query->result_array();
     }
 
     /**
-     * Update an existing user's role.
+     * Update the roles for a specific user.
      *
      * @param int $user_id The user's primary key ID.
-     * @param int $new_role_id The new role ID.
+     * @param array $role_ids An array of role IDs.
      * @return bool TRUE on success, FALSE on failure.
      */
-    public function update_user_role($user_id, $new_role_id)
+    public function update_user_roles($user_id, $role_ids)
     {
-        $this->db->where('id', $user_id);
-        return $this->db->update('users', ['role_id' => $new_role_id, 'updated_at' => date('Y-m-d H:i:s')]);
+        $this->db->trans_start();
+        
+        $this->db->where('user_id', $user_id);
+        $this->db->delete('user_roles');
+
+        if (!empty($role_ids)) {
+            $data = [];
+            foreach ($role_ids as $role_id) {
+                $data[] = [
+                    'user_id' => $user_id,
+                    'role_id' => $role_id
+                ];
+            }
+            $this->db->insert_batch('user_roles', $data);
+        }
+        
+        $this->db->trans_complete();
+        return $this->db->trans_status();
     }
 
     /**
@@ -136,17 +161,14 @@ class User_model extends CI_Model {
      */
     public function get_user_profile_data($user_id)
     {
-        $this->db->select('users.*, roles.name as role_name');
-        $this->db->from('users');
-        $this->db->join('roles', 'roles.id = users.role_id');
-        $this->db->where('users.id', $user_id);
-        $user_data = $this->db->get()->row_array();
+        $user_data = $this->get_user_by_id($user_id);
 
         if ($user_data) {
             $this->load->model('File_model');
             $this->load->model('Folder_model');
-            $user_data['total_files'] = $this->File_model->count_all_files_for_user($user_id); // Need to add this method
-            $user_data['total_folders'] = $this->Folder_model->count_all_folders_for_user($user_id); // Need to add this method
+            $user_data['roles'] = $this->get_user_roles($user_id); // Get user roles
+            $user_data['total_files'] = $this->File_model->count_all_files_for_user($user_id);
+            $user_data['total_folders'] = $this->Folder_model->count_all_folders_for_user($user_id);
         }
         return $user_data;
     }

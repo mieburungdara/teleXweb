@@ -475,13 +475,19 @@ CREATE TABLE `role_permissions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Junction table to assign permissions to roles (many-to-many).';
 
 --
--- Alter `users` table to use `role_id`
+-- Table structure for table `user_roles`
 --
-ALTER TABLE `users`
-DROP COLUMN `role`,
-ADD COLUMN `role_id` INT UNSIGNED DEFAULT NULL AFTER `status`,
-ADD INDEX `idx_role_id` (`role_id`),
-ADD CONSTRAINT `fk_users_role_id` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+CREATE TABLE `user_roles` (
+  `user_id` BIGINT UNSIGNED NOT NULL,
+  `role_id` INT UNSIGNED NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`user_id`, `role_id`),
+  INDEX `idx_user_id` (`user_id`),
+  INDEX `idx_role_id` (`role_id`),
+  CONSTRAINT `fk_user_roles_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_user_roles_role_id` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Junction table to assign roles to users (many-to-many).';
+
 
 --
 -- Insert default roles

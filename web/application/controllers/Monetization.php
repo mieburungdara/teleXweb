@@ -21,6 +21,12 @@ class Monetization extends CI_Controller {
      */
     public function balance()
     {
+        if (!has_permission('view_own_balance')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: You do not have permission to view your balance.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+
         $user_id = $this->session->userdata('user_id');
         $data['user'] = $this->User_model->get_user_by_id($user_id);
         $data['balance'] = $this->User_model->get_user_balance($user_id);
@@ -37,7 +43,7 @@ class Monetization extends CI_Controller {
      */
     public function add_funds()
     {
-        if (!has_permission('manage_users')) { // Only admins can add funds manually for now
+        if (!has_permission('manage_monetization')) {
             $this->session->set_flashdata('error_message', 'Access Denied: Insufficient permissions.');
             redirect('monetization/balance');
             return;

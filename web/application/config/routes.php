@@ -69,8 +69,8 @@ $route['admin/delete/(:num)'] = 'Admin/delete/$1';
 
 // Admin Routes for User Management
 $route['admin/users'] = 'Admin/users';
-$route['admin/edit_user_role/(:num)'] = 'Admin/edit_user_role/$1';
-$route['admin/update_user_role'] = 'Admin/update_user_role';
+$route['admin/edit_user_roles/(:num)'] = 'Admin/edit_user_roles/$1';
+$route['admin/update_user_roles'] = 'Admin/update_user_roles';
 
 // Admin Routes for Role Management
 $route['admin/roles'] = 'Admin/roles';

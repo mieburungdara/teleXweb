@@ -13,7 +13,7 @@ class Users extends CI_Controller {
         }
         $this->load->model('User_model');
         $this->load->library('form_validation');
-        $this->load->helper('url');
+        $this->load->helper(['url', 'auth_helper']);
     }
 
     /**
@@ -21,6 +21,12 @@ class Users extends CI_Controller {
      */
     public function profile()
     {
+        if (!has_permission('view_own_profile')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: You do not have permission to view your profile.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+
         $user_id = $this->session->userdata('user_id');
         $data['user'] = $this->User_model->get_user_profile_data($user_id);
         if (!$data['user']) {
@@ -47,6 +53,12 @@ class Users extends CI_Controller {
      */
     public function edit_profile()
     {
+        if (!has_permission('edit_own_profile')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: You do not have permission to edit your profile.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+
         $user_id = $this->session->userdata('user_id');
         $data['user'] = $this->User_model->get_user_by_id($user_id);
         if (!$data['user']) {
@@ -66,6 +78,12 @@ class Users extends CI_Controller {
      */
     public function update_profile()
     {
+        if (!has_permission('edit_own_profile')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: You do not have permission to edit your profile.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+
         $user_id = $this->session->userdata('user_id');
         $username = $this->input->post('username');
         $first_name = $this->input->post('first_name');
