@@ -110,7 +110,7 @@ class MiniApp extends CI_Controller {
                     $is_new_user = TRUE;
                 }
 
-                // Retrieve the full user data including role_id and role_name for session
+                // Retrieve the full user data for session
                 log_message('debug', 'MiniApp Auth: Retrieving full user data for session for user ID: ' . $user_id);
                 $full_user_data = $this->User_model->get_user_by_id($user_id);
                 if (!$full_user_data) {
@@ -120,16 +120,28 @@ class MiniApp extends CI_Controller {
                     return;
                 }
 
+                // Get all roles and permissions for the user
+                $this->load->model('Role_model');
+                $user_roles = $this->User_model->get_user_roles($user_id);
+                $role_names = array_column($user_roles, 'role_name');
+                $user_permissions = [];
+                foreach ($user_roles as $role) {
+                    $role_permissions = $this->Role_model->get_role_permissions($role['id']);
+                    $permission_names = array_column($role_permissions, 'permission_name');
+                    $user_permissions = array_merge($user_permissions, $permission_names);
+                }
+                $user_permissions = array_unique($user_permissions);
+
                 // Store user data in session
                 $session_data = [
                     'user_id' => $user_id,
                     'telegram_id' => $telegram_id,
                     'username' => $full_user_data['username'],
                     'logged_in' => TRUE,
-                    'role_id' => $full_user_data['role_id'],
-                    'role_name' => $full_user_data['role_name'],
-                    'user_code' => $full_user_data['user_code'], // Add user_code to session
-                    'new_user_onboard' => $is_new_user // Set onboarding flag
+                    'roles' => $role_names, // Array of role names
+                    'permissions' => $user_permissions, // Array of permission names
+                    'user_code' => $full_user_data['user_code'],
+                    'new_user_onboard' => $is_new_user
                 ];
                 $this->session->set_userdata($session_data);
 

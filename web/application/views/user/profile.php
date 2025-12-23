@@ -7,7 +7,11 @@
             </div>
             <h1 class="h2 text-white mb-0"><?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?></h1>
             <h2 class="h4 fw-normal text-white-75">
-                <?php echo htmlspecialchars($user['role_name']); ?>
+                <?php if (!empty($user['roles'])): ?>
+                    <?php foreach ($user['roles'] as $role): ?>
+                        <span class="badge rounded-pill bg-primary"><?php echo htmlspecialchars($role['role_name']); ?></span>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </h2>
             <a class="btn btn-alt-secondary" href="<?php echo site_url('users/edit_profile'); ?>">
                 <i class="fa fa-fw fa-pencil-alt me-1"></i> Edit Profile
