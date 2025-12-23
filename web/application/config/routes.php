@@ -81,6 +81,15 @@ $route['admin/delete_role/(:num)'] = 'Admin/delete_role/$1';
 $route['admin/edit_role_permissions/(:num)'] = 'Admin/edit_role_permissions/$1';
 $route['admin/update_role_permissions'] = 'Admin/update_role_permissions';
 
+// Admin Routes for Permission Management
+$route['admin/permissions'] = 'Admin/permissions';
+$route['admin/permission_form'] = 'Admin/permission_form';
+$route['admin/permission_form/(:num)'] = 'Admin/permission_form/$1';
+$route['admin/save_permission'] = 'Admin/save_permission';
+$route['admin/delete_permission/(:num)'] = 'Admin/delete_permission/$1';
+$route['admin/permissions_matrix'] = 'Admin/permissions_matrix';
+$route['admin/update_permissions_matrix'] = 'Admin/update_permissions_matrix';
+
 // Admin Route to populate user codes (TEMPORARY - REMOVE AFTER USE)
 $route['admin/populate_user_codes'] = 'Admin/populate_user_codes';
 

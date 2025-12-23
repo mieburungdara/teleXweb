@@ -510,6 +510,212 @@ class Admin extends CI_Controller {
     }
 
     /**
+     * Display a list of all permissions.
+     */
+    public function permissions()
+    {
+        if (!has_permission('manage_permissions')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: Insufficient permissions.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+        $data['permissions'] = $this->Permission_model->get_all_permissions();
+        $data['title'] = 'Manage Permissions';
+        $this->load->view('templates/dashmix_header', $data);
+        $this->load->view('admin/permission_list', $data);
+        $this->load->view('templates/dashmix_footer');
+    }
+
+    /**
+     * Display form to add a new permission or edit an existing one.
+     * @param int $id Permission ID to edit, if any.
+     */
+    public function permission_form($id = null)
+    {
+        if (!has_permission('manage_permissions')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: Insufficient permissions.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+
+        $data['permission'] = null;
+        if ($id) {
+            $data['permission'] = $this->Permission_model->get_permission_by_id($id);
+            if (!$data['permission']) {
+                $this->session->set_flashdata('error_message', 'Permission not found.');
+                redirect('admin/permissions');
+                return;
+            }
+        }
+
+        $data['title'] = $id ? 'Edit Permission' : 'Add New Permission';
+        $this->load->view('templates/dashmix_header', $data);
+        $this->load->view('admin/permission_form', $data);
+        $this->load->view('templates/dashmix_footer');
+    }
+
+    /**
+     * Handle form submission for adding or updating a permission.
+     */
+    public function save_permission()
+    {
+        if (!has_permission('manage_permissions')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: Insufficient permissions.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+
+        $id = $this->input->post('id');
+        $permission_name = $this->input->post('permission_name');
+        $category = $this->input->post('category');
+        $description = $this->input->post('description');
+
+        $this->form_validation->set_rules('permission_name', 'Permission Name', 'required|max_length[255]');
+        $this->form_validation->set_rules('category', 'Category', 'required|max_length[100]');
+        
+        if ($this->form_validation->run() === FALSE) {
+            $this->session->set_flashdata('errors', validation_errors());
+            redirect('admin/permission_form/' . $id);
+            return;
+        }
+
+        $permission_data = [
+            'permission_name' => $permission_name,
+            'category' => $category,
+            'description' => $description,
+        ];
+
+        if ($id) {
+            // Update existing permission
+            $success = $this->Permission_model->update_permission($id, $permission_data);
+            if ($success) {
+                $this->session->set_flashdata('success_message', 'Permission updated successfully.');
+            } else {
+                $this->session->set_flashdata('error_message', 'Failed to update permission.');
+            }
+        } else {
+            // Add new permission
+            $new_permission_id = $this->Permission_model->create_permission($permission_data);
+            if ($new_permission_id) {
+                $this->session->set_flashdata('success_message', 'Permission created successfully.');
+            } else {
+                $this->session->set_flashdata('error_message', 'Failed to create permission. It might already exist.');
+            }
+        }
+        redirect('admin/permissions');
+    }
+
+    /**
+     * Delete a permission.
+     * @param int $id Permission ID to delete.
+     */
+    public function delete_permission($id)
+    {
+        if (!has_permission('manage_permissions')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: Insufficient permissions.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+
+        if (!$id) {
+            $this->session->set_flashdata('error_message', 'Permission ID is required for deletion.');
+            redirect('admin/permissions');
+            return;
+        }
+
+        $success = $this->Permission_model->delete_permission($id);
+        if ($success) {
+            $this->session->set_flashdata('success_message', 'Permission deleted successfully.');
+        } else {
+            $this->session->set_flashdata('error_message', 'Failed to delete permission. It might be in use by a role.');
+        }
+        redirect('admin/permissions');
+    }
+
+    /**
+     * Display a matrix of roles and permissions for easy assignment.
+     */
+    public function permissions_matrix()
+    {
+        if (!has_permission('manage_permissions')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: Insufficient permissions.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+
+        $data['all_roles'] = $this->Role_model->get_all_roles();
+        $all_permissions = $this->Permission_model->get_all_permissions();
+        
+        // Get all role-permission assignments at once
+        $assignments = $this->db->get('role_permissions')->result_array();
+        $assigned_lookup = [];
+        foreach ($assignments as $assignment) {
+            $assigned_lookup[$assignment['role_id']][$assignment['permission_id']] = true;
+        }
+
+        // Group permissions by category for the view
+        $permissions_by_category = [];
+        foreach ($all_permissions as $permission) {
+            $permissions_by_category[$permission['category']][] = $permission;
+        }
+
+        $data['permissions_by_category'] = $permissions_by_category;
+        $data['assigned_lookup'] = $assigned_lookup;
+        $data['title'] = 'Permissions Matrix';
+
+        $this->load->view('templates/dashmix_header', $data);
+        $this->load->view('admin/permissions_matrix_view', $data);
+        $this->load->view('templates/dashmix_footer');
+    }
+
+    /**
+     * Handle form submission for the entire permissions matrix.
+     */
+    public function update_permissions_matrix()
+    {
+        if (!has_permission('manage_permissions')) {
+            $this->session->set_flashdata('error_message', 'Access Denied: Insufficient permissions.');
+            redirect('miniapp/unauthorized');
+            return;
+        }
+
+        $assignments = $this->input->post('assignments');
+        
+        $this->db->trans_start();
+
+        // Clear all existing assignments
+        $this->db->truncate('role_permissions');
+
+        // Insert new assignments
+        if (!empty($assignments)) {
+            $batch_data = [];
+            foreach ($assignments as $role_id => $permissions) {
+                foreach ($permissions as $permission_id => $value) {
+                    $batch_data[] = [
+                        'role_id' => $role_id,
+                        'permission_id' => $permission_id
+                    ];
+                }
+            }
+
+            if (!empty($batch_data)) {
+                $this->db->insert_batch('role_permissions', $batch_data);
+            }
+        }
+
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === FALSE) {
+            $this->session->set_flashdata('error_message', 'Failed to update permissions.');
+        } else {
+            $this->session->set_flashdata('success_message', 'Permissions matrix updated successfully.');
+        }
+
+        redirect('admin/permissions_matrix');
+    }
+
+
+    /**
      * Populates user_code for existing users who do not have one.
      * Accessible only by admins with 'manage_users' permission.
      */
