@@ -94,7 +94,7 @@
                         <?php endif; ?>
                         <?php if (has_permission('manage_bots')): ?>
                         <li class="nav-main-item">
-                            <a class="nav-main-link" href="<?php echo site_url('admin'); ?>">
+                            <a class="nav-main-link" href="<?php echo site_url('admin/bots'); ?>">
                                 <span class="nav-main-link-name"><?php echo lang('manage_bots'); ?></span>
                             </a>
                         </li>
