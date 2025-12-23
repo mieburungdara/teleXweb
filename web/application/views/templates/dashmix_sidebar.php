@@ -39,32 +39,43 @@
                     </a>
                 </li>
                 
-                <li class="nav-main-heading">Core Features</li>
+                <li class="nav-main-heading">Features</li>
 
+                <?php if (has_permission('view_files')): ?>
                 <li class="nav-main-item">
                     <a class="nav-main-link" href="<?php echo site_url('files'); ?>">
                         <i class="nav-main-link-icon fa fa-file-alt"></i>
                         <span class="nav-main-link-name"><?php echo lang('my_files'); ?></span>
                     </a>
                 </li>
+                <?php endif; ?>
+                
+                <?php if (has_permission('view_folders')): ?>
                 <li class="nav-main-item">
                     <a class="nav-main-link" href="<?php echo site_url('folders'); ?>">
                         <i class="nav-main-link-icon fa fa-folder"></i>
                         <span class="nav-main-link-name"><?php echo lang('my_folders'); ?></span>
                     </a>
                 </li>
+                <?php endif; ?>
+
+                <?php if (has_permission('manage_smart_collections')): ?>
                 <li class="nav-main-item">
                     <a class="nav-main-link" href="<?php echo site_url('smartcollections'); ?>">
                         <i class="nav-main-link-icon fa fa-tags"></i>
                         <span class="nav-main-link-name"><?php echo lang('smart_collections'); ?></span>
                     </a>
                 </li>
+                <?php endif; ?>
+
+                <?php if (has_permission('manage_public_collections')): ?>
                 <li class="nav-main-item">
                     <a class="nav-main-link" href="<?php echo site_url('publiccollections'); ?>">
                         <i class="nav-main-link-icon fa fa-globe"></i>
                         <span class="nav-main-link-name"><?php echo lang('public_collections'); ?></span>
                     </a>
                 </li>
+                <?php endif; ?>
                 
                 <?php if (has_permission('view_admin_dashboard')): ?>
                 <li class="nav-main-heading"><?php echo lang('admin'); ?></li>
